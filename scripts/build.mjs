@@ -194,7 +194,9 @@ a:hover { text-decoration: underline; }
   background: var(--bg-tertiary);
   border-bottom: 1px solid var(--divider);
 }
-.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; }
+.site-logo { width: auto; height: 24px; margin-right: 9px; display: inline-block; vertical-align: -5px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; text-decoration: none; }
+.wordmark:hover { text-decoration: none; }
 .wordmark span { color: var(--brand); }
 .header-links { display: flex; gap: 18px; font-size: 13.5px; }
 .header-links a { color: var(--text-muted); }
@@ -297,7 +299,7 @@ function pageHTML({ title, description, html, currentUrl }) {
 </head>
 <body>
 <header class="site-header">
-  <a class="wordmark" href="/">Disband<span>Docs</span></a>
+  <a class="wordmark" href="/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
   <div class="header-links">
     <a href="https://www.disband.dev">disband.dev</a>
   </div>
@@ -328,6 +330,13 @@ async function build() {
     await copyFile(resolve(zipsDir, file), resolve(DIST, "zips", file));
   }
   console.log(`Copied ${zipFiles.length} zip(s) → dist/zips/`);
+
+  // Copy static assets (e.g. the brand logo) into the site root.
+  const assetsDir = resolve(ROOT, "assets");
+  for (const file of await readdir(assetsDir)) {
+    await copyFile(resolve(assetsDir, file), resolve(DIST, file));
+  }
+  console.log(`Copied ${(await readdir(assetsDir)).length} asset(s) → dist/`);
 
   for (const page of PAGES) {
     const md = await readFile(resolve(ROOT, page.src), "utf8");
