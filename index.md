@@ -28,7 +28,7 @@ uploaded icons.
 
 ## Download the clients
 
-- **[@disband/bot](/zips/disband-bot-0.1.0.tgz)** — the JavaScript client
+- **[@disband/bot](https://raw.githubusercontent.com/polardev-ui/disband-docs/main/zips/disband-bot-0.1.0.tgz)** — the JavaScript client
   (`npm install ./disband-bot-0.1.0.tgz`).
-- **[disband-bot](/zips/disband-bot-python-0.1.0.tar.gz)** — the Python client
+- **[disband-bot](https://raw.githubusercontent.com/polardev-ui/disband-docs/main/zips/disband-bot-python-0.1.0.tar.gz)** — the Python client
   (`pip install ./disband-bot-python-0.1.0.tar.gz`).
