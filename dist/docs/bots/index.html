@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bots — Disband Docs</title>
+<meta name="description" content="Disband bots are self-hosted integrations. You run the code, Disband relays
+messages to and from it. Disband never hosts or executes your bot's code." />
+<link rel="canonical" href="https://docs.disband.dev/docs/bots/" />
+<meta property="og:title" content="Bots — Disband Docs" />
+<meta property="og:description" content="Disband bots are self-hosted integrations. You run the code, Disband relays
+messages to and from it. Disband never hosts or executes your bot's code." />
+<meta property="og:url" content="https://docs.disband.dev/docs/bots/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #1e1f22;
+  --bg-secondary: #2b2d31;
+  --bg-tertiary: #17181b;
+  --brand: #5865f2;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #1b1c1e;
+  --link: #6c8ee4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--divider);
+}
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; }
+.wordmark span { color: var(--brand); }
+.header-links { display: flex; gap: 18px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); }
+.header-links a:hover { color: var(--text-bright); text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: calc(100vh - 52px);
+}
+.sidebar {
+  padding: 24px 12px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-tertiary);
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-nav a {
+  display: block; padding: 6px 10px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-secondary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 4px; padding: 0 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 760px; width: 100%;
+  margin: 0 auto; padding: 48px 32px 72px;
+}
+.content h1 {
+  margin: 0 0 8px; font-size: 30px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.3px;
+}
+.content .lede { color: var(--text-muted); font-size: 16px; margin: 0 0 28px; max-width: 620px; }
+.content h2 { margin: 40px 0 10px; font-size: 21px; font-weight: 700; color: var(--text-bright); }
+.content h3 { margin: 28px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 10px 0; }
+.content ul, .content ol { margin: 10px 0; padding-left: 22px; }
+.content li { margin: 5px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 4px; padding: 1px 5px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 14px 0; border-radius: 8px; overflow: auto; }
+.content pre code.hljs { padding: 14px 16px; border: none; }
+.table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--divider); border-radius: 8px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 9px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 28px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 16px 20px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/">Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="active">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div></nav></aside>
+  <main class="content">
+    <h1 id="bots"><a href="#bots" class="anchor" aria-hidden="true">#</a>Bots</h1><p>Disband bots are self-hosted integrations. You run the code, Disband relays
+messages to and from it. Disband never hosts or executes your bot&#39;s code.</p>
+<h2 id="how-it-works"><a href="#how-it-works" class="anchor" aria-hidden="true">#</a>How it works</h2><ol>
+<li><strong>Create a bot</strong> in <strong>Settings → Bots</strong> and pick the scopes it needs. You get
+a token back — it is shown <strong>once</strong>.</li>
+<li>In <strong>Settings → Bots</strong>, generate an <strong>invite link</strong> for the server you want
+the bot to join, and send it to that server&#39;s <strong>owner</strong>.</li>
+<li>The owner opens the link and approves. The bot becomes a member of the server.</li>
+<li>You run one of the client libraries somewhere (a server, a cloud function,
+your laptop) and it connects to Disband with the token.</li>
+</ol>
+<h2 id="scopes"><a href="#scopes" class="anchor" aria-hidden="true">#</a>Scopes</h2><p>A bot&#39;s reach in a server is the <strong>intersection</strong> of the scopes you requested
+when creating it and the scopes the owner approved for that specific server:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Scope</th>
+<th>Description</th>
+</tr>
+</thead><tbody><tr>
+<td><code>messages.read</code></td>
+<td>Receive message events on the gateway and read messages/channels.</td>
+</tr>
+<tr>
+<td><code>messages.write</code></td>
+<td>Send and reply to messages in channels the bot can see.</td>
+</tr>
+<tr>
+<td><code>members.read</code></td>
+<td>List the members of servers the bot has joined.</td>
+</tr>
+<tr>
+<td><code>channels.manage</code></td>
+<td>Create, rename, and delete channels — also needs the <code>manage_channels</code> role in the server.</td>
+</tr>
+</tbody></table></div><h2 id="token-authentication"><a href="#token-authentication" class="anchor" aria-hidden="true">#</a>Token authentication</h2><p>Every API call is authenticated with the bot token:</p>
+<pre><code>Authorization: Bot &lt;token&gt;
+</code></pre><p>Bot tokens are <strong>hashed at rest</strong> — the raw token is never stored or retrievable.
+If it leaks (or you no longer need the bot), revoke it in <strong>Settings → Bots</strong>;
+revocation kills the token immediately.</p>
+<h2 id="limits-safety"><a href="#limits-safety" class="anchor" aria-hidden="true">#</a>Limits & safety</h2><ul>
+<li>Up to <strong>5 bots per account</strong>. A bot can be revoked at any time, which kills its
+token.</li>
+<li>Messages up to <strong>4,000 characters</strong>. Bots need the <code>mention_everyone</code> role
+permission to use <code>@everyone</code>.</li>
+<li>Only a server&#39;s <strong>owner</strong> can approve a bot invite. Invites expire after
+<strong>7 days</strong>.</li>
+<li>Bot tokens are hashed at rest; the raw token is never stored or retrievable.</li>
+<li>Bots can never reach the database directly — every action goes through scoped
+API endpoints.</li>
+</ul>
+<h2 id="pick-a-path"><a href="#pick-a-path" class="anchor" aria-hidden="true">#</a>Pick a path</h2><ul>
+<li><strong><a href="/docs/bots/getting-started/">Getting started</a></strong> — create a bot and invite it.</li>
+<li><strong><a href="/docs/bots/hosting-your-own-bot/">Hosting your own bot</a></strong> — where to run the client.</li>
+<li><strong><a href="/docs/bots/clients/javascript/">JavaScript client</a></strong> / <strong><a href="/docs/bots/clients/python/">Python client</a></strong>.</li>
+<li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> if you want to talk to the API directly.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

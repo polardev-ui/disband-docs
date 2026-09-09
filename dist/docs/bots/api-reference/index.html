@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bot API reference — Disband Docs</title>
+<meta name="description" content="The HTTP API that bots talk to. Both client libraries are thin wrappers over
+exactly these endpoints, so this page is also the recipe for writing a client in
+an" />
+<link rel="canonical" href="https://docs.disband.dev/docs/bots/api-reference/" />
+<meta property="og:title" content="Bot API reference — Disband Docs" />
+<meta property="og:description" content="The HTTP API that bots talk to. Both client libraries are thin wrappers over
+exactly these endpoints, so this page is also the recipe for writing a client in
+an" />
+<meta property="og:url" content="https://docs.disband.dev/docs/bots/api-reference/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #1e1f22;
+  --bg-secondary: #2b2d31;
+  --bg-tertiary: #17181b;
+  --brand: #5865f2;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #1b1c1e;
+  --link: #6c8ee4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--divider);
+}
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; }
+.wordmark span { color: var(--brand); }
+.header-links { display: flex; gap: 18px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); }
+.header-links a:hover { color: var(--text-bright); text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: calc(100vh - 52px);
+}
+.sidebar {
+  padding: 24px 12px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-tertiary);
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-nav a {
+  display: block; padding: 6px 10px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-secondary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 4px; padding: 0 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 760px; width: 100%;
+  margin: 0 auto; padding: 48px 32px 72px;
+}
+.content h1 {
+  margin: 0 0 8px; font-size: 30px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.3px;
+}
+.content .lede { color: var(--text-muted); font-size: 16px; margin: 0 0 28px; max-width: 620px; }
+.content h2 { margin: 40px 0 10px; font-size: 21px; font-weight: 700; color: var(--text-bright); }
+.content h3 { margin: 28px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 10px 0; }
+.content ul, .content ol { margin: 10px 0; padding-left: 22px; }
+.content li { margin: 5px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 4px; padding: 1px 5px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 14px 0; border-radius: 8px; overflow: auto; }
+.content pre code.hljs { padding: 14px 16px; border: none; }
+.table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--divider); border-radius: 8px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 9px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 28px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 16px 20px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/">Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="active">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div></nav></aside>
+  <main class="content">
+    <h1 id="bot-api-reference"><a href="#bot-api-reference" class="anchor" aria-hidden="true">#</a>Bot API reference</h1><p>The HTTP API that bots talk to. Both client libraries are thin wrappers over
+exactly these endpoints, so this page is also the recipe for writing a client in
+any other language.</p>
+<h2 id="base-url-and-authentication"><a href="#base-url-and-authentication" class="anchor" aria-hidden="true">#</a>Base URL and authentication</h2><pre><code>https://www.disband.dev
+</code></pre><p>Every request sends:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Header</th>
+<th>Value</th>
+</tr>
+</thead><tbody><tr>
+<td><code>Authorization</code></td>
+<td><code>Bot &lt;token&gt;</code></td>
+</tr>
+<tr>
+<td><code>Content-Type</code></td>
+<td><code>application/json</code></td>
+</tr>
+</tbody></table></div><p>A missing or invalid token returns <code>401 { &quot;error&quot;: &quot;Invalid bot token&quot; }</code>. A
+revoked bot returns the same, so a <code>401</code> means &quot;check the token&quot; — not &quot;retry&quot;.</p>
+<p>All endpoints are scoped: a bot can only read or write what its scopes (and the
+per-server grants) allow. Every 4xx/5xx response is JSON with an <code>error</code> field.</p>
+<h2 id="read-before-writing"><a href="#read-before-writing" class="anchor" aria-hidden="true">#</a>Read before writing</h2><ul>
+<li>Bots are <strong>read-scoped</strong> unless you grant <code>messages.write</code> / <code>channels.manage</code>.</li>
+<li><code>channels.manage</code> actions also require the bot account to hold the
+<code>manage_channels</code> <strong>role</strong> in that server.</li>
+<li>Both clients hold the scoop on scopes per message event: nothing in the API
+returns data the bot was not granted.</li>
+</ul>
+<h2 id="the-gateway-event-long-poll"><a href="#the-gateway-event-long-poll" class="anchor" aria-hidden="true">#</a>The gateway (event long-poll)</h2><pre><code>GET /api/v1/gateway?timeout=20
+</code></pre><p>The gateway is a long-poll, not a websocket. The request blocks server-side
+until an event is available or the timeout elapses, then returns what arrived.
+The client loops on it. Timeout is clamped to 1–20 seconds.</p>
+<p>Response:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;events&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;bot_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;messageCreate&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;payload&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;channel_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>type</code> is <code>messageCreate</code>, <code>messageUpdate</code>, or <code>messageDelete</code>. Delivery is
+<strong>at-least-once</strong> — a bot that crashes between fetch and handling may see the
+same event again. Handle them idempotently (by <code>payload.id</code>).</p>
+<h3 id="event-payloads"><a href="#event-payloads" class="anchor" aria-hidden="true">#</a>Event payloads</h3><div class="table-wrap"><table><thead><tr>
+<th>Type</th>
+<th>Payload fields</th>
+</tr>
+</thead><tbody><tr>
+<td><code>messageCreate</code></td>
+<td>The full message object (below).</td>
+</tr>
+<tr>
+<td><code>messageUpdate</code></td>
+<td><code>id</code>, <code>channel_id</code>, <code>server_id</code>, <code>content</code>, <code>edited_at</code></td>
+</tr>
+<tr>
+<td><code>messageDelete</code></td>
+<td><code>id</code>, <code>channel_id</code>, <code>server_id</code></td>
+</tr>
+</tbody></table></div><p>Message object:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;channel_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;author&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;username&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;display_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;avatar_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;is_bot&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy finished&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;reply_to_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;mentions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;attachment_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;attachment_type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-01-01T00:00:00Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;edited_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;display_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1234</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>Only bots with <code>messages.read</code> (both on the bot account <strong>and</strong> granted in that
+server) receive events.</p>
+<h2 id="endpoints"><a href="#endpoints" class="anchor" aria-hidden="true">#</a>Endpoints</h2><h3 id="messages"><a href="#messages" class="anchor" aria-hidden="true">#</a>Messages</h3><p><strong>POST <code>/api/v1/channels/:id/messages</code></strong> — sends a message (<code>messages.write</code>).</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy finished&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;reply_to_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Returns <code>201</code> with <code>{ &quot;message&quot;: { … } }</code>.</p>
+<p><strong>GET <code>/api/v1/channels/:id/messages</code></strong> — reads messages (<code>messages.read</code>).</p>
+<p>Query: <code>limit</code> (1–100, default 50), <code>before</code> (message id, for paging backwards).</p>
+<p>Returns <code>200</code> with <code>{ &quot;messages&quot;: [ … ] }</code>.</p>
+<h3 id="channels"><a href="#channels" class="anchor" aria-hidden="true">#</a>Channels</h3><p><strong>GET <code>/api/v1/servers/:id/channels</code></strong> — lists channels (<code>messages.read</code>).</p>
+<p>Returns <code>{ &quot;channels&quot;: [ … ] }</code>.</p>
+<p><strong>POST <code>/api/v1/servers/:id/channels</code></strong> — creates a channel (<code>channels.manage</code> +
+<code>manage_channels</code> role).</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;deploys&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;text&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;category_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Returns <code>201</code> with <code>{ &quot;channel_id&quot;: &quot;…&quot; }</code>.</p>
+<p><strong>PATCH <code>/api/v1/channels/:id</code></strong> — renames a channel (<code>channels.manage</code>).</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;deploys-2&quot;</span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Returns <code>{ &quot;success&quot;: true }</code>.</p>
+<p><strong>DELETE <code>/api/v1/channels/:id</code></strong> — deletes a channel (<code>channels.manage</code>).</p>
+<p>Returns <code>{ &quot;success&quot;: true }</code>.</p>
+<h3 id="members"><a href="#members" class="anchor" aria-hidden="true">#</a>Members</h3><p><strong>GET <code>/api/v1/servers/:id/members</code></strong> — lists members (<code>members.read</code>).</p>
+<p>Returns <code>{ &quot;members&quot;: [ … ] }</code>.</p>
+<h3 id="leaving"><a href="#leaving" class="anchor" aria-hidden="true">#</a>Leaving</h3><p><strong>POST <code>/api/v1/servers/:id/leave</code></strong> — removes the bot from a server.</p>
+<p>Returns <code>{ &quot;success&quot;: true }</code>.</p>
+<h3 id="invites"><a href="#invites" class="anchor" aria-hidden="true">#</a>Invites</h3><p><strong>POST <code>/api/v1/bots/:botId/invites</code></strong> — generates an invite for the bot to join
+a server.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;scopes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;messages.read&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;messages.write&quot;</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Returns the invite (including an <code>invite_url</code>) to send to the server owner.
+Only the owner can approve; invites expire after 7 days.</p>
+<h3 id="identity-used-at-startup"><a href="#identity-used-at-startup" class="anchor" aria-hidden="true">#</a>Identity (used at startup)</h3><p><strong>GET <code>/api/bot/me</code></strong> — returns the bot account, used by the clients to fire
+<code>ready</code>. Not part of the versioned <code>v1</code> surface.</p>
+<h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><div class="table-wrap"><table><thead><tr>
+<th>Status</th>
+<th>Meaning</th>
+<th><code>error</code> field examples</th>
+</tr>
+</thead><tbody><tr>
+<td><code>401</code></td>
+<td>Missing/invalid/revoked token.</td>
+<td><code>&quot;Invalid bot token&quot;</code></td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td>Missing scope or role permission.</td>
+<td><code>&quot;This bot does not have messages.write in that server&quot;</code></td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>Channel/server not found or not visible to the bot.</td>
+<td><code>&quot;Channel not found&quot;</code></td>
+</tr>
+<tr>
+<td><code>429</code></td>
+<td>Rate limited.</td>
+<td>Includes a <code>Retry-After</code> header.</td>
+</tr>
+<tr>
+<td><code>503</code></td>
+<td>Backing store unavailable (gateway polling).</td>
+<td><code>&quot;Event delivery unavailable.&quot;</code></td>
+</tr>
+<tr>
+<td><code>5xx</code></td>
+<td>Server error. Retry with backoff.</td>
+<td><code>&quot;Internal server error&quot;</code></td>
+</tr>
+</tbody></table></div><h2 id="limits"><a href="#limits" class="anchor" aria-hidden="true">#</a>Limits</h2><ul>
+<li>Up to <strong>5 bots per account</strong>; a bot&#39;s token dies instantly on revoke.</li>
+<li>Messages up to <strong>4,000 characters</strong>; <code>@everyone</code> needs the <code>mention_everyone</code>
+role permission.</li>
+<li>Rate limits apply per bot token. If you hit <code>429</code>, honor <code>Retry-After</code>.</li>
+</ul>
+<h2 id="writing-your-own-client"><a href="#writing-your-own-client" class="anchor" aria-hidden="true">#</a>Writing your own client</h2><ol>
+<li><code>GET /api/bot/me</code> with <code>Authorization: Bot &lt;token&gt;</code> to resolve identity.</li>
+<li>Loop on <code>GET /api/v1/gateway?timeout=20</code>, handle events by <code>type</code>.</li>
+<li>Use the endpoints above with the same auth header; map <code>401</code> → &quot;bad token&quot;,
+<code>403</code> → &quot;missing permission&quot;, <code>429</code> → &quot;slow down and retry after <code>Retry-After</code>&quot;.</li>
+</ol>
+<p>The official clients are <code>@disband/bot</code> (JavaScript) and <code>disband-bot</code> (Python)
+— see the <a href="/docs/bots/clients/javascript/">JavaScript</a> and <a href="/docs/bots/clients/python/">Python</a>
+pages.</p>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Themes — Disband Docs</title>
+<meta name="description" content="Disband SUPER members can restyle the app: pick one of the shipped skins, or
+write your own CSS and upload your own icons. A theme is saved to your account,
+so " />
+<link rel="canonical" href="https://docs.disband.dev/docs/themes/" />
+<meta property="og:title" content="Themes — Disband Docs" />
+<meta property="og:description" content="Disband SUPER members can restyle the app: pick one of the shipped skins, or
+write your own CSS and upload your own icons. A theme is saved to your account,
+so " />
+<meta property="og:url" content="https://docs.disband.dev/docs/themes/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #1e1f22;
+  --bg-secondary: #2b2d31;
+  --bg-tertiary: #17181b;
+  --brand: #5865f2;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #1b1c1e;
+  --link: #6c8ee4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--divider);
+}
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; }
+.wordmark span { color: var(--brand); }
+.header-links { display: flex; gap: 18px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); }
+.header-links a:hover { color: var(--text-bright); text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: calc(100vh - 52px);
+}
+.sidebar {
+  padding: 24px 12px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-tertiary);
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-nav a {
+  display: block; padding: 6px 10px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-secondary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 4px; padding: 0 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 760px; width: 100%;
+  margin: 0 auto; padding: 48px 32px 72px;
+}
+.content h1 {
+  margin: 0 0 8px; font-size: 30px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.3px;
+}
+.content .lede { color: var(--text-muted); font-size: 16px; margin: 0 0 28px; max-width: 620px; }
+.content h2 { margin: 40px 0 10px; font-size: 21px; font-weight: 700; color: var(--text-bright); }
+.content h3 { margin: 28px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 10px 0; }
+.content ul, .content ol { margin: 10px 0; padding-left: 22px; }
+.content li { margin: 5px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 4px; padding: 1px 5px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 14px 0; border-radius: 8px; overflow: auto; }
+.content pre code.hljs { padding: 14px 16px; border: none; }
+.table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--divider); border-radius: 8px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 9px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 28px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 16px 20px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/">Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="active">Themes</a></div></nav></aside>
+  <main class="content">
+    <h1 id="themes"><a href="#themes" class="anchor" aria-hidden="true">#</a>Themes</h1><p>Disband <strong>SUPER</strong> members can restyle the app: pick one of the shipped skins, or
+write your own CSS and upload your own icons. A theme is saved to your account,
+so it is already on when you sign in somewhere else.</p>
+<p>Themes apply on <strong>web and desktop</strong>. iOS and Android are built natively and have
+no stylesheet for a theme to apply to, so your theme syncs but is not drawn
+there.</p>
+<h2 id="the-shipped-skins"><a href="#the-shipped-skins" class="anchor" aria-hidden="true">#</a>The shipped skins</h2><p>Nine are built in, and they change more than colour — corners, typefaces and the
+way controls are drawn:</p>
+<ul>
+<li><strong>Minecraft</strong> — pixel type, hard bevels, not one rounded corner.</li>
+<li><strong>Call of Duty</strong> — dusty khaki, stencilled caps, film grain over everything.</li>
+<li><strong>2000s</strong> — Tahoma, beveled controls, Windows XP blue.</li>
+<li><strong>Frutiger Aero</strong> — glossy glass, blue into green, light caught on every corner.</li>
+<li><strong>Terminal</strong> — green phosphor on black, monospaced, with the scanlines.</li>
+<li><strong>Vaporwave</strong> — hot pink and cyan over purple, chrome on every button.</li>
+<li><strong>Paper</strong> — warm off-white and a serif; reads like something printed.</li>
+<li><strong>Neon</strong> — near-black, with magenta and cyan bleeding off every edge.</li>
+<li><strong>Brutalist</strong> — black on white, two-pixel borders, shadows that are solid blocks.</li>
+</ul>
+<p>Pick one in <strong>Settings → Themes</strong>. A skin and your own custom CSS work together:
+the skin is applied first, so your CSS can adjust it rather than having to
+replace it.</p>
+<h2 id="colour-variables"><a href="#colour-variables" class="anchor" aria-hidden="true">#</a>Colour variables</h2><p>These are the stable API. Set them on <code>:root</code> and every surface in the app
+follows, including screens added after you wrote the theme.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Variable</th>
+<th>Affects</th>
+</tr>
+</thead><tbody><tr>
+<td><code>--bg-primary</code></td>
+<td>The chat canvas — the largest surface in the app.</td>
+</tr>
+<tr>
+<td><code>--bg-secondary</code></td>
+<td>Panels beside it: channel list, member list, cards.</td>
+</tr>
+<tr>
+<td><code>--bg-tertiary</code></td>
+<td>The outermost chrome, including the server rail.</td>
+</tr>
+<tr>
+<td><code>--bg-accent</code></td>
+<td>Inset surfaces: the composer, code blocks, inputs.</td>
+</tr>
+<tr>
+<td><code>--interactive-hover</code></td>
+<td>Row and button hover.</td>
+</tr>
+<tr>
+<td><code>--interactive-selected</code></td>
+<td>The row you are currently on.</td>
+</tr>
+<tr>
+<td><code>--brand</code></td>
+<td>Primary buttons, links, focus rings, your own accents.</td>
+</tr>
+<tr>
+<td><code>--brand-hover</code></td>
+<td>The same, hovered.</td>
+</tr>
+<tr>
+<td><code>--text-normal</code></td>
+<td>Body text.</td>
+</tr>
+<tr>
+<td><code>--text-muted</code></td>
+<td>Timestamps, secondary labels, placeholders.</td>
+</tr>
+<tr>
+<td><code>--text-link</code></td>
+<td>Links inside messages.</td>
+</tr>
+<tr>
+<td><code>--status-online</code></td>
+<td>Online dot, success states.</td>
+</tr>
+<tr>
+<td><code>--status-idle</code></td>
+<td>Idle dot, warnings.</td>
+</tr>
+<tr>
+<td><code>--status-dnd</code></td>
+<td>Do-not-disturb dot, errors and destructive actions.</td>
+</tr>
+<tr>
+<td><code>--status-offline</code></td>
+<td>Offline dot.</td>
+</tr>
+<tr>
+<td><code>--divider</code></td>
+<td>Every hairline border in the app.</td>
+</tr>
+<tr>
+<td><code>--super</code></td>
+<td>The Disband SUPER accent.</td>
+</tr>
+</tbody></table></div><h2 id="shape-and-type"><a href="#shape-and-type" class="anchor" aria-hidden="true">#</a>Shape and type</h2><p>Disband draws its corners with Tailwind&#39;s radius scale, and that scale reads from
+these variables. Setting one changes every corner of that size in the product at
+once — you do not have to find the components.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Variable</th>
+<th>Affects</th>
+</tr>
+</thead><tbody><tr>
+<td><code>--skin-radius-sm</code></td>
+<td>Tailwind&#39;s <code>rounded-sm</code>. Small chips and tags.</td>
+</tr>
+<tr>
+<td><code>--skin-radius-md</code></td>
+<td><code>rounded-md</code> — most buttons and inputs.</td>
+</tr>
+<tr>
+<td><code>--skin-radius-lg</code></td>
+<td><code>rounded-lg</code> — cards and panels.</td>
+</tr>
+<tr>
+<td><code>--skin-radius-xl</code></td>
+<td><code>rounded-xl</code> — modals, call tiles.</td>
+</tr>
+<tr>
+<td><code>--skin-radius-2xl</code></td>
+<td><code>rounded-2xl</code> — large overlays.</td>
+</tr>
+<tr>
+<td><code>--skin-radius-3xl</code></td>
+<td><code>rounded-3xl</code> — the largest surfaces.</td>
+</tr>
+<tr>
+<td><code>--skin-font</code></td>
+<td>The UI typeface for the whole app.</td>
+</tr>
+</tbody></table></div><p>Avatars and status dots are deliberately not on this list: they are circles
+because a square avatar makes the member list hard to read. You can still square
+them by targeting them directly.</p>
+<p><strong>If you are building a light theme</strong>, set <code>color-scheme: light</code> on <code>:root</code> so
+scrollbars and native controls flip with it, and remember that <code>--bg-tertiary</code>
+carries text: it is the server rail, so a dark value there with dark
+<code>--text-normal</code> makes those labels invisible rather than merely low-contrast.</p>
+<h2 id="selectors"><a href="#selectors" class="anchor" aria-hidden="true">#</a>Selectors</h2><p>Every control in Disband is a real <code>&lt;button&gt;</code>, <code>&lt;input&gt;</code> or <code>&lt;textarea&gt;</code>, so
+element selectors reach the whole app and keep working as it changes:</p>
+<pre><code class="hljs language-css"><span class="hljs-selector-tag">button</span> { <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">0</span>; }
+<span class="hljs-selector-tag">button</span><span class="hljs-selector-pseudo">:active</span> { <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(<span class="hljs-number">1px</span>); }
+<span class="hljs-selector-tag">input</span>, <span class="hljs-selector-tag">textarea</span> { <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-built_in">var</span>(--divider); }
+</code></pre><p>Layout classes are Tailwind utilities, and <code>[class*=&quot;bg-brand&quot;]</code>-style selectors
+do work — but they are not a supported API. Utility classes change when a screen
+is redesigned, and a theme built on them will break at some release. The
+variables above will not.</p>
+<h2 id="uploaded-icons"><a href="#uploaded-icons" class="anchor" aria-hidden="true">#</a>Uploaded icons</h2><p>Upload an image in <strong>Settings → Themes</strong> and give it a name. It becomes a
+variable holding a ready-made <code>url()</code>:</p>
+<pre><code class="hljs language-css"><span class="hljs-comment">/* An icon uploaded as &quot;send&quot; */</span>
+<span class="hljs-selector-class">.some-target</span> {
+  <span class="hljs-attribute">background-image</span>: <span class="hljs-built_in">var</span>(--icon-send);
+}
+</code></pre><p>Names use lowercase letters, numbers and dashes, up to 40 characters. A theme can
+hold up to 100 icons, and each upload is limited to 2 MB.</p>
+<h2 id="starter-template"><a href="#starter-template" class="anchor" aria-hidden="true">#</a>Starter template</h2><p>Paste this into the editor and change what you like:</p>
+<pre><code class="hljs language-css"><span class="hljs-comment">/* ---------------------------------------------------------------
+   A Disband theme. Everything here is optional — delete what you
+   do not want to change.
+   --------------------------------------------------------------- */</span>
+
+<span class="hljs-selector-pseudo">:root</span> {
+  <span class="hljs-comment">/* Colours. These reach every surface in the app. */</span>
+  <span class="hljs-attr">--bg-primary</span>: <span class="hljs-number">#1b1b1f</span>;
+  <span class="hljs-attr">--bg-secondary</span>: <span class="hljs-number">#16161a</span>;
+  <span class="hljs-attr">--bg-tertiary</span>: <span class="hljs-number">#101013</span>;
+  <span class="hljs-attr">--bg-accent</span>: <span class="hljs-number">#131316</span>;
+  <span class="hljs-attr">--interactive-hover</span>: <span class="hljs-number">#26262c</span>;
+  <span class="hljs-attr">--interactive-selected</span>: <span class="hljs-number">#2f2f37</span>;
+  <span class="hljs-attr">--brand</span>: <span class="hljs-number">#7c5cff</span>;
+  <span class="hljs-attr">--brand-hover</span>: <span class="hljs-number">#6647e0</span>;
+  <span class="hljs-attr">--text-normal</span>: <span class="hljs-number">#ececf0</span>;
+  <span class="hljs-attr">--text-muted</span>: <span class="hljs-number">#9a9aa5</span>;
+  <span class="hljs-attr">--divider</span>: <span class="hljs-number">#2a2a31</span>;
+
+  <span class="hljs-comment">/* Shape. One value here squares (or rounds) every matching
+     corner in the product at once. */</span>
+  <span class="hljs-attr">--skin-radius-md</span>: <span class="hljs-number">4px</span>;
+  <span class="hljs-attr">--skin-radius-lg</span>: <span class="hljs-number">6px</span>;
+
+  <span class="hljs-comment">/* Type. Any font already on the system, or one you name below. */</span>
+  <span class="hljs-attr">--skin-font</span>: <span class="hljs-string">&quot;Inter&quot;</span>, system-ui, sans-serif;
+}
+
+<span class="hljs-comment">/* Buttons are ordinary &lt;button&gt; elements, so this reaches all of
+   them — the composer, the toolbar, dialogs, everything. */</span>
+<span class="hljs-selector-tag">button</span> {
+  <span class="hljs-attribute">transition</span>: transform <span class="hljs-number">80ms</span> ease;
+}
+
+<span class="hljs-selector-tag">button</span><span class="hljs-selector-pseudo">:active</span> {
+  <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translateY</span>(<span class="hljs-number">1px</span>);
+}
+
+<span class="hljs-comment">/* An icon you uploaded, referenced by the name you gave it. */</span>
+<span class="hljs-selector-class">.my-custom-send</span><span class="hljs-selector-pseudo">::before</span> {
+  <span class="hljs-attribute">content</span>: <span class="hljs-string">&quot;&quot;</span>;
+  <span class="hljs-attribute">display</span>: inline-block;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">20px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">20px</span>;
+  <span class="hljs-attribute">background-image</span>: <span class="hljs-built_in">var</span>(--icon-send);
+  <span class="hljs-attribute">background-size</span>: contain;
+}
+</code></pre><h2 id="what-is-not-allowed"><a href="#what-is-not-allowed" class="anchor" aria-hidden="true">#</a>What is not allowed</h2><p>Your CSS is checked before it is applied, and anything removed is listed for you
+rather than dropped silently:</p>
+<ul>
+<li><code>@import</code> — it would load a stylesheet from another server on every launch.</li>
+<li><code>&lt;</code> and <code>&gt;</code> — CSS has no use for them, and they can end the stylesheet early.</li>
+<li><code>expression()</code>, and <code>url()</code> values that are not <code>https:</code> or a <code>data:</code> image.</li>
+<li>Themes are capped at 100 KB of CSS.</li>
+</ul>
+<p>Web fonts can be loaded with <code>@font-face</code> from an <code>https:</code> address, or from an
+icon you uploaded.</p>
+<h2 id="if-your-subscription-ends"><a href="#if-your-subscription-ends" class="anchor" aria-hidden="true">#</a>If your subscription ends</h2><p>Themes are a SUPER feature, so if a payment fails your theme stops being applied
+and Disband returns to its normal appearance — with a notice saying why, rather
+than silently changing shape.</p>
+<p><strong>Nothing is deleted.</strong> Your skin, your CSS and your icons stay on your account;
+resubscribe and they come back exactly as you left them.</p>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

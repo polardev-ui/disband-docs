@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JavaScript client — `@disband/bot` — Disband Docs</title>
+<meta name="description" content="The official JavaScript client. Zero runtime dependencies — it uses only fetch
+and standard globals — and works from Node.js 18+, Deno, Bun, and the browser." />
+<link rel="canonical" href="https://docs.disband.dev/docs/bots/clients/javascript/" />
+<meta property="og:title" content="JavaScript client — `@disband/bot` — Disband Docs" />
+<meta property="og:description" content="The official JavaScript client. Zero runtime dependencies — it uses only fetch
+and standard globals — and works from Node.js 18+, Deno, Bun, and the browser." />
+<meta property="og:url" content="https://docs.disband.dev/docs/bots/clients/javascript/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #1e1f22;
+  --bg-secondary: #2b2d31;
+  --bg-tertiary: #17181b;
+  --brand: #5865f2;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #1b1c1e;
+  --link: #6c8ee4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--divider);
+}
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; }
+.wordmark span { color: var(--brand); }
+.header-links { display: flex; gap: 18px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); }
+.header-links a:hover { color: var(--text-bright); text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: calc(100vh - 52px);
+}
+.sidebar {
+  padding: 24px 12px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-tertiary);
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-nav a {
+  display: block; padding: 6px 10px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-secondary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 4px; padding: 0 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 760px; width: 100%;
+  margin: 0 auto; padding: 48px 32px 72px;
+}
+.content h1 {
+  margin: 0 0 8px; font-size: 30px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.3px;
+}
+.content .lede { color: var(--text-muted); font-size: 16px; margin: 0 0 28px; max-width: 620px; }
+.content h2 { margin: 40px 0 10px; font-size: 21px; font-weight: 700; color: var(--text-bright); }
+.content h3 { margin: 28px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 10px 0; }
+.content ul, .content ol { margin: 10px 0; padding-left: 22px; }
+.content li { margin: 5px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 4px; padding: 1px 5px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 14px 0; border-radius: 8px; overflow: auto; }
+.content pre code.hljs { padding: 14px 16px; border: none; }
+.table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--divider); border-radius: 8px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 9px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 28px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 16px 20px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/">Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="active">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div></nav></aside>
+  <main class="content">
+    <h1 id="javascript-client-disbandbot"><a href="#javascript-client-disbandbot" class="anchor" aria-hidden="true">#</a>JavaScript client — `@disband/bot`</h1><p>The official JavaScript client. Zero runtime dependencies — it uses only <code>fetch</code>
+and standard globals — and works from Node.js 18+, Deno, Bun, and the browser.</p>
+<h2 id="install"><a href="#install" class="anchor" aria-hidden="true">#</a>Install</h2><pre><code class="hljs language-bash">npm install @disband/bot
+</code></pre><p>or, from this monorepo:</p>
+<pre><code class="hljs language-bash">npm install /path/to/packages/bot
+</code></pre><h2 id="quick-start"><a href="#quick-start" class="anchor" aria-hidden="true">#</a>Quick start</h2><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Client</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@disband/bot&quot;</span>;
+
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Client</span>({ <span class="hljs-attr">token</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DISBAND_BOT_TOKEN</span> });
+
+client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;ready&quot;</span>, <span class="hljs-function">(<span class="hljs-params">me</span>) =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Logged in as <span class="hljs-subst">${me.name}</span> (<span class="hljs-subst">${me.scopes.join(<span class="hljs-string">&quot;, &quot;</span>)}</span>)`</span>);
+});
+
+client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;messageCreate&quot;</span>, <span class="hljs-title function_">async</span> (message) =&gt; {
+  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">author</span>?.<span class="hljs-property">is_bot</span>) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">content</span> !== <span class="hljs-string">&quot;!ping&quot;</span>) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">await</span> message.<span class="hljs-title function_">reply</span>(<span class="hljs-string">&quot;pong&quot;</span>);
+});
+
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">connect</span>();
+</code></pre><h2 id="constructor"><a href="#constructor" class="anchor" aria-hidden="true">#</a>Constructor</h2><h3 id="new-client-token-baseurl-gatewaytimeout"><a href="#new-client-token-baseurl-gatewaytimeout" class="anchor" aria-hidden="true">#</a>`new Client({ token, baseUrl?, gatewayTimeout? })`</h3><div class="table-wrap"><table><thead><tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody><tr>
+<td><code>token</code></td>
+<td><code>string</code></td>
+<td><em>(required)</em></td>
+<td>The bot token from <strong>Settings → Bots</strong>.</td>
+</tr>
+<tr>
+<td><code>baseUrl</code></td>
+<td><code>string</code></td>
+<td><code>&quot;https://www.disband.dev&quot;</code></td>
+<td>API root (change for a custom domain).</td>
+</tr>
+<tr>
+<td><code>gatewayTimeout</code></td>
+<td><code>number</code></td>
+<td><code>20</code></td>
+<td>Seconds per gateway poll (1–20).</td>
+</tr>
+</tbody></table></div><h2 id="lifecycle"><a href="#lifecycle" class="anchor" aria-hidden="true">#</a>Lifecycle</h2><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead><tbody><tr>
+<td><code>connect()</code></td>
+<td>Resolves the bot identity (<code>GET /api/bot/me</code>), emits <code>ready</code>, and starts the gateway loop. Resolves once connected.</td>
+</tr>
+<tr>
+<td><code>close()</code></td>
+<td>Stops the gateway loop.</td>
+</tr>
+<tr>
+<td><code>connected</code></td>
+<td>Boolean: whether the loop is currently running.</td>
+</tr>
+</tbody></table></div><h2 id="events"><a href="#events" class="anchor" aria-hidden="true">#</a>Events</h2><p>Register with <code>client.on(name, handler)</code>; some are <code>async</code>. <code>once</code> and <code>off</code>
+work the same way they do in Node&#39;s <code>EventEmitter</code>.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Event</th>
+<th>Args</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td><code>ready</code></td>
+<td><code>user</code></td>
+<td><code>user.id</code>, <code>user.userId</code>, <code>user.name</code>, <code>user.username</code>, <code>user.avatarUrl</code>, <code>user.scopes</code>.</td>
+</tr>
+<tr>
+<td><code>messageCreate</code></td>
+<td><code>message</code></td>
+<td>A new message in a server the bot can see.</td>
+</tr>
+<tr>
+<td><code>messageUpdate</code></td>
+<td><code>message</code></td>
+<td>A message was edited (<code>content</code>, <code>editedAt</code> updated).</td>
+</tr>
+<tr>
+<td><code>messageDelete</code></td>
+<td><code>message</code></td>
+<td>A message was deleted (<code>content</code> empty; <code>id</code>/<code>channelId</code> valid).</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td>Gateway errors. The loop retries automatically unless the token is invalid, in which case it stops.</td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td><code>*</code></td>
+<td>Low-level observability.</td>
+</tr>
+</tbody></table></div><h3 id="message"><a href="#message" class="anchor" aria-hidden="true">#</a>`Message`</h3><div class="table-wrap"><table><thead><tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody><tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Message id.</td>
+</tr>
+<tr>
+<td><code>channelId</code></td>
+<td><code>string</code></td>
+<td>Channel id.</td>
+</tr>
+<tr>
+<td><code>serverId</code></td>
+<td><code>string | null</code></td>
+<td>Server id.</td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td><code>object | null</code></td>
+<td><code>{ id, username, display_name, avatar_url, is_bot }</code>.</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>string</code></td>
+<td>Message text.</td>
+</tr>
+<tr>
+<td><code>replyToId</code></td>
+<td><code>string | null</code></td>
+<td>The message this replies to, if any.</td>
+</tr>
+<tr>
+<td><code>mentions</code></td>
+<td><code>array</code></td>
+<td>Mentioned users.</td>
+</tr>
+<tr>
+<td><code>attachment</code></td>
+<td><code>object | null</code></td>
+<td><code>{ url, type }</code> when the message has a file.</td>
+</tr>
+<tr>
+<td><code>createdAt</code></td>
+<td><code>string | null</code></td>
+<td>ISO timestamp.</td>
+</tr>
+<tr>
+<td><code>editedAt</code></td>
+<td><code>string | null</code></td>
+<td>ISO timestamp of the last edit.</td>
+</tr>
+<tr>
+<td><code>displayId</code></td>
+<td><code>number | null</code></td>
+<td>The sequential display number.</td>
+</tr>
+</tbody></table></div><p><strong>Methods</strong> — <code>message.reply(content)</code> (replies in the same channel) and the
+<code>message.authorIsBot</code> getter (true when the sender was a bot).</p>
+<h2 id="methods"><a href="#methods" class="anchor" aria-hidden="true">#</a>Methods</h2><pre><code class="hljs language-javascript"><span class="hljs-keyword">await</span> client.<span class="hljs-title function_">sendMessage</span>(channelId, <span class="hljs-string">&quot;Deploy finished&quot;</span>);          <span class="hljs-comment">// send</span>
+<span class="hljs-keyword">await</span> message.<span class="hljs-title function_">reply</span>(<span class="hljs-string">&quot;pong&quot;</span>);                                      <span class="hljs-comment">// reply to a received message</span>
+
+<span class="hljs-keyword">const</span> messages = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listMessages</span>(channelId, { <span class="hljs-attr">limit</span>: <span class="hljs-number">25</span>, <span class="hljs-attr">before</span>: <span class="hljs-string">&quot;…&quot;</span> });
+<span class="hljs-keyword">const</span> channels  = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listChannels</span>(serverId);
+<span class="hljs-keyword">const</span> members   = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listMembers</span>(serverId);
+
+<span class="hljs-keyword">const</span> channelId = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createChannel</span>(serverId, <span class="hljs-string">&quot;deploys&quot;</span>, { <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-attr">categoryId</span>: <span class="hljs-literal">null</span> });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">renameChannel</span>(channelId, <span class="hljs-string">&quot;deploys-2&quot;</span>);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteChannel</span>(channelId);
+
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">leaveServer</span>(serverId);
+
+<span class="hljs-keyword">const</span> invite = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createInvite</span>(serverId, [<span class="hljs-string">&quot;messages.read&quot;</span>, <span class="hljs-string">&quot;messages.write&quot;</span>]);
+<span class="hljs-comment">// invite.invite_url -&gt; send to the server owner</span>
+</code></pre><h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>Thrown errors carry the status and body:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Error</th>
+<th>When</th>
+</tr>
+</thead><tbody><tr>
+<td><code>AuthError</code></td>
+<td><code>401</code> — invalid or revoked token. The gateway loop stops on this.</td>
+</tr>
+<tr>
+<td><code>PermissionError</code></td>
+<td><code>403</code> — missing scope or role permission.</td>
+</tr>
+<tr>
+<td><code>RateLimitError</code></td>
+<td><code>429</code> — includes <code>retryAfter</code> seconds.</td>
+</tr>
+<tr>
+<td><code>HttpError</code></td>
+<td>Any other non-2xx status.</td>
+</tr>
+</tbody></table></div><p>Internally the client is a thin wrapper over the <a href="/docs/bots/api-reference/">HTTP API</a>:
+<code>REST.get/post/patch/delete</code> with <code>Authorization: Bot &lt;token&gt;</code>.</p>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

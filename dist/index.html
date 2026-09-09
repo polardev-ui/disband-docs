@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Docs — Disband Docs</title>
+<meta name="description" content="Everything you need to build on Disband." />
+<link rel="canonical" href="https://docs.disband.dev/" />
+<meta property="og:title" content="Docs — Disband Docs" />
+<meta property="og:description" content="Everything you need to build on Disband." />
+<meta property="og:url" content="https://docs.disband.dev/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #1e1f22;
+  --bg-secondary: #2b2d31;
+  --bg-tertiary: #17181b;
+  --brand: #5865f2;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #1b1c1e;
+  --link: #6c8ee4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--divider);
+}
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; }
+.wordmark span { color: var(--brand); }
+.header-links { display: flex; gap: 18px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); }
+.header-links a:hover { color: var(--text-bright); text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: calc(100vh - 52px);
+}
+.sidebar {
+  padding: 24px 12px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-tertiary);
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-nav a {
+  display: block; padding: 6px 10px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-secondary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 4px; padding: 0 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 760px; width: 100%;
+  margin: 0 auto; padding: 48px 32px 72px;
+}
+.content h1 {
+  margin: 0 0 8px; font-size: 30px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.3px;
+}
+.content .lede { color: var(--text-muted); font-size: 16px; margin: 0 0 28px; max-width: 620px; }
+.content h2 { margin: 40px 0 10px; font-size: 21px; font-weight: 700; color: var(--text-bright); }
+.content h3 { margin: 28px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 10px 0; }
+.content ul, .content ol { margin: 10px 0; padding-left: 22px; }
+.content li { margin: 5px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 4px; padding: 1px 5px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 14px 0; border-radius: 8px; overflow: auto; }
+.content pre code.hljs { padding: 14px 16px; border: none; }
+.table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--divider); border-radius: 8px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 9px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 28px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 16px 20px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/">Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="active nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div></nav></aside>
+  <main class="content">
+    <h1 id="disband-docs"><a href="#disband-docs" class="anchor" aria-hidden="true">#</a>Disband Docs</h1><p>Everything you need to build on Disband.</p>
+<h2 id="bots"><a href="#bots" class="anchor" aria-hidden="true">#</a>Bots</h2><p>Disband bots are <strong>self-hosted integrations</strong>: you run the code, Disband relays
+messages to and from it. Disband never hosts or executes your bot.</p>
+<ul>
+<li><strong><a href="/docs/bots/getting-started/">Getting started</a></strong> — create a bot, grab its token,
+and invite it to a server. Takes about two minutes.</li>
+<li><strong><a href="/docs/bots/">How bots work</a></strong> — scopes, invites, limits, and safety.</li>
+<li><strong><a href="/docs/bots/hosting-your-own-bot/">Hosting your own bot</a></strong> — where to run the
+client and how to keep it alive.</li>
+<li><strong><a href="/docs/bots/clients/javascript/">JavaScript client</a></strong> — <code>@disband/bot</code>.
+Zero dependencies; works on Node.js 18+, Deno, Bun, and the browser.</li>
+<li><strong><a href="/docs/bots/clients/python/">Python client</a></strong> — <code>disband-bot</code>.
+Standard library only; works on Python 3.9+.</li>
+<li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> — the HTTP API both clients talk to.</li>
+</ul>
+<h2 id="themes"><a href="#themes" class="anchor" aria-hidden="true">#</a>Themes</h2><p>SUPER members can restyle the whole app with custom CSS, shipped skins, and
+uploaded icons.</p>
+<ul>
+<li><strong><a href="/docs/themes/">Themes</a></strong> — the CSS variables that are a stable API, the
+selectors that are safe to target, and a starter template.</li>
+</ul>
+<h2 id="download-the-clients"><a href="#download-the-clients" class="anchor" aria-hidden="true">#</a>Download the clients</h2><ul>
+<li><strong><a href="/zips/disband-bot-0.1.0.tgz">@disband/bot</a></strong> — the JavaScript client
+(<code>npm install ./disband-bot-0.1.0.tgz</code>).</li>
+<li><strong><a href="/zips/disband-bot-python-0.1.0.tar.gz">disband-bot</a></strong> — the Python client
+(<code>pip install ./disband-bot-python-0.1.0.tar.gz</code>).</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

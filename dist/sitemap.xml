@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://docs.disband.dev/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/bots/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/bots/getting-started/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/bots/hosting-your-own-bot/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/bots/clients/javascript/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/bots/clients/python/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/bots/api-reference/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/themes/</loc></url>
+</urlset>

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hosting your own bot — Disband Docs</title>
+<meta name="description" content="Disband does not host or execute your bot. You run the client wherever you like,
+and it talks to Disband over a long-polling gateway using the bot token. This p" />
+<link rel="canonical" href="https://docs.disband.dev/docs/bots/hosting-your-own-bot/" />
+<meta property="og:title" content="Hosting your own bot — Disband Docs" />
+<meta property="og:description" content="Disband does not host or execute your bot. You run the client wherever you like,
+and it talks to Disband over a long-polling gateway using the bot token. This p" />
+<meta property="og:url" content="https://docs.disband.dev/docs/bots/hosting-your-own-bot/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #1e1f22;
+  --bg-secondary: #2b2d31;
+  --bg-tertiary: #17181b;
+  --brand: #5865f2;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #1b1c1e;
+  --link: #6c8ee4;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 52px; padding: 0 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--divider);
+}
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; }
+.wordmark span { color: var(--brand); }
+.header-links { display: flex; gap: 18px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); }
+.header-links a:hover { color: var(--text-bright); text-decoration: none; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: calc(100vh - 52px);
+}
+.sidebar {
+  padding: 24px 12px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-tertiary);
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-nav a {
+  display: block; padding: 6px 10px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-secondary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 4px; padding: 0 10px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 760px; width: 100%;
+  margin: 0 auto; padding: 48px 32px 72px;
+}
+.content h1 {
+  margin: 0 0 8px; font-size: 30px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.3px;
+}
+.content .lede { color: var(--text-muted); font-size: 16px; margin: 0 0 28px; max-width: 620px; }
+.content h2 { margin: 40px 0 10px; font-size: 21px; font-weight: 700; color: var(--text-bright); }
+.content h3 { margin: 28px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 10px 0; }
+.content ul, .content ol { margin: 10px 0; padding-left: 22px; }
+.content li { margin: 5px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 4px; padding: 1px 5px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 14px 0; border-radius: 8px; overflow: auto; }
+.content pre code.hljs { padding: 14px 16px; border: none; }
+.table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--divider); border-radius: 8px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 9px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 28px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 16px 20px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/">Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="active">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div></nav></aside>
+  <main class="content">
+    <h1 id="hosting-your-own-bot"><a href="#hosting-your-own-bot" class="anchor" aria-hidden="true">#</a>Hosting your own bot</h1><p>Disband does not host or execute your bot. You run the client wherever you like,
+and it talks to Disband over a long-polling gateway using the bot token. This page
+covers the practical side of keeping a bot alive.</p>
+<h2 id="where-to-run-it"><a href="#where-to-run-it" class="anchor" aria-hidden="true">#</a>Where to run it</h2><p>Any machine that can make outbound HTTPS requests works. Since the gateway is
+long-polling (your code holds a connection open, and Disband returns events when
+they arrive), you do not need a public address, inbound ports, or a websocket.</p>
+<p>Good options, cheapest first:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Host</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td>A laptop / desktop</td>
+<td>Fine for a personal bot that is online when you are.</td>
+</tr>
+<tr>
+<td>A small VPS (1 GB RAM)</td>
+<td>~$4–6/month; the JavaScript client needs almost nothing.</td>
+</tr>
+<tr>
+<td>A cloud function / worker</td>
+<td>Serverless works if the platform allows a long-lived process; the clients are stateless enough to restart cheaply.</td>
+</tr>
+<tr>
+<td>A container / Pterodactyl</td>
+<td>The clients have zero runtime dependencies, so any image works.</td>
+</tr>
+</tbody></table></div><h2 id="what-you-actually-need"><a href="#what-you-actually-need" class="anchor" aria-hidden="true">#</a>What you actually need</h2><ul>
+<li><strong>JavaScript</strong>: Node.js 18+, or Deno, or Bun. Zero runtime dependencies.</li>
+<li><strong>Python</strong>: Python 3.9+. Standard library only (threading + <code>urllib</code>).</li>
+</ul>
+<p>There is no database, no queue, and no framework to install.</p>
+<h2 id="keeping-it-alive"><a href="#keeping-it-alive" class="anchor" aria-hidden="true">#</a>Keeping it alive</h2><p>The gateway loops forever on its own; it reconnects and retries automatically.
+Three things tend to kill real bots:</p>
+<ol>
+<li><p><strong>Crash loops.</strong> Wrap the client in a supervisor and restart on failure:</p>
+<pre><code class="hljs language-bash"><span class="hljs-comment"># systemd</span>
+[Unit]
+Description=disband-bot
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/node /opt/my-bot/index.js
+Restart=always
+RestartSec=3
+Environment=DISBAND_BOT_TOKEN=…
+
+[Install]
+WantedBy=multi-user.target
+</code></pre></li>
+<li><p><strong>Stale tokens.</strong> If the bot is revoked (or an invite expires before it is
+approved), the gateway API returns <code>401</code>. Handle it: log clearly and stop,
+rather than retrying forever. Both clients surface this as an <code>error</code> event —
+JavaScript&#39;s <code>AuthError</code> / Python&#39;s <code>AuthError</code> — and the loop stops instead
+of hammering.</p>
+</li>
+<li><p><strong>Silent config drift.</strong> Keep the token in an environment variable or secret
+store, not in the source. If you rotate the token, restart the process with
+the new value.</p>
+</li>
+</ol>
+<h2 id="reading-and-writing-data"><a href="#reading-and-writing-data" class="anchor" aria-hidden="true">#</a>Reading and writing data</h2><p>Bots only talk to the scoped HTTP API. To poll or persist state, use any storage
+you already operate — a file, a database, Redis — the client does not care.</p>
+<h2 id="multi-server-bots"><a href="#multi-server-bots" class="anchor" aria-hidden="true">#</a>Multi-server bots</h2><p>A bot can be invited to many servers. The approved scopes are per server, so a
+bot that can read messages everywhere is also only ever writing where the owner
+granted <code>messages.write</code>. Your code can branch on <code>message.server_id</code> if the
+behaviour needs to differ per server.</p>
+<h2 id="going-further"><a href="#going-further" class="anchor" aria-hidden="true">#</a>Going further</h2><ul>
+<li>See the <strong><a href="/docs/bots/api-reference/">API reference</a></strong> for the exact endpoints the
+clients use — useful if you want to write your own client in another language.</li>
+<li>The <strong><a href="/docs/bots/clients/javascript/">JavaScript</a></strong> and <strong><a href="/docs/bots/clients/python/">Python</a></strong>
+reference pages include every method and event.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>
