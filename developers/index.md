@@ -7,11 +7,15 @@ from the outside. Everything here is self-hosted — Disband never runs your cod
 
 - **Bots** — self-hosted accounts that read and write messages, manage channels,
   and react to events over a long-polling gateway. See the [bots overview](../bots/index.md).
-- **Integrations** — post updates from a game server, CI pipeline, or any
-  backend into a Disband channel using a bot token.
+- **Webhooks** — one-way notifications posted through a secret URL, with no bot
+  code or token. See [Webhooks](webhooks.md).
+- **Embedded cards** — structured release notes, alerts, and status updates.
+  See [Embeds](embeds.md).
 - **Custom clients** — talk to the HTTP API directly if you need a language the
   shipped clients don't cover. The [API reference](../bots/api-reference.md) is
   the contract.
+- **Status integrations** — follow Disband incidents over RSS, or read how the
+  [status system](status.md) records checks and opens incidents.
 
 ## Start here
 
@@ -22,6 +26,9 @@ from the outside. Everything here is self-hosted — Disband never runs your cod
 3. **[JavaScript client](../bots/clients/javascript.md)** or
    **[Python client](../bots/clients/python.md)**.
 4. **[API reference](../bots/api-reference.md)** for the exact endpoints.
+5. **[Webhooks](webhooks.md)** or **[embeds](embeds.md)** if you only need
+   one-way notifications.
+6. **[Status system](status.md)** for the public status page and RSS feed.
 
 ## Implementing Disband into a game or app
 

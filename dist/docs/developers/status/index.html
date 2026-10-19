@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Status system — Disband Docs</title>
+<meta name="description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
+<link rel="canonical" href="https://docs.disband.dev/docs/developers/status/" />
+<meta property="og:title" content="Status system — Disband Docs" />
+<meta property="og:description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
+<meta property="og:url" content="https://docs.disband.dev/docs/developers/status/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="active">Status system</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
+  <main class="content">
+    <h1 id="status-system"><a href="#status-system" class="anchor" aria-hidden="true">#</a>Status system</h1><p>Disband&#39;s status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or static asset delivery is having trouble.</p>
+<ul>
+<li>Public page: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
+<li>RSS feed: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
+<li>Owner admin: <a href="https://www.disband.dev/status/admin" target="_blank" rel="noopener noreferrer">disband.dev/status/admin</a></li>
+</ul>
+<h2 id="what-the-public-page-shows"><a href="#what-the-public-page-shows" class="anchor" aria-hidden="true">#</a>What the public page shows</h2><p>The page groups monitors by service. For each monitor it shows:</p>
+<ul>
+<li>the current state from the latest check;</li>
+<li>the HTTP status and response time of that check;</li>
+<li>a 90-day uptime bar, one segment per day;</li>
+<li>the last time a check ran.</li>
+</ul>
+<p>Below the monitors are incidents, scheduled maintenance, and announcements. Each
+opens a detail page with the full update timeline. The feed publishes the latest
+25 incidents, maintenance windows, and published announcements as RSS 2.0.</p>
+<h2 id="checks"><a href="#checks" class="anchor" aria-hidden="true">#</a>Checks</h2><p>A Supabase Edge Function called <code>status-probe</code> runs every minute under
+<code>pg_cron</code>. It probes every enabled monitor in parallel and records one row per
+check.</p>
+<p>Each monitor has:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Setting</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td>Name</td>
+<td>The public label, for example <strong>Website</strong>.</td>
+</tr>
+<tr>
+<td>Group</td>
+<td>The section it appears under, for example <strong>Disband</strong>.</td>
+</tr>
+<tr>
+<td>URL</td>
+<td>The absolute <code>http</code> or <code>https</code> URL to request.</td>
+</tr>
+<tr>
+<td>Method</td>
+<td><code>GET</code> or <code>HEAD</code>. Defaults to <code>GET</code>.</td>
+</tr>
+<tr>
+<td>Expected status</td>
+<td>The exact HTTP status that counts as healthy. Defaults to <code>200</code>.</td>
+</tr>
+<tr>
+<td>Keyword</td>
+<td>Optional text that must appear in the response body.</td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td>1–30 seconds. Defaults to 10 seconds.</td>
+</tr>
+<tr>
+<td>Headers</td>
+<td>Optional request headers, stored server-side.</td>
+</tr>
+<tr>
+<td>Enabled</td>
+<td>Whether the probe requests it at all.</td>
+</tr>
+<tr>
+<td>Public</td>
+<td>Whether it contributes to the public snapshot.</td>
+</tr>
+</tbody></table></div><p>A monitor is healthy only when the status code matches <strong>and</strong> the optional
+keyword is present. Redirects are followed. A timeout, network error, wrong
+status, or missing keyword is recorded as a failed check with the reason.</p>
+<p>The probe runs independently of the web app. A failure at the web host does not
+stop checks being recorded.</p>
+<h2 id="history-and-uptime"><a href="#history-and-uptime" class="anchor" aria-hidden="true">#</a>History and uptime</h2><p>Every check is stored in <code>status_checks</code>. A database trigger folds each check
+into <code>status_daily</code>, so the 90-day bar is a cheap read rather than an aggregation
+over millions of rows.</p>
+<ul>
+<li>Raw checks are kept for <strong>90 days</strong>.</li>
+<li>Daily roll-ups are kept for <strong>180 days</strong>.</li>
+<li>The public page displays the latest <strong>90 days</strong>.</li>
+<li>Each day&#39;s segment is the percentage of successful checks that day.</li>
+</ul>
+<p>A gap — a day with no checks — is shown as no data, not as downtime.</p>
+<h2 id="automatic-incidents"><a href="#automatic-incidents" class="anchor" aria-hidden="true">#</a>Automatic incidents</h2><p>The probe opens an incident automatically when a monitor has failed <strong>three
+checks in a row</strong>. The incident is a <strong>major</strong> incident, linked to that monitor,
+and starts in <strong>Investigating</strong> with an automated update containing the last
+error.</p>
+<p>When the next check succeeds, the incident moves to <strong>Resolved</strong> and an update
+records roughly how long the outage lasted. The incident stays on the page and
+in the feed with its full history.</p>
+<p>If a service is flapping but not failing three times consecutively, no automatic
+incident is opened. The owner can still add a manual update to an automatic
+incident while it is open.</p>
+<h2 id="manual-incidents-maintenance-and-announcements"><a href="#manual-incidents-maintenance-and-announcements" class="anchor" aria-hidden="true">#</a>Manual incidents, maintenance, and announcements</h2><p>The owner can publish three kinds of entry:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Kind</th>
+<th>Use for</th>
+</tr>
+</thead><tbody><tr>
+<td><code>incident</code></td>
+<td>An unplanned problem.</td>
+</tr>
+<tr>
+<td><code>maintenance</code></td>
+<td>Planned work, optionally with a start and end time.</td>
+</tr>
+<tr>
+<td><code>announcement</code></td>
+<td>A general service notice that is not an outage.</td>
+</tr>
+</tbody></table></div><p>An incident can affect none, one, or several monitors. Its impact is one of
+<code>none</code>, <code>minor</code>, <code>major</code>, or <code>critical</code>.</p>
+<p>The update statuses are:</p>
+<ul>
+<li><code>investigating</code></li>
+<li><code>identified</code></li>
+<li><code>monitoring</code></li>
+<li><code>resolved</code></li>
+<li><code>scheduled</code></li>
+<li><code>in_progress</code></li>
+<li><code>completed</code></li>
+<li><code>published</code></li>
+</ul>
+<p>Every update adds a timestamped entry to the incident timeline and sets the
+incident&#39;s current status. Marking an update <code>resolved</code> or <code>completed</code> also sets
+the resolved time. Posting a later update with another status reopens it.</p>
+<h2 id="overall-status"><a href="#overall-status" class="anchor" aria-hidden="true">#</a>Overall status</h2><p>The banner is decided in this order:</p>
+<ol>
+<li>An active maintenance window says <strong>Maintenance in progress</strong>, or
+<strong>Scheduled maintenance</strong> before it starts.</li>
+<li>An active major or critical incident says <strong>Major outage</strong>.</li>
+<li>An active minor incident says <strong>Partially degraded</strong>.</li>
+<li>Failed monitors say <strong>Partially degraded</strong>, or <strong>Major outage</strong> when every
+public monitor is failing.</li>
+<li>With no failures and at least one result, it says <strong>All systems operational</strong>.</li>
+<li>Before the first checks land, it says <strong>Waiting for the first checks</strong>.</li>
+</ol>
+<p>Resolved incidents do not affect the banner.</p>
+<h2 id="privacy"><a href="#privacy" class="anchor" aria-hidden="true">#</a>Privacy</h2><p>The public read path is a database function, not direct table access. It returns
+monitor names, groups, states, latency, uptime, and incidents. It deliberately
+omits:</p>
+<ul>
+<li>monitor URLs;</li>
+<li>request headers;</li>
+<li>probe error text;</li>
+<li>internal check ids;</li>
+<li>the identities behind incident updates.</li>
+</ul>
+<p>The base tables have row-level security enabled with no public policies. Only the
+service role and the probe function can read them directly.</p>
+<h2 id="administration"><a href="#administration" class="anchor" aria-hidden="true">#</a>Administration</h2><p><code>/status/admin</code> is restricted to the signed-in <strong>platform owner</strong>. It is not a
+space role and cannot be granted to another member. Unauthenticated requests
+receive <code>401</code>; other signed-in accounts receive <code>403</code>.</p>
+<p>The admin screen can:</p>
+<ul>
+<li>create, edit, enable, disable, publish, or delete monitors;</li>
+<li>see each monitor&#39;s URL, headers, and last result;</li>
+<li>post incidents, maintenance windows, and announcements;</li>
+<li>add timeline updates and change an incident&#39;s impact or affected services;</li>
+<li>delete a monitor and its history.</li>
+</ul>
+<h3 id="admin-api"><a href="#admin-api" class="anchor" aria-hidden="true">#</a>Admin API</h3><p>The screen uses these owner-only routes:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Endpoint</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code>, <code>POST</code></td>
+<td><code>/api/status-admin/monitors</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code>, <code>DELETE</code></td>
+<td><code>/api/status-admin/monitors/{id}</code></td>
+</tr>
+<tr>
+<td><code>GET</code>, <code>POST</code></td>
+<td><code>/api/status-admin/incidents</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code>, <code>DELETE</code></td>
+<td><code>/api/status-admin/incidents/{id}</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/status-admin/incidents/{id}/updates</code></td>
+</tr>
+</tbody></table></div><p>They accept the owner&#39;s Supabase access token as <code>Authorization: Bearer &lt;token&gt;</code>.
+They are implementation details of the admin screen, not a public API; the
+shape can change.</p>
+<h2 id="operational-notes"><a href="#operational-notes" class="anchor" aria-hidden="true">#</a>Operational notes</h2><ul>
+<li>The probe authenticates with a secret stored in Supabase Vault under
+<code>status_probe_key</code>. The secret is compared inside the database and is not
+returned to the function.</li>
+<li>The <code>pg_cron</code> job is named <code>status-probe</code>. It reads the secret from Vault on
+every run, so rotating the secret does not require editing the job.</li>
+<li>The Edge Function is deployed with JWT verification off, because it
+authenticates with the Vault secret instead.</li>
+<li>If the probe itself stops running, the page will show stale
+<strong>last checked</strong> times. That is the signal to inspect the cron job and Edge
+Function logs.</li>
+</ul>
+<h2 id="related"><a href="#related" class="anchor" aria-hidden="true">#</a>Related</h2><ul>
+<li><a href="/docs/developers/webhooks/">Webhooks</a> — send outage notifications into a channel.</li>
+<li><a href="/docs/developers/embeds/">Embeds</a> — format those notifications.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

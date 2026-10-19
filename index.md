@@ -27,6 +27,12 @@ Build bots and integrate Disband into your games and apps using the HTTP API.
 - **[Bots overview](bots/index.md)** — scopes, invites, limits, and safety.
 - **[API reference](bots/api-reference.md)** — the HTTP API both clients talk to.
 - **[Bot templates](bots/templates.md)** — ready-to-adapt welcomers, ticket managers, and more.
+- **[Webhooks](developers/webhooks.md)** — post from CI, monitoring, or a game
+  server through a secret URL. No bot needed.
+- **[Embeds](developers/embeds.md)** — Discord-shaped cards for releases,
+  alerts, and status updates.
+- **[Status system](developers/status.md)** — how the public status page checks
+  services, records uptime, and handles incidents.
 
 ## Themes
 

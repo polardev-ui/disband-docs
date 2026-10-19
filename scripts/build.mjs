@@ -10,6 +10,9 @@
 //   bots/clients/javascript.md    →  /docs/bots/clients/javascript/
 //   bots/clients/python.md        →  /docs/bots/clients/python/
 //   bots/api-reference.md         →  /docs/bots/api-reference/
+//   developers/webhooks.md        →  /docs/developers/webhooks/
+//   developers/embeds.md          →  /docs/developers/embeds/
+//   developers/status.md          →  /docs/developers/status/
 //   themes/index.md               →  /docs/themes/
 //
 // Relative `foo.md` links are resolved per page and rewritten to the real
@@ -39,6 +42,9 @@ const PAGES = [
   { src: "bots/templates.md",          out: "docs/bots/templates/index.html",          label: "Templates" },
   { src: "themes/index.md",             out: "docs/themes/index.html",         label: "Themes" },
   { src: "developers/index.md",         out: "docs/developers/index.html",     label: "Developers" },
+  { src: "developers/webhooks.md",      out: "docs/developers/webhooks/index.html",      label: "Webhooks" },
+  { src: "developers/embeds.md",        out: "docs/developers/embeds/index.html",        label: "Embeds" },
+  { src: "developers/status.md",        out: "docs/developers/status/index.html",        label: "Status system" },
 ];
 
 const NAV = [
@@ -59,6 +65,9 @@ const NAV = [
     label: "Developers",
     items: [
       { href: "/docs/developers/", label: "Developers" },
+      { href: "/docs/developers/webhooks/", label: "Webhooks" },
+      { href: "/docs/developers/embeds/", label: "Embeds" },
+      { href: "/docs/developers/status/", label: "Status system" },
       { href: "/docs/bots/", label: "Bots" },
       { href: "/docs/bots/getting-started/", label: "Getting started" },
       { href: "/docs/bots/api-reference/", label: "API reference" },

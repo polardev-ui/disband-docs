@@ -155,18 +155,22 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
   </div>
 </header>
 <div class="layout">
-  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="active">Developers</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="active">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
   <main class="content">
     <h1 id="developers"><a href="#developers" class="anchor" aria-hidden="true">#</a>Developers</h1><p>Build on top of Disband: bots, integrations, and tools that talk to your spaces
 from the outside. Everything here is self-hosted — Disband never runs your code.</p>
 <h2 id="what-you-can-build"><a href="#what-you-can-build" class="anchor" aria-hidden="true">#</a>What you can build</h2><ul>
 <li><strong>Bots</strong> — self-hosted accounts that read and write messages, manage channels,
 and react to events over a long-polling gateway. See the <a href="/docs/bots/">bots overview</a>.</li>
-<li><strong>Integrations</strong> — post updates from a game server, CI pipeline, or any
-backend into a Disband channel using a bot token.</li>
+<li><strong>Webhooks</strong> — one-way notifications posted through a secret URL, with no bot
+code or token. See <a href="/docs/developers/webhooks/">Webhooks</a>.</li>
+<li><strong>Embedded cards</strong> — structured release notes, alerts, and status updates.
+See <a href="/docs/developers/embeds/">Embeds</a>.</li>
 <li><strong>Custom clients</strong> — talk to the HTTP API directly if you need a language the
 shipped clients don&#39;t cover. The <a href="/docs/bots/api-reference/">API reference</a> is
 the contract.</li>
+<li><strong>Status integrations</strong> — follow Disband incidents over RSS, or read how the
+<a href="/docs/developers/status/">status system</a> records checks and opens incidents.</li>
 </ul>
 <h2 id="start-here"><a href="#start-here" class="anchor" aria-hidden="true">#</a>Start here</h2><ol>
 <li><strong><a href="/docs/bots/getting-started/">Getting started</a></strong> — create a bot, grab its
@@ -176,6 +180,9 @@ the client and how to keep it alive.</li>
 <li><strong><a href="/docs/bots/clients/javascript/">JavaScript client</a></strong> or
 <strong><a href="/docs/bots/clients/python/">Python client</a></strong>.</li>
 <li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> for the exact endpoints.</li>
+<li><strong><a href="/docs/developers/webhooks/">Webhooks</a></strong> or <strong><a href="/docs/developers/embeds/">embeds</a></strong> if you only need
+one-way notifications.</li>
+<li><strong><a href="/docs/developers/status/">Status system</a></strong> for the public status page and RSS feed.</li>
 </ol>
 <h2 id="implementing-disband-into-a-game-or-app"><a href="#implementing-disband-into-a-game-or-app" class="anchor" aria-hidden="true">#</a>Implementing Disband into a game or app</h2><p>Disband exposes a plain HTTP API authenticated with a bot token. There is no
 native SDK or RPC runtime to link — any stack that can make HTTPS requests works.

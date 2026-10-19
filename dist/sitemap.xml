@@ -10,4 +10,7 @@
   <url><loc>https://docs.disband.dev/docs/bots/templates/</loc></url>
   <url><loc>https://docs.disband.dev/docs/themes/</loc></url>
   <url><loc>https://docs.disband.dev/docs/developers/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/developers/webhooks/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/developers/embeds/</loc></url>
+  <url><loc>https://docs.disband.dev/docs/developers/status/</loc></url>
 </urlset>
