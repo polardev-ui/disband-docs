@@ -55,3 +55,4 @@ revocation kills the token immediately.
 - **[Hosting your own bot](hosting-your-own-bot.md)** — where to run the client.
 - **[JavaScript client](clients/javascript.md)** / **[Python client](clients/python.md)**.
 - **[API reference](api-reference.md)** if you want to talk to the API directly.
+- **[Bot templates](templates.md)** — ready-to-adapt welcomers, ticket managers, and more.

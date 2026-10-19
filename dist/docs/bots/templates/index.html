@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bot templates — Disband Docs</title>
+<meta name="description" content="Ready-to-adapt starting points for common bots. Each is a small, self-contained
+script you can paste into a file and run with the JavaScript or Python client." />
+<link rel="canonical" href="https://docs.disband.dev/docs/bots/templates/" />
+<meta property="og:title" content="Bot templates — Disband Docs" />
+<meta property="og:description" content="Ready-to-adapt starting points for common bots. Each is a small, self-contained
+script you can paste into a file and run with the JavaScript or Python client." />
+<meta property="og:url" content="https://docs.disband.dev/docs/bots/templates/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="active">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="active">Templates</a></div></nav></aside>
+  <main class="content">
+    <h1 id="bot-templates"><a href="#bot-templates" class="anchor" aria-hidden="true">#</a>Bot templates</h1><p>Ready-to-adapt starting points for common bots. Each is a small, self-contained
+script you can paste into a file and run with the JavaScript or Python client.</p>
+<h2 id="welcomer"><a href="#welcomer" class="anchor" aria-hidden="true">#</a>Welcomer</h2><p>Posts a welcome message whenever someone joins a space. Needs <code>messages.write</code>
+and <code>members.read</code>.</p>
+<pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Client</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@disband/bot&quot;</span>;
+
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Client</span>({ <span class="hljs-attr">token</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DISBAND_BOT_TOKEN</span> });
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">WELCOME_CHANNEL</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">WELCOME_CHANNEL_ID</span>;
+
+client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;memberJoin&quot;</span>, <span class="hljs-title function_">async</span> (member) =&gt; {
+  <span class="hljs-keyword">await</span> client.<span class="hljs-property">channels</span>.<span class="hljs-title function_">send</span>(<span class="hljs-variable constant_">WELCOME_CHANNEL</span>, <span class="hljs-string">`Welcome to the space, <span class="hljs-subst">${member.display_name ?? member.username}</span>!`</span>);
+});
+
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">connect</span>();
+</code></pre><blockquote>
+<p>The gateway emits <code>messageCreate</code>, <code>messageUpdate</code> and <code>messageDelete</code> today;
+member events arrive through the same event stream as your bot&#39;s scopes allow.</p>
+</blockquote>
+<h2 id="ticket-manager"><a href="#ticket-manager" class="anchor" aria-hidden="true">#</a>Ticket manager</h2><p>Creates a private channel per support request and pings a staff role. Needs
+<code>channels.manage</code> (plus the <code>manage_channels</code> role) and <code>messages.write</code>.</p>
+<pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Client</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@disband/bot&quot;</span>;
+
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Client</span>({ <span class="hljs-attr">token</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DISBAND_BOT_TOKEN</span> });
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">SUPPORT_CATEGORY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">SUPPORT_CATEGORY_ID</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">STAFF_ROLE</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">STAFF_ROLE_ID</span>;
+
+client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;messageCreate&quot;</span>, <span class="hljs-title function_">async</span> (message) =&gt; {
+  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">author</span>?.<span class="hljs-property">is_bot</span>) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">if</span> (!message.<span class="hljs-property">content</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">&quot;!ticket&quot;</span>)) <span class="hljs-keyword">return</span>;
+
+  <span class="hljs-keyword">const</span> subject = message.<span class="hljs-property">content</span>.<span class="hljs-title function_">slice</span>(<span class="hljs-string">&quot;!ticket&quot;</span>.<span class="hljs-property">length</span>).<span class="hljs-title function_">trim</span>() || <span class="hljs-string">&quot;support&quot;</span>;
+  <span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">await</span> client.<span class="hljs-property">channels</span>.<span class="hljs-title function_">create</span>({
+    <span class="hljs-attr">name</span>: <span class="hljs-string">`ticket-<span class="hljs-subst">${subject}</span>`</span>.<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, <span class="hljs-number">32</span>),
+    <span class="hljs-attr">parent_id</span>: <span class="hljs-variable constant_">SUPPORT_CATEGORY</span>,
+  });
+  <span class="hljs-keyword">await</span> client.<span class="hljs-property">channels</span>.<span class="hljs-title function_">send</span>(channel.<span class="hljs-property">id</span>, <span class="hljs-string">`&lt;@&amp;<span class="hljs-subst">${STAFF_ROLE}</span>&gt; new ticket: <span class="hljs-subst">${subject}</span>`</span>);
+  <span class="hljs-keyword">await</span> message.<span class="hljs-title function_">reply</span>(<span class="hljs-string">`Created <span class="hljs-subst">${channel.name}</span>.`</span>);
+});
+
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">connect</span>();
+</code></pre><h2 id="auto-responder"><a href="#auto-responder" class="anchor" aria-hidden="true">#</a>Auto-responder</h2><p>Answers a small set of FAQs. Needs <code>messages.read</code> and <code>messages.write</code>.</p>
+<pre><code class="hljs language-python"><span class="hljs-keyword">from</span> disband_bot <span class="hljs-keyword">import</span> Client
+
+client = Client(token=DISBAND_BOT_TOKEN)
+FAQS = {
+    <span class="hljs-string">&quot;hours&quot;</span>: <span class="hljs-string">&quot;We&#x27;re open Monday to Friday, 9 to 5.&quot;</span>,
+    <span class="hljs-string">&quot;invite&quot;</span>: <span class="hljs-string">&quot;Ask an admin for an invite link.&quot;</span>,
+}
+
+<span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;messageCreate&quot;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">handle</span>(<span class="hljs-params">message</span>):
+    <span class="hljs-keyword">if</span> message.author_is_bot:
+        <span class="hljs-keyword">return</span>
+    key = message.content.strip().lower().lstrip(<span class="hljs-string">&quot;!&quot;</span>)
+    <span class="hljs-keyword">if</span> key <span class="hljs-keyword">in</span> FAQS:
+        message.reply(FAQS[key])
+
+client.run()
+</code></pre><h2 id="moderation-helper"><a href="#moderation-helper" class="anchor" aria-hidden="true">#</a>Moderation helper</h2><p>Deletes messages containing a banned word and logs them. Needs
+<code>messages.read</code>, <code>messages.write</code> and the <code>manage_messages</code> role.</p>
+<pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BANNED</span> = [<span class="hljs-string">&quot;spamword&quot;</span>];
+
+client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;messageCreate&quot;</span>, <span class="hljs-title function_">async</span> (message) =&gt; {
+  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">author</span>?.<span class="hljs-property">is_bot</span>) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">if</span> (<span class="hljs-variable constant_">BANNED</span>.<span class="hljs-title function_">some</span>(<span class="hljs-function">(<span class="hljs-params">w</span>) =&gt;</span> message.<span class="hljs-property">content</span>.<span class="hljs-title function_">toLowerCase</span>().<span class="hljs-title function_">includes</span>(w))) {
+    <span class="hljs-keyword">await</span> client.<span class="hljs-property">messages</span>.<span class="hljs-title function_">delete</span>(message.<span class="hljs-property">channel_id</span>, message.<span class="hljs-property">id</span>);
+    <span class="hljs-keyword">await</span> client.<span class="hljs-property">channels</span>.<span class="hljs-title function_">send</span>(message.<span class="hljs-property">channel_id</span>, <span class="hljs-string">&quot;A message was removed by the bot.&quot;</span>);
+  }
+});
+</code></pre><h2 id="tips"><a href="#tips" class="anchor" aria-hidden="true">#</a>Tips</h2><ul>
+<li>Start with the smallest scope set and add more bots rather than one bot with
+everything.</li>
+<li>Store tokens in environment variables, never in source.</li>
+<li>Handle <code>AuthError</code> (401) by stopping instead of retrying forever.</li>
+<li>See the <a href="/docs/bots/api-reference/">API reference</a> for every endpoint these helpers use.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

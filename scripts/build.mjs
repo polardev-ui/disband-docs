@@ -36,6 +36,7 @@ const PAGES = [
   { src: "bots/clients/javascript.md",  out: "docs/bots/clients/javascript/index.html",  label: "JavaScript" },
   { src: "bots/clients/python.md",      out: "docs/bots/clients/python/index.html",      label: "Python" },
   { src: "bots/api-reference.md",       out: "docs/bots/api-reference/index.html",       label: "API reference" },
+  { src: "bots/templates.md",          out: "docs/bots/templates/index.html",          label: "Templates" },
   { src: "themes/index.md",             out: "docs/themes/index.html",         label: "Themes" },
   { src: "developers/index.md",         out: "docs/developers/index.html",     label: "Developers" },
 ];
@@ -50,6 +51,7 @@ const NAV = [
       { href: "/docs/bots/clients/javascript/", label: "JavaScript" },
       { href: "/docs/bots/clients/python/", label: "Python" },
       { href: "/docs/bots/api-reference/", label: "API reference" },
+      { href: "/docs/bots/templates/", label: "Templates" },
     ],
   },
   { label: "Themes", items: [{ href: "/docs/themes/", label: "Themes" }] },
@@ -60,6 +62,7 @@ const NAV = [
       { href: "/docs/bots/", label: "Bots" },
       { href: "/docs/bots/getting-started/", label: "Getting started" },
       { href: "/docs/bots/api-reference/", label: "API reference" },
+      { href: "/docs/bots/templates/", label: "Templates" },
     ],
   },
 ];

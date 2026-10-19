@@ -26,6 +26,7 @@ Build bots and integrate Disband into your games and apps using the HTTP API.
   notes for game/app integrations.
 - **[Bots overview](bots/index.md)** — scopes, invites, limits, and safety.
 - **[API reference](bots/api-reference.md)** — the HTTP API both clients talk to.
+- **[Bot templates](bots/templates.md)** — ready-to-adapt welcomers, ticket managers, and more.
 
 ## Themes
 
