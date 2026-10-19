@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Developers — Disband Docs</title>
+<meta name="description" content="Build on top of Disband: bots, integrations, and tools that talk to your spaces
+from the outside. Everything here is self-hosted — Disband never runs your code." />
+<link rel="canonical" href="https://docs.disband.dev/docs/developers/" />
+<meta property="og:title" content="Developers — Disband Docs" />
+<meta property="og:description" content="Build on top of Disband: bots, integrations, and tools that talk to your spaces
+from the outside. Everything here is self-hosted — Disband never runs your code." />
+<meta property="og:url" content="https://docs.disband.dev/docs/developers/" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="active">Developers</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a></div></nav></aside>
+  <main class="content">
+    <h1 id="developers"><a href="#developers" class="anchor" aria-hidden="true">#</a>Developers</h1><p>Build on top of Disband: bots, integrations, and tools that talk to your spaces
+from the outside. Everything here is self-hosted — Disband never runs your code.</p>
+<h2 id="what-you-can-build"><a href="#what-you-can-build" class="anchor" aria-hidden="true">#</a>What you can build</h2><ul>
+<li><strong>Bots</strong> — self-hosted accounts that read and write messages, manage channels,
+and react to events over a long-polling gateway. See the <a href="/docs/bots/">bots overview</a>.</li>
+<li><strong>Integrations</strong> — post updates from a game server, CI pipeline, or any
+backend into a Disband channel using a bot token.</li>
+<li><strong>Custom clients</strong> — talk to the HTTP API directly if you need a language the
+shipped clients don&#39;t cover. The <a href="/docs/bots/api-reference/">API reference</a> is
+the contract.</li>
+</ul>
+<h2 id="start-here"><a href="#start-here" class="anchor" aria-hidden="true">#</a>Start here</h2><ol>
+<li><strong><a href="/docs/bots/getting-started/">Getting started</a></strong> — create a bot, grab its
+token, invite it to a space. About two minutes.</li>
+<li><strong><a href="/docs/bots/hosting-your-own-bot/">Hosting your own bot</a></strong> — where to run
+the client and how to keep it alive.</li>
+<li><strong><a href="/docs/bots/clients/javascript/">JavaScript client</a></strong> or
+<strong><a href="/docs/bots/clients/python/">Python client</a></strong>.</li>
+<li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> for the exact endpoints.</li>
+</ol>
+<h2 id="implementing-disband-into-a-game-or-app"><a href="#implementing-disband-into-a-game-or-app" class="anchor" aria-hidden="true">#</a>Implementing Disband into a game or app</h2><p>Disband exposes a plain HTTP API authenticated with a bot token. There is no
+native SDK or RPC runtime to link — any stack that can make HTTPS requests works.
+A typical integration looks like this:</p>
+<ol>
+<li><p>Create a bot in <strong>Settings → Bots</strong> and grant it <code>messages.write</code> (and
+<code>channels.manage</code> if it should create channels).</p>
+</li>
+<li><p>Invite the bot to the space you want to post into.</p>
+</li>
+<li><p>Store the token in your game or app&#39;s secret store — never in client-side
+code that ships to players.</p>
+</li>
+<li><p>From your backend, call the scoped endpoints:</p>
+<pre><code class="hljs language-bash">curl -X POST https://www.disband.dev/api/v1/channels/CHANNEL_ID/messages \
+  -H <span class="hljs-string">&quot;Authorization: Bot <span class="hljs-variable">$DISBAND_BOT_TOKEN</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{&quot;content&quot;: &quot;Server restarted — 12 players online.&quot;}&#x27;</span>
+</code></pre></li>
+<li><p>To react to chat from inside your game, long-poll the gateway and dispatch
+<code>messageCreate</code> events to your game logic.</p>
+</li>
+</ol>
+<h3 id="security-notes"><a href="#security-notes" class="anchor" aria-hidden="true">#</a>Security notes</h3><ul>
+<li>Bot tokens are hashed at rest and shown only once. Revoke immediately if one
+leaks.</li>
+<li>Keep tokens on a server you control. Shipping a token in a game client lets
+anyone impersonate your bot.</li>
+<li>Scope bots to the least privilege they need. A posting-only bot does not need
+<code>members.read</code> or <code>channels.manage</code>.</li>
+</ul>
+<h2 id="themes-for-developers"><a href="#themes-for-developers" class="anchor" aria-hidden="true">#</a>Themes for developers</h2><p>If you are building a branded client or skin, the CSS variables in the
+<a href="/docs/themes/">themes guide</a> are the stable styling API.</p>
+<h2 id="questions"><a href="#questions" class="anchor" aria-hidden="true">#</a>Questions</h2><ul>
+<li>Bug reports: open an issue or email the team.</li>
+<li>For account-specific problems, use in-app support.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacy</a> ·
+  <a href="https://www.disband.dev/terms">Terms</a>
+</footer>
+</body>
+</html>

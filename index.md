@@ -18,6 +18,15 @@ messages to and from it. Disband never hosts or executes your bot.
   Standard library only; works on Python 3.9+.
 - **[API reference](bots/api-reference.md)** — the HTTP API both clients talk to.
 
+## Developers
+
+Build bots and integrate Disband into your games and apps using the HTTP API.
+
+- **[Developers](developers/index.md)** — overview, start here, and security
+  notes for game/app integrations.
+- **[Bots overview](bots/index.md)** — scopes, invites, limits, and safety.
+- **[API reference](bots/api-reference.md)** — the HTTP API both clients talk to.
+
 ## Themes
 
 SUPER members can restyle the whole app with custom CSS, shipped skins, and

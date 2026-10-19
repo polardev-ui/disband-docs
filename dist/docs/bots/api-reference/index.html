@@ -17,16 +17,18 @@ an" />
 <meta name="twitter:card" content="summary" />
 <style>
 :root {
-  --bg-primary: #1e1f22;
-  --bg-secondary: #2b2d31;
-  --bg-tertiary: #17181b;
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
   --brand: #5865f2;
+  --brand-hover: #4752c4;
   --text-normal: #dbdee1;
   --text-muted: #9aa3ab;
   --text-bright: #f2f3f5;
   --divider: #2f3136;
-  --code-bg: #1b1c1e;
-  --link: #6c8ee4;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -43,81 +45,86 @@ a:hover { text-decoration: underline; }
 .site-header {
   position: sticky; top: 0; z-index: 10;
   display: flex; align-items: center; justify-content: space-between;
-  height: 52px; padding: 0 20px;
-  background: var(--bg-tertiary);
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--divider);
 }
-.site-logo { width: auto; height: 24px; margin-right: 9px; display: inline-block; vertical-align: -5px; }
-.wordmark { font-weight: 700; color: var(--text-bright); font-size: 15px; letter-spacing: 0.2px; text-decoration: none; }
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
 .wordmark:hover { text-decoration: none; }
-.wordmark span { color: var(--brand); }
-.header-links { display: flex; gap: 18px; font-size: 13.5px; }
-.header-links a { color: var(--text-muted); }
-.header-links a:hover { color: var(--text-bright); text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
 
 .layout {
   display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
-  min-height: calc(100vh - 52px);
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
 }
 .sidebar {
-  padding: 24px 12px;
+  padding: 24px 16px;
   border-right: 1px solid var(--divider);
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
 }
-.sidebar-nav { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
 .sidebar-nav a {
-  display: block; padding: 6px 10px; border-radius: 6px;
-  color: var(--text-muted); font-size: 13.5px;
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
 }
 .nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
-.sidebar-nav a:hover { background: var(--bg-secondary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
 .sidebar-nav a.active { background: var(--brand); color: #fff !important; }
 .nav-group .nav-label {
-  margin: 0 0 4px; padding: 0 10px;
-  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
   color: var(--text-muted);
 }
 
 main.content {
-  max-width: 760px; width: 100%;
-  margin: 0 auto; padding: 48px 32px 72px;
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
 }
 .content h1 {
-  margin: 0 0 8px; font-size: 30px; font-weight: 700; color: var(--text-bright);
-  letter-spacing: -0.3px;
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
 }
-.content .lede { color: var(--text-muted); font-size: 16px; margin: 0 0 28px; max-width: 620px; }
-.content h2 { margin: 40px 0 10px; font-size: 21px; font-weight: 700; color: var(--text-bright); }
-.content h3 { margin: 28px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
-.content p { margin: 10px 0; }
-.content ul, .content ol { margin: 10px 0; padding-left: 22px; }
-.content li { margin: 5px 0; }
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
 .content strong { color: var(--text-bright); }
 .content code:not(.hljs) {
   background: var(--code-bg); border: 1px solid var(--divider);
-  border-radius: 4px; padding: 1px 5px;
+  border-radius: 5px; padding: 2px 6px;
   font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color: #9aa9f0;
 }
-.content pre { margin: 14px 0; border-radius: 8px; overflow: auto; }
-.content pre code.hljs { padding: 14px 16px; border: none; }
-.table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--divider); border-radius: 8px; }
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
 .content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
 .content thead th {
-  text-align: left; padding: 9px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px;
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
   color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
 }
-.content td { padding: 9px 12px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
 .content tbody tr:last-child td { border-bottom: none; }
 .content td code:not(.hljs) { white-space: nowrap; }
 .content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
 .content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
-.content hr { border: none; border-top: 1px solid var(--divider); margin: 28px 0; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
 
 .site-footer {
   border-top: 1px solid var(--divider);
-  padding: 16px 20px; text-align: center;
+  padding: 20px 24px; text-align: center;
   font-size: 12.5px; color: var(--text-muted);
 }
 .site-footer a { color: var(--text-muted); }
@@ -150,7 +157,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
   </div>
 </header>
 <div class="layout">
-  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="active">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div></nav></aside>
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="active">API reference</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="active">API reference</a></div></nav></aside>
   <main class="content">
     <h1 id="bot-api-reference"><a href="#bot-api-reference" class="anchor" aria-hidden="true">#</a>Bot API reference</h1><p>The HTTP API that bots talk to. Both client libraries are thin wrappers over
 exactly these endpoints, so this page is also the recipe for writing a client in
