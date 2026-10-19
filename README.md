@@ -1,6 +1,6 @@
 # Disband Docs
 
-The source for the **Disband documentation website** — [docs.disband.dev](https://docs.disband.dev).
+The source for the **Disband documentation website** [docs.disband.dev](https://docs.disband.dev).
 
 This folder is deliberately separate from the Disband application repository so
 the docs can be reviewed, versioned, and deployed on their own schedule. Content
