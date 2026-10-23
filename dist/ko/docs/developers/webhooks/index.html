@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>웹훅 — Disband 문서</title>
+<meta name="description" content="웹훅은 비밀 URL를 통해 하나의 채널에 메시지를 게시합니다. 봇 코드, 게이트웨이 루프, Authorization 헤더가 필요하지 않습니다. HTTP 요청을 만들 수 있다면 Disband에 게시할 수 있습니다." />
+<link rel="canonical" href="https://docs.disband.dev/ko/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="fr" href="https://docs.disband.dev/fr/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="de" href="https://docs.disband.dev/de/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="pt-BR" href="https://docs.disband.dev/pt-br/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="ja" href="https://docs.disband.dev/ja/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/developers/webhooks/" />
+<link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/developers/webhooks/" />
+<meta property="og:title" content="웹훅 — Disband 문서" />
+<meta property="og:description" content="웹훅은 비밀 URL를 통해 하나의 채널에 메시지를 게시합니다. 봇 코드, 게이트웨이 루프, Authorization 헤더가 필요하지 않습니다. HTTP 요청을 만들 수 있다면 Disband에 게시할 수 있습니다." />
+<meta property="og:url" content="https://docs.disband.dev/ko/docs/developers/webhooks/" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="ko" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/ko/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <label class="sr-only" for="language-select">언어</label>
+    <select id="language-select" class="lang-select" aria-label="언어" onchange="if(this.value) location.href=this.value">
+      <option value="/docs/developers/webhooks/">English</option><option value="/es/docs/developers/webhooks/">Español</option><option value="/fr/docs/developers/webhooks/">Français</option><option value="/de/docs/developers/webhooks/">Deutsch</option><option value="/pt-br/docs/developers/webhooks/">Português (Brasil)</option><option value="/ja/docs/developers/webhooks/">日本語</option><option value="/ko/docs/developers/webhooks/" selected>한국어</option><option value="/zh-cn/docs/developers/webhooks/">简体中文</option>
+    </select>
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/ko/" class="nav-home-link">문서 홈</a><div class="nav-group"><p class="nav-label">봇</p><a href="/ko/docs/bots/" class="">개요</a><a href="/ko/docs/bots/getting-started/" class="">시작하기</a><a href="/ko/docs/bots/hosting-your-own-bot/" class="">나만의 봇 호스팅</a><a href="/ko/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/ko/docs/bots/clients/python/" class="">Python</a><a href="/ko/docs/bots/api-reference/" class="">API 참조</a><a href="/ko/docs/bots/templates/" class="">템플릿</a></div><div class="nav-group"><p class="nav-label">테마</p><a href="/ko/docs/themes/" class="">테마</a></div><div class="nav-group"><p class="nav-label">개발자</p><a href="/ko/docs/developers/" class="">개발자</a><a href="/ko/docs/developers/webhooks/" class="active">웹훅</a><a href="/ko/docs/developers/embeds/" class="">임베드</a><a href="/ko/docs/developers/status/" class="">상태 시스템</a><a href="/ko/docs/bots/" class="">봇</a><a href="/ko/docs/bots/getting-started/" class="">시작하기</a><a href="/ko/docs/bots/api-reference/" class="">API 참조</a><a href="/ko/docs/bots/templates/" class="">템플릿</a></div></nav></aside>
+  <main class="content">
+    <div class="translation-note"><strong>자동 번역</strong><span>이 페이지는 자동으로 번역되었습니다. 영어 원문이 기준입니다.</span><a href="/docs/developers/webhooks/">이 페이지를 영어로 읽어보세요</a></div>
+    <h1 id="웹훅"><a href="#웹훅" class="anchor" aria-hidden="true">#</a>웹훅</h1><p>웹훅은 비밀 URL를 통해 하나의 채널에 메시지를 게시합니다. 봇 코드, 게이트웨이 루프, <code>Authorization</code> 헤더가 필요하지 않습니다. HTTP 요청을 만들 수 있다면 Disband에 게시할 수 있습니다.</p>
+<p>Webhooks는 봇과 별개입니다. CI, 모니터링, 게임 서버, 양식 또는 URL를 호출할 수 있는 기타 모든 곳에서 일방향 알림을 위해 웹훅을 사용하십시오. 이벤트를 읽거나 메시지를 처리해야 할 때 <a href="/ko/docs/bots/">봇</a>을 사용하십시오.</p>
+<h2 id="웹훅-생성하기"><a href="#웹훅-생성하기" class="anchor" aria-hidden="true">#</a>웹훅 생성하기</h2><p>공간에서 <strong>Webhooks</strong> 관리 권한이 필요합니다.</p>
+<ol>
+<li><strong>스페이스 설정 → 통합 → Webhooks</strong>를 엽니다.</li>
+<li>채널을 선택하고 <strong>새 웹훅</strong>을 선택합니다.</li>
+<li>이름을 지어주고, 마음에 드시면 아바타를 추가하세요.</li>
+<li>웹훅 URL을 복사합니다.</li>
+</ol>
+<p>URL는 다음과 같이 보입니다:</p>
+<pre><code class="hljs language-text">https://disband.dev/webhook/12345678/01234567890123456789012345
+</code></pre><div class="table-wrap"><table><thead><tr>
+<th>부분</th>
+<th>의미</th>
+</tr>
+</thead><tbody><tr>
+<td>스페이스 키</td>
+<td>스페이스 구분자를 식별하는 8자리 숫자. 비밀이 아니다.</td>
+</tr>
+<tr>
+<td>토큰</td>
+<td>이십육자리 숫자. 이것이 비밀이다. 암호처럼 취급하라.</td>
+</tr>
+</tbody></table></div><p>같은 엔드포인트는 또한 <code>https://disband.dev/api/webhooks/&lt;space key&gt;/&lt;token&gt;</code>에서 제공됩니다.</p>
+<p>그 화면에서 웹휠을 이름을 변경하거나, 토큰을 재설정하거나, 삭제할 수 있습니다. 토큰을 재설정하면 기존 URL가 즉시 무효화됩니다. 웹휠을 삭제하면 게시가 중지되지만, 채널에 이미 보낸 메시지는 남습니다.</p>
+<h2 id="웹훅-실행하기"><a href="#웹훅-실행하기" class="anchor" aria-hidden="true">#</a>웹훅 실행하기</h2><p><code>POST</code>를 URL 웹훅으로 보내고 JSON 바디를 보내세요.</p>
+<pre><code class="hljs language-bash">curl -X POST <span class="hljs-string">&#x27;https://disband.dev/webhook/12345678/01234567890123456789012345&#x27;</span> \
+  -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> \
+  -d <span class="hljs-string">&#x27;{
+    &quot;content&quot;: &quot;Deploy finished — **v2.4.1** is live.&quot;,
+    &quot;username&quot;: &quot;Deploy bot&quot;,
+    &quot;avatar_url&quot;: &quot;https://example.com/deploy.png&quot;
+  }&#x27;</span>
+</code></pre><p>성공적인 요청은 <code>204 No Content</code>을 반환합니다. 대신 <code>?wait=true</code>을 추가하여 생성된 메시지 객체를 받으십시오.</p>
+<pre><code class="hljs language-bash">curl -X POST <span class="hljs-string">&#x27;https://disband.dev/webhook/12345678/01234567890123456789012345?wait=true&#x27;</span> \
+  -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> \
+  -d <span class="hljs-string">&#x27;{ &quot;content&quot;: &quot;Hello from the other side.&quot; }&#x27;</span>
+</code></pre><h3 id="본인-필드"><a href="#본인-필드" class="anchor" aria-hidden="true">#</a>본인 필드</h3><div class="table-wrap"><table><thead><tr>
+<th>필드</th>
+<th>유형</th>
+<th>참고사항</th>
+</tr>
+</thead><tbody><tr>
+<td><code>content</code></td>
+<td>문자열</td>
+<td>최대 2,000자까지. 최소 하나의 인포그래픽이 있는 경우 생략될 수 있습니다.</td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td>문자열</td>
+<td>이 메시지의 웹훅 이름을 대체합니다. 최대 80자까지 가능합니다.</td>
+</tr>
+<tr>
+<td><code>avatar_url</code></td>
+<td>문자열</td>
+<td>이 메시지의 아바타를 대체합니다. 절대적인 <code>http</code> 또는 <code>https</code> URL.</td>
+</tr>
+<tr>
+<td><code>embeds</code></td>
+<td>배열</td>
+<td>최대 10개 <a href="/ko/docs/developers/embeds/">임베드</a>.</td>
+</tr>
+<tr>
+<td><code>embed</code></td>
+<td>객체</td>
+<td>레거시 단수형. <code>embeds: [embed]</code>로 처리됨.</td>
+</tr>
+<tr>
+<td><code>allowed_mentions</code></td>
+<td>객체</td>
+<td>핑을 제어합니다. 아래를 참조하십시오.</td>
+</tr>
+<tr>
+<td><code>tts</code></td>
+<td>논리형</td>
+<td>호환성을 위해 승인됨; 현재 무시됨.</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td>번호</td>
+<td>호환성을 위해 승인됨; 현재 무시됨.</td>
+</tr>
+</tbody></table></div><p><code>username</code>는 <code>disband</code> 또는 <code>clyde</code>를 어떤 케이스로도 포함할 수 없습니다. 이는 플랫폼 직원을 사칭하는 웹훅을 방지합니다.</p>
+<p>파일 첨부파일은 아직 지원되지 않습니다. 다중부 요청은 파싱할 수 있지만 파일은 저장되지 않습니다. 파일을 업로드해야 하는 경우 봇을 사용하세요.</p>
+<h3 id="제어-언급"><a href="#제어-언급" class="anchor" aria-hidden="true">#</a>제어 언급</h3><p>기본적으로 웹훅은 사용자 언급과 <code>@everyone</code> / <code>@here</code>를 모두 파싱합니다. 이는 Discord와 동일합니다.</p>
+<p>아무에게도 핑을 보내기 위해서:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Build 184 finished.&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;allowed_mentions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;parse&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span> <span class="hljs-punctuation">}</span>
+</code></pre><p>사용자가 언급할 수 있도록 허용하지만 모든 사람이 언급할 수는 없도록 하려면:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Thanks @polar.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;allowed_mentions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;parse&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;users&quot;</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>데이터베이스는 <code>@everyone</code>를 억제할 때 여전히 저장하지만 알림은 전송되지 않습니다. 필드가 완전히 누락되면 모든 것이 파싱됩니다.</p>
+<h2 id="메시지-객체"><a href="#메시지-객체" class="anchor" aria-hidden="true">#</a>메시지 객체</h2><p><code>?wait=true</code>로 응답은 Discord 모양의 메시지가 됩니다. Disband는 <code>id</code>에서 숫자 메시지 ID를 사용합니다.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;4821&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy finished.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;channel_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;guild_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;author&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;username&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy bot&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;avatar&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://example.com/deploy.png&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;discriminator&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;0000&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;bot&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;attachments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;embeds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;mentions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;mention_roles&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;mention_everyone&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;pinned&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;tts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;timestamp&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-10-19T20:15:00.000Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;edited_timestamp&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;flags&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;components&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;webhook_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><h2 id="메시지-관리"><a href="#메시지-관리" class="anchor" aria-hidden="true">#</a>메시지 관리</h2><p>웹훅은 게시한 메시지를 가져오거나, 편집하거나, 삭제할 수 있습니다. 실행 응답에서 숫자 메시지 ID를 사용합니다.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>방법</th>
+<th>엔드포인트</th>
+<th>결과</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/webhook/&lt;key&gt;/&lt;token&gt;/messages/&lt;id&gt;</code></td>
+<td>메시지를 가져오세요.</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/webhook/&lt;key&gt;/&lt;token&gt;/messages/&lt;id&gt;</code></td>
+<td><code>content</code> 및/또는 <code>embeds</code>을 편집합니다.</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/webhook/&lt;key&gt;/&lt;token&gt;/messages/&lt;id&gt;</code></td>
+<td>메시지를 삭제합니다. <code>204</code>을 반환합니다.</td>
+</tr>
+</tbody></table></div><p>예제 편집:</p>
+<pre><code class="hljs language-bash">curl -X PATCH <span class="hljs-string">&#x27;https://disband.dev/webhook/12345678/01234567890123456789012345/messages/4821&#x27;</span> \
+  -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> \
+  -d <span class="hljs-string">&#x27;{ &quot;content&quot;: &quot;Deploy finished — rolled back.&quot; }&#x27;</span>
+</code></pre><p>그 웹훅이 작성한 메시지만 변경할 수 있습니다. 다른 웹훅은 <code>404 Unknown Message</code>를 받습니다.</p>
+<h2 id="웹훅-자체를-관리하다"><a href="#웹훅-자체를-관리하다" class="anchor" aria-hidden="true">#</a>웹훅 자체를 관리하다</h2><div class="table-wrap"><table><thead><tr>
+<th>방법</th>
+<th>엔드포인트</th>
+<th>결과</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/webhook/&lt;key&gt;/&lt;token&gt;</code></td>
+<td>Webhook 객체(이름, 아바타, 채널, URL).</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/webhook/&lt;key&gt;/&lt;token&gt;</code></td>
+<td><code>{ &quot;name&quot;: &quot;New name&quot; }</code>로 이름을 바꾸세요.</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/webhook/&lt;key&gt;/&lt;token&gt;</code></td>
+<td>삭제합니다. <code>204</code>를 반환합니다.</td>
+</tr>
+</tbody></table></div><p>URL를 통해 삭제하는 것은 영구적이며 통합 화면에서 삭제하는 것과 동일합니다.</p>
+<h2 id="속도-제한"><a href="#속도-제한" class="anchor" aria-hidden="true">#</a>속도 제한</h2><p>각 웹훅은 <strong>2초당 5개의 요청</strong>으로 제한됩니다. 제한은 토큰에 의해 결정되므로 소음 많은 웹훅이 다른 웹훅을 늦추지 않습니다.</p>
+<p>제한된 요청은 <code>429</code>을 반환합니다:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;You are being rate limited.&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;retry_after&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1.34</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;global&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>응답에는 <code>Retry-After</code>(전체 초)와 일반적인 <code>X-RateLimit-*</code> 헤더가 포함되어 있습니다. 지연 시간을 기다린 다음 다시 시도하십시오.</p>
+<h2 id="오류"><a href="#오류" class="anchor" aria-hidden="true">#</a>오류</h2><p>오류는 Discord의 모양을 사용합니다:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Unknown Webhook&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10015</span> <span class="hljs-punctuation">}</span>
+</code></pre><div class="table-wrap"><table><thead><tr>
+<th>상태</th>
+<th>코드</th>
+<th>의미</th>
+</tr>
+</thead><tbody><tr>
+<td><code>400</code></td>
+<td><code>50006</code></td>
+<td>빈 메시지: 콘텐츠와 포함물이 없습니다.</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td><code>50035</code></td>
+<td>유효하지 않은 본문, 잘못된 인포그래픽 또는 2,000자 이상의 콘텐츠.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>10015</code></td>
+<td>알 수 없는 웹핫스팟: 잘못된 스페이스 키, 잘못된 토큰 또는 삭제됨.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td><code>10008</code></td>
+<td>알 수 없는 메시지.</td>
+</tr>
+<tr>
+<td><code>429</code></td>
+<td>—</td>
+<td>평가 제한. <code>Retry-After</code>를 존중하십시오.</td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td>—</td>
+<td>서버 오류입니다. 백오프 후 다시 시도하십시오.</td>
+</tr>
+</tbody></table></div><p><code>404 Unknown Webhook</code>는 의도적으로 스페이스 키인지 토큰인지 잘못되었는지 말하지 않는다.</p>
+<h2 id="안전"><a href="#안전" class="anchor" aria-hidden="true">#</a>안전</h2><ul>
+<li>URL를 가진 사람은 누구나 게시할 수 있습니다. 공개 저장소에 저장하거나 넣지 마십시오.
+클라이언트 측 코드에 있습니다.</li>
+<li>URL를 API 키를 사용하는 것과 동일한 비밀 저장소에 저장하십시오.</li>
+<li>토큰이 유출되면 즉시 재설정하십시오. 오래된 URL는 즉시 작동을 중지합니다.</li>
+<li>웹훅은 구성된 채널에만 쓰기를 합니다. 메시지 읽기는 할 수 없습니다,
+멤버 목록을 나열하거나 공간 설정을 변경하세요.</li>
+</ul>
+<h2 id="관계가-있는"><a href="#관계가-있는" class="anchor" aria-hidden="true">#</a>관계가 있는</h2><ul>
+<li><a href="/ko/docs/developers/embeds/">임베드</a> - 임베드 객체와 그 제한 사항.</li>
+<li><a href="/ko/docs/bots/">봇</a> - 양방향 통합 및 이벤트 전달.</li>
+<li><a href="/ko/docs/bots/api-reference/">API 참조</a> - 봇 HTTP API, 포함
+통합 지원.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">개인 정보 보호</a> ·
+  <a href="https://www.disband.dev/terms">이용약관</a>
+</footer>
+</body>
+</html>

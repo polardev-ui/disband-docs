@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bots — Documentación de Disband</title>
+<meta name="description" content="Los bots de Disband son integraciones alojadas por sí mismos. Usted ejecuta el código, Disband transmite mensajes desde y hacia él. Disband nunca aloja ni ejecu" />
+<link rel="canonical" href="https://docs.disband.dev/es/docs/bots/" />
+<link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/bots/" />
+<link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/bots/" />
+<link rel="alternate" hreflang="fr" href="https://docs.disband.dev/fr/docs/bots/" />
+<link rel="alternate" hreflang="de" href="https://docs.disband.dev/de/docs/bots/" />
+<link rel="alternate" hreflang="pt-BR" href="https://docs.disband.dev/pt-br/docs/bots/" />
+<link rel="alternate" hreflang="ja" href="https://docs.disband.dev/ja/docs/bots/" />
+<link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/bots/" />
+<link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/bots/" />
+<link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/bots/" />
+<meta property="og:title" content="Bots — Documentación de Disband" />
+<meta property="og:description" content="Los bots de Disband son integraciones alojadas por sí mismos. Usted ejecuta el código, Disband transmite mensajes desde y hacia él. Disband nunca aloja ni ejecu" />
+<meta property="og:url" content="https://docs.disband.dev/es/docs/bots/" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/es/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <label class="sr-only" for="language-select">Idioma</label>
+    <select id="language-select" class="lang-select" aria-label="Idioma" onchange="if(this.value) location.href=this.value">
+      <option value="/docs/bots/">English</option><option value="/es/docs/bots/" selected>Español</option><option value="/fr/docs/bots/">Français</option><option value="/de/docs/bots/">Deutsch</option><option value="/pt-br/docs/bots/">Português (Brasil)</option><option value="/ja/docs/bots/">日本語</option><option value="/ko/docs/bots/">한국어</option><option value="/zh-cn/docs/bots/">简体中文</option>
+    </select>
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/es/" class="nav-home-link">Inicio de la documentación</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/es/docs/bots/" class="active">Descripción general</a><a href="/es/docs/bots/getting-started/" class="">Primeros pasos</a><a href="/es/docs/bots/hosting-your-own-bot/" class="">Aloja tu propio bot</a><a href="/es/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/es/docs/bots/clients/python/" class="">Python</a><a href="/es/docs/bots/api-reference/" class="">Referencia de la API</a><a href="/es/docs/bots/templates/" class="">Plantillas</a></div><div class="nav-group"><p class="nav-label">Temas</p><a href="/es/docs/themes/" class="">Temas</a></div><div class="nav-group"><p class="nav-label">Desarrolladores</p><a href="/es/docs/developers/" class="">Desarrolladores</a><a href="/es/docs/developers/webhooks/" class="">Webhooks</a><a href="/es/docs/developers/embeds/" class="">Embeds</a><a href="/es/docs/developers/status/" class="">Estado del sistema</a><a href="/es/docs/bots/" class="active">Bots</a><a href="/es/docs/bots/getting-started/" class="">Primeros pasos</a><a href="/es/docs/bots/api-reference/" class="">Referencia de la API</a><a href="/es/docs/bots/templates/" class="">Plantillas</a></div></nav></aside>
+  <main class="content">
+    <div class="translation-note"><strong>Traducción automática</strong><span>Esta página se tradujo automáticamente. El original en inglés es la versión de referencia.</span><a href="/docs/bots/">Leer esta página en inglés</a></div>
+    <h1 id="bots"><a href="#bots" class="anchor" aria-hidden="true">#</a>Bots</h1><p>Los bots de Disband son integraciones alojadas por sí mismos. Usted ejecuta el código, Disband transmite mensajes desde y hacia él. Disband nunca aloja ni ejecuta el código de su bot.</p>
+<h2 id="como-funciona"><a href="#como-funciona" class="anchor" aria-hidden="true">#</a>Cómo funciona</h2><ol>
+<li><strong>Crea un bot</strong> en <strong>Configuración → Bots</strong> y elige los escenarios que necesita. Obtienes
+Un token de vuelta, se muestra <strong>una vez</strong>.</li>
+<li>En <strong>Configuración → Bots</strong>, genera un <strong>enlace de invitación</strong> para el servidor que quieras
+El bot para unirse y enviarlo al <strong>propietario</strong> de ese servidor.</li>
+<li>El propietario abre el enlace y aprueba. El bot se convierte en miembro del servidor.</li>
+<li>Ejecutas una de las bibliotecas de clientes en algún lugar (un servidor, una función en la nube,
+tu portátil) y se conecta a Disband con el token.</li>
+</ol>
+<h2 id="ambito"><a href="#ambito" class="anchor" aria-hidden="true">#</a>ámbito</h2><p>El alcance de un bot en un servidor es la <strong>intersección</strong> de los ámbitos que solicitaste al crearlo y los ámbitos que el propietario aprobó para ese servidor específico:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Alcance</th>
+<th>Descripción</th>
+</tr>
+</thead><tbody><tr>
+<td><code>messages.read</code></td>
+<td>Recibir eventos de mensajes en el gateway y leer mensajes/canales.</td>
+</tr>
+<tr>
+<td><code>messages.write</code></td>
+<td>Enviar y responder a mensajes en canales que el bot pueda ver.</td>
+</tr>
+<tr>
+<td><code>members.read</code></td>
+<td>Lista los miembros de los servidores a los que se ha unido el bot.</td>
+</tr>
+<tr>
+<td><code>channels.manage</code></td>
+<td>Crear, renombrar y eliminar canales, también necesita el rol <code>manage_channels</code> en el servidor.</td>
+</tr>
+</tbody></table></div><h2 id="autenticacion-con-token"><a href="#autenticacion-con-token" class="anchor" aria-hidden="true">#</a>Autenticación con token</h2><p>Cada llamada API se autentica con el token del bot:</p>
+<pre><code>Authorization: Bot &lt;token&gt;
+</code></pre><p>Los tokens de bot están <strong>hashados en reposo</strong>: el token bruto nunca se almacena ni se recupera. Si se filtran (o ya no necesitas el bot), revócalo en <strong>Configuración → Bots</strong>; la revocación mata el token inmediatamente.</p>
+<h2 id="limites-y-seguridad"><a href="#limites-y-seguridad" class="anchor" aria-hidden="true">#</a>Límites y seguridad</h2><ul>
+<li>Hasta <strong>5 bots por cuenta</strong>. Un bot puede ser revocado en cualquier momento, lo que mata su
+Token.</li>
+<li>Mensajes de hasta <strong>4.000 caracteres</strong>. Los bots necesitan el rol <code>mention_everyone</code>
+Permiso para usar <code>@everyone</code>.</li>
+<li>Solo el <strong>propietario</strong> de un servidor puede aprobar una invitación de bot. Las invitaciones caducan después de
+<strong>7 días</strong>.</li>
+<li>Los tokens de bot se han hashado en reposo; el token bruto nunca se almacena ni se recupera.</li>
+<li>Los bots nunca pueden acceder directamente a la base de datos, cada acción pasa por un escopado.
+Puntos finales API.</li>
+</ul>
+<h2 id="elige-un-camino"><a href="#elige-un-camino" class="anchor" aria-hidden="true">#</a>Elige un camino</h2><ul>
+<li><strong><a href="/es/docs/bots/getting-started/">Primeros pasos</a></strong> — crea un bot e invita a él.</li>
+<li><strong><a href="/es/docs/bots/hosting-your-own-bot/">Aloja tu propio bot</a></strong> — dónde ejecutar el cliente.</li>
+<li><strong><a href="/es/docs/bots/clients/javascript/">JavaScript</a></strong> / <strong><a href="/es/docs/bots/clients/python/">Python</a></strong>.</li>
+<li><strong><a href="/es/docs/bots/api-reference/">Referencia de la API</a></strong> si quieres hablar con la API directamente.</li>
+<li><strong><a href="/es/docs/bots/templates/">Plantillas</a></strong> — bienvenidos, gestores de boletos y más listos para adaptarse.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacidad</a> ·
+  <a href="https://www.disband.dev/terms">Términos</a>
+</footer>
+</body>
+</html>

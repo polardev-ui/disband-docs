@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python 클라이언트 — `disband-bot` — Disband 문서</title>
+<meta name="description" content="공식적인 Python 클라이언트. 표준 라이브러리만 사용하므로 클라이언트 자체를 제외하고 설치할 것이 없습니다. Python 3.9 이상에서 작동합니다." />
+<link rel="canonical" href="https://docs.disband.dev/ko/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="fr" href="https://docs.disband.dev/fr/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="de" href="https://docs.disband.dev/de/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="pt-BR" href="https://docs.disband.dev/pt-br/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="ja" href="https://docs.disband.dev/ja/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/bots/clients/python/" />
+<link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/bots/clients/python/" />
+<meta property="og:title" content="Python 클라이언트 — `disband-bot` — Disband 문서" />
+<meta property="og:description" content="공식적인 Python 클라이언트. 표준 라이브러리만 사용하므로 클라이언트 자체를 제외하고 설치할 것이 없습니다. Python 3.9 이상에서 작동합니다." />
+<meta property="og:url" content="https://docs.disband.dev/ko/docs/bots/clients/python/" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="ko" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/ko/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <label class="sr-only" for="language-select">언어</label>
+    <select id="language-select" class="lang-select" aria-label="언어" onchange="if(this.value) location.href=this.value">
+      <option value="/docs/bots/clients/python/">English</option><option value="/es/docs/bots/clients/python/">Español</option><option value="/fr/docs/bots/clients/python/">Français</option><option value="/de/docs/bots/clients/python/">Deutsch</option><option value="/pt-br/docs/bots/clients/python/">Português (Brasil)</option><option value="/ja/docs/bots/clients/python/">日本語</option><option value="/ko/docs/bots/clients/python/" selected>한국어</option><option value="/zh-cn/docs/bots/clients/python/">简体中文</option>
+    </select>
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/ko/" class="nav-home-link">문서 홈</a><div class="nav-group"><p class="nav-label">봇</p><a href="/ko/docs/bots/" class="">개요</a><a href="/ko/docs/bots/getting-started/" class="">시작하기</a><a href="/ko/docs/bots/hosting-your-own-bot/" class="">나만의 봇 호스팅</a><a href="/ko/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/ko/docs/bots/clients/python/" class="active">Python</a><a href="/ko/docs/bots/api-reference/" class="">API 참조</a><a href="/ko/docs/bots/templates/" class="">템플릿</a></div><div class="nav-group"><p class="nav-label">테마</p><a href="/ko/docs/themes/" class="">테마</a></div><div class="nav-group"><p class="nav-label">개발자</p><a href="/ko/docs/developers/" class="">개발자</a><a href="/ko/docs/developers/webhooks/" class="">웹훅</a><a href="/ko/docs/developers/embeds/" class="">임베드</a><a href="/ko/docs/developers/status/" class="">상태 시스템</a><a href="/ko/docs/bots/" class="">봇</a><a href="/ko/docs/bots/getting-started/" class="">시작하기</a><a href="/ko/docs/bots/api-reference/" class="">API 참조</a><a href="/ko/docs/bots/templates/" class="">템플릿</a></div></nav></aside>
+  <main class="content">
+    <div class="translation-note"><strong>자동 번역</strong><span>이 페이지는 자동으로 번역되었습니다. 영어 원문이 기준입니다.</span><a href="/docs/bots/clients/python/">이 페이지를 영어로 읽어보세요</a></div>
+    <h1 id="python-클라이언트-disband-bot"><a href="#python-클라이언트-disband-bot" class="anchor" aria-hidden="true">#</a>Python 클라이언트 — `disband-bot`</h1><p>공식적인 Python 클라이언트. 표준 라이브러리만 사용하므로 클라이언트 자체를 제외하고 설치할 것이 없습니다. Python 3.9 이상에서 작동합니다.</p>
+<h2 id="설치하다"><a href="#설치하다" class="anchor" aria-hidden="true">#</a>설치하다</h2><pre><code class="hljs language-bash">pip install disband-bot
+</code></pre><p>또는, 이 단일 저장소에서:</p>
+<pre><code class="hljs language-bash">pip install ./packages/disband-bot-python
+</code></pre><h2 id="빠른-시작"><a href="#빠른-시작" class="anchor" aria-hidden="true">#</a>빠른 시작</h2><pre><code class="hljs language-python"><span class="hljs-keyword">from</span> disband_bot <span class="hljs-keyword">import</span> Client
+
+client = Client(token=DISBAND_BOT_TOKEN)
+
+<span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;ready&quot;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">on_ready</span>(<span class="hljs-params">me</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Logged in as <span class="hljs-subst">{me[<span class="hljs-string">&#x27;name&#x27;</span>]}</span> (<span class="hljs-subst">{<span class="hljs-string">&#x27;, &#x27;</span>.join(me[<span class="hljs-string">&#x27;scopes&#x27;</span>])}</span>)&quot;</span>)
+
+<span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;messageCreate&quot;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">on_message</span>(<span class="hljs-params">message</span>):
+    <span class="hljs-keyword">if</span> message.author_is_bot:
+        <span class="hljs-keyword">return</span>
+    <span class="hljs-keyword">if</span> message.content == <span class="hljs-string">&quot;!ping&quot;</span>:
+        message.reply(<span class="hljs-string">&quot;pong&quot;</span>)
+
+client.run()  <span class="hljs-comment"># connects and blocks forever</span>
+</code></pre><p>핸들러는 일반 또는 <code>async def</code>일 수 있으며, 둘 다 지원됩니다.</p>
+<h2 id="건설자"><a href="#건설자" class="anchor" aria-hidden="true">#</a>건설자</h2><h3 id="clienttoken-baseurlhttpswwwdisbanddev-gatewaytimeout20"><a href="#clienttoken-baseurlhttpswwwdisbanddev-gatewaytimeout20" class="anchor" aria-hidden="true">#</a>`Client(token, base_url="https://www.disband.dev", gateway_timeout=20)`</h3><div class="table-wrap"><table><thead><tr>
+<th>인수</th>
+<th>기본값</th>
+<th>설명</th>
+</tr>
+</thead><tbody><tr>
+<td><code>token</code></td>
+<td><em>(필수)</em></td>
+<td><strong>설정 → 봇</strong>에서 가져온 봇 토큰.</td>
+</tr>
+<tr>
+<td><code>base_url</code></td>
+<td><code>&quot;https://www.disband.dev&quot;</code></td>
+<td>API 루트(사용자 지정 도메인을 위해 변경).</td>
+</tr>
+<tr>
+<td><code>gateway_timeout</code></td>
+<td><code>20</code></td>
+<td>게이트웨이 펌프당 초수(1–20).</td>
+</tr>
+</tbody></table></div><h2 id="수명주기"><a href="#수명주기" class="anchor" aria-hidden="true">#</a>수명주기</h2><div class="table-wrap"><table><thead><tr>
+<th>방법</th>
+<th>설명</th>
+</tr>
+</thead><tbody><tr>
+<td><code>run()</code></td>
+<td>연결, <code>ready</code>를 방출, 백그라운드 스레드에서 게이트웨이 루프를 시작하고 영원히 차단합니다.</td>
+</tr>
+<tr>
+<td><code>close()</code></td>
+<td>루프를 멈춥니다.</td>
+</tr>
+</tbody></table></div><h2 id="이벤트"><a href="#이벤트" class="anchor" aria-hidden="true">#</a>이벤트</h2><p><code>client.on(&quot;name&quot;, handler)</code>로 등록하세요 - 장식가 또는 일반 호출로 - 그리고 단일 샷 처리기용 <code>once</code>도 등록하세요.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>이벤트</th>
+<th>인수</th>
+<th>참고</th>
+</tr>
+</thead><tbody><tr>
+<td><code>ready</code></td>
+<td><code>user</code></td>
+<td><code>user[&quot;id&quot;]</code>, <code>user[&quot;name&quot;]</code>, <code>user[&quot;scopes&quot;]</code>, 등.</td>
+</tr>
+<tr>
+<td><code>messageCreate</code></td>
+<td><code>message</code></td>
+<td>봇이 볼 수 있는 서버에 새 메시지가 있습니다.</td>
+</tr>
+<tr>
+<td><code>messageUpdate</code></td>
+<td><code>message</code></td>
+<td>메시지가 편집되었습니다(<code>content</code>, <code>edited_at</code> 업데이트됨).</td>
+</tr>
+<tr>
+<td><code>messageDelete</code></td>
+<td><code>message</code></td>
+<td>메시지가 삭제되었습니다(<code>content</code> 비어 있음; <code>id</code>/<code>channel_id</code> 유효함).</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td>게이트웨이 오류. 토큰이 유효하지 않은 경우를 제외하고 루프는 자동으로 재시도하며, 이 경우 중지됩니다.</td>
+</tr>
+</tbody></table></div><h3 id="message"><a href="#message" class="anchor" aria-hidden="true">#</a>`Message`</h3><div class="table-wrap"><table><thead><tr>
+<th>필드</th>
+<th>유형</th>
+<th>설명</th>
+</tr>
+</thead><tbody><tr>
+<td><code>id</code></td>
+<td><code>str</code></td>
+<td>메시지 아이디.</td>
+</tr>
+<tr>
+<td><code>channel_id</code></td>
+<td><code>str</code></td>
+<td>채널 아이디.</td>
+</tr>
+<tr>
+<td><code>server_id</code></td>
+<td><code>str | None</code></td>
+<td>서버 ID.</td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td><code>dict | None</code></td>
+<td><code>{ &quot;id&quot;, &quot;username&quot;, &quot;display_name&quot;, &quot;avatar_url&quot;, &quot;is_bot&quot; }</code>.</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>str</code></td>
+<td>메시지 텍스트.</td>
+</tr>
+<tr>
+<td><code>reply_to_id</code></td>
+<td><code>str | None</code></td>
+<td>이에 답하는 메시지, 만약 있는 경우.</td>
+</tr>
+<tr>
+<td><code>mentions</code></td>
+<td><code>list</code></td>
+<td>언급된 사용자.</td>
+</tr>
+<tr>
+<td><code>attachment</code></td>
+<td><code>dict | None</code></td>
+<td>메시지에 파일이 있을 때 <code>{ &quot;url&quot;, &quot;type&quot; }</code>.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>str | None</code></td>
+<td>ISO 타임 스탬프.</td>
+</tr>
+<tr>
+<td><code>edited_at</code></td>
+<td><code>str | None</code></td>
+<td>마지막 편집의 ISO 타임 스탬프.</td>
+</tr>
+<tr>
+<td><code>display_id</code></td>
+<td><code>int | None</code></td>
+<td>순차적인 디스플레이 번호.</td>
+</tr>
+<tr>
+<td><code>author_is_bot</code></td>
+<td><code>bool</code></td>
+<td>발신자가 봇이었을 때(재산) 참입니다.</td>
+</tr>
+</tbody></table></div><p><strong>방법</strong> - <code>message.reply(content)</code>는 같은 채널에서 회신합니다.</p>
+<h2 id="방법들"><a href="#방법들" class="anchor" aria-hidden="true">#</a>방법들</h2><pre><code class="hljs language-python">client.send_message(channel_id, <span class="hljs-string">&quot;Deploy finished&quot;</span>)            <span class="hljs-comment"># send</span>
+message.reply(<span class="hljs-string">&quot;pong&quot;</span>)                                          <span class="hljs-comment"># reply to a received message</span>
+
+messages = client.list_messages(channel_id, limit=<span class="hljs-number">25</span>, before=<span class="hljs-string">&quot;…&quot;</span>)
+channels = client.list_channels(server_id)
+members  = client.list_members(server_id)
+
+channel_id = client.create_channel(server_id, <span class="hljs-string">&quot;deploys&quot;</span>)
+client.rename_channel(channel_id, <span class="hljs-string">&quot;deploys-2&quot;</span>)
+client.delete_channel(channel_id)
+
+client.leave_server(server_id)
+
+invite = client.create_invite(server_id, [<span class="hljs-string">&quot;messages.read&quot;</span>, <span class="hljs-string">&quot;messages.write&quot;</span>])
+<span class="hljs-comment"># invite[&quot;invite_url&quot;] -&gt; send to the server owner</span>
+</code></pre><h2 id="오류"><a href="#오류" class="anchor" aria-hidden="true">#</a>오류</h2><p>클라이언트는 <code>.status</code> 및 <code>.body</code>로 <code>DisbandError</code>의 하위 클래스를 생성합니다.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>오류</th>
+<th>언제</th>
+</tr>
+</thead><tbody><tr>
+<td><code>AuthError</code></td>
+<td><code>401</code> - 유효하지 않거나 취소된 토큰입니다. 게이트웨이 루프가 여기서 멈춥니다.</td>
+</tr>
+<tr>
+<td><code>PermissionError</code></td>
+<td><code>403</code> — 스코프 또는 역할 권한이 누락되었습니다.</td>
+</tr>
+<tr>
+<td><code>RateLimitError</code></td>
+<td><code>429</code> - <code>retry_after</code> 초를 포함합니다.</td>
+</tr>
+<tr>
+<td><code>HttpError</code></td>
+<td>2xx 이외의 다른 상태.</td>
+</tr>
+</tbody></table></div><p>내부적으로 클라이언트는 <a href="/ko/docs/bots/api-reference/">API 참조</a> 위에 있는 얇은 래퍼입니다: <code>REST.get/post/patch/delete</code>와 <code>Authorization: Bot &lt;token&gt;</code>이 있습니다.</p>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">개인 정보 보호</a> ·
+  <a href="https://www.disband.dev/terms">이용약관</a>
+</footer>
+</body>
+</html>

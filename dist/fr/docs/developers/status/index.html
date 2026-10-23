@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>État du système — Documentation de Disband</title>
+<meta name="description" content="La page de statut de Disband est hébergée de manière autonome. Elle ne dépend pas d'un service de statut tiers, ce qui lui permet de signaler avec précision qua" />
+<link rel="canonical" href="https://docs.disband.dev/fr/docs/developers/status/" />
+<link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/developers/status/" />
+<link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/developers/status/" />
+<link rel="alternate" hreflang="fr" href="https://docs.disband.dev/fr/docs/developers/status/" />
+<link rel="alternate" hreflang="de" href="https://docs.disband.dev/de/docs/developers/status/" />
+<link rel="alternate" hreflang="pt-BR" href="https://docs.disband.dev/pt-br/docs/developers/status/" />
+<link rel="alternate" hreflang="ja" href="https://docs.disband.dev/ja/docs/developers/status/" />
+<link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/developers/status/" />
+<link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/developers/status/" />
+<link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/developers/status/" />
+<meta property="og:title" content="État du système — Documentation de Disband" />
+<meta property="og:description" content="La page de statut de Disband est hébergée de manière autonome. Elle ne dépend pas d'un service de statut tiers, ce qui lui permet de signaler avec précision qua" />
+<meta property="og:url" content="https://docs.disband.dev/fr/docs/developers/status/" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="fr" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/fr/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <label class="sr-only" for="language-select">Langue</label>
+    <select id="language-select" class="lang-select" aria-label="Langue" onchange="if(this.value) location.href=this.value">
+      <option value="/docs/developers/status/">English</option><option value="/es/docs/developers/status/">Español</option><option value="/fr/docs/developers/status/" selected>Français</option><option value="/de/docs/developers/status/">Deutsch</option><option value="/pt-br/docs/developers/status/">Português (Brasil)</option><option value="/ja/docs/developers/status/">日本語</option><option value="/ko/docs/developers/status/">한국어</option><option value="/zh-cn/docs/developers/status/">简体中文</option>
+    </select>
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/fr/" class="nav-home-link">Accueil de la documentation</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/fr/docs/bots/" class="">Aperçu</a><a href="/fr/docs/bots/getting-started/" class="">Premiers pas</a><a href="/fr/docs/bots/hosting-your-own-bot/" class="">Héberger votre propre bot</a><a href="/fr/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/fr/docs/bots/clients/python/" class="">Python</a><a href="/fr/docs/bots/api-reference/" class="">Référence de l’API</a><a href="/fr/docs/bots/templates/" class="">Modèles</a></div><div class="nav-group"><p class="nav-label">Thèmes</p><a href="/fr/docs/themes/" class="">Thèmes</a></div><div class="nav-group"><p class="nav-label">Développeurs</p><a href="/fr/docs/developers/" class="">Développeurs</a><a href="/fr/docs/developers/webhooks/" class="">Webhooks</a><a href="/fr/docs/developers/embeds/" class="">Embeds</a><a href="/fr/docs/developers/status/" class="active">État du système</a><a href="/fr/docs/bots/" class="">Bots</a><a href="/fr/docs/bots/getting-started/" class="">Premiers pas</a><a href="/fr/docs/bots/api-reference/" class="">Référence de l’API</a><a href="/fr/docs/bots/templates/" class="">Modèles</a></div></nav></aside>
+  <main class="content">
+    <div class="translation-note"><strong>Traduction automatique</strong><span>Cette page a été traduite automatiquement. L’original anglais fait foi.</span><a href="/docs/developers/status/">Lire cette page en anglais</a></div>
+    <h1 id="etat-du-systeme"><a href="#etat-du-systeme" class="anchor" aria-hidden="true">#</a>État du système</h1><p>La page de statut de Disband est hébergée de manière autonome. Elle ne dépend pas d&#39;un service de statut tiers, ce qui lui permet de signaler avec précision quand l&#39;hôte Web principal, API, ou la livraison d&#39;actifs statiques rencontrent des problèmes.</p>
+<ul>
+<li>Page publique : <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
+<li>Flux RSS : <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
+<li>Administrateur du propriétaire : <a href="https://www.disband.dev/status/admin" target="_blank" rel="noopener noreferrer">disband.dev/status/admin</a></li>
+</ul>
+<h2 id="ce-que-montre-la-page-publique"><a href="#ce-que-montre-la-page-publique" class="anchor" aria-hidden="true">#</a>Ce que montre la page publique</h2><p>La page des groupes de moniteurs par service. Pour chaque moniteur, elle affiche :</p>
+<ul>
+<li>l&#39;état actuel du dernier contrôle ;</li>
+<li>le statut HTTP et le temps de réponse de ce contrôle ;</li>
+<li>une barre de temps d&#39;activité de 90 jours, un segment par jour ;</li>
+<li>la dernière fois qu&#39;un contrôle a été effectué.</li>
+</ul>
+<p>Sous les moniteurs, vous trouverez des incidents, des travaux d&#39;entretien programmés et des annonces. Chacun d&#39;eux ouvre une page de détails avec la chronologie complète de la mise à jour. Le flux publie les 25 derniers incidents, les fenêtres d&#39;entretien et les annonces publiées sous forme RSS 2.0.</p>
+<h2 id="cheques"><a href="#cheques" class="anchor" aria-hidden="true">#</a>Chèques</h2><p>Une fonction Supabase Edge appelée <code>status-probe</code> s&#39;exécute toutes les minutes sous <code>pg_cron</code>. Elle interroge chaque moniteur activé en parallèle et enregistre une ligne par vérification.</p>
+<p>Chaque moniteur a :</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Contexte</th>
+<th>Signification</th>
+</tr>
+</thead><tbody><tr>
+<td>Nom</td>
+<td>L&#39;étiquette publique, par exemple <strong>Site Web</strong>.</td>
+</tr>
+<tr>
+<td>Groupe</td>
+<td>La section sous laquelle il apparaît, par exemple <strong>Disband</strong>.</td>
+</tr>
+<tr>
+<td>URL</td>
+<td>Le <code>http</code> ou <code>https</code> URL absolu à demander.</td>
+</tr>
+<tr>
+<td>Méthode</td>
+<td><code>GET</code> ou <code>HEAD</code>. Par défaut, <code>GET</code>.</td>
+</tr>
+<tr>
+<td>Statut attendu</td>
+<td>Le statut exact de HTTP qui compte comme sain. Par défaut, c&#39;est <code>200</code>.</td>
+</tr>
+<tr>
+<td>Mot-clé</td>
+<td>Texte facultatif qui doit apparaître dans le corps de la réponse.</td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td>1 à 30 secondes. Par défaut, 10 secondes.</td>
+</tr>
+<tr>
+<td>En-têtes</td>
+<td>En-têtes de requête facultatifs, stockés côté serveur.</td>
+</tr>
+<tr>
+<td>Activé</td>
+<td>Que la sonde le demande ou non.</td>
+</tr>
+<tr>
+<td>Public</td>
+<td>Qu&#39;il contribue au instantané public.</td>
+</tr>
+</tbody></table></div><p>Un moniteur est sain uniquement lorsque le code de statut correspond <strong>et</strong> le mot-clé facultatif est présent. Les redirections sont suivies. Une attente de temps écoulé, une erreur réseau, un statut incorrect ou un mot-clé manquant sont enregistrés comme un contrôle échoué avec la raison.</p>
+<p>La sonde fonctionne indépendamment de l&#39;application web. Une panne du serveur web ne stoppe pas l&#39;enregistrement des vérifications.</p>
+<h2 id="histoire-et-temps-dactivite"><a href="#histoire-et-temps-dactivite" class="anchor" aria-hidden="true">#</a>Histoire et temps d'activité</h2><p>Chaque chèque est stocké dans <code>status_checks</code>. Un déclencheur de base de données plie chaque chèque en <code>status_daily</code>, de sorte que la barre de 90 jours est une lecture bon marché plutôt qu&#39;une agrégation sur des millions de lignes.</p>
+<ul>
+<li>Les chèques bruts sont conservés pendant <strong>90 jours</strong>.</li>
+<li>Les relevés quotidiens sont conservés pendant <strong>180 jours</strong>.</li>
+<li>La page publique affiche les <strong>derniers 90 jours</strong>.</li>
+<li>Le segment de chaque jour est le pourcentage de chèques réussis ce jour-là.</li>
+</ul>
+<p>Une lacune - une journée sans vérifications - est affichée comme aucune donnée, et non comme temps d&#39;arrêt.</p>
+<h2 id="incidents-automatiques"><a href="#incidents-automatiques" class="anchor" aria-hidden="true">#</a>Incidents automatiques</h2><p>La sonde ouvre automatiquement un incident lorsqu&#39;un moniteur a échoué <strong>trois vérifications consécutives</strong>. L&#39;incident est un incident <strong>important</strong>, lié à ce moniteur, et commence par <strong>l&#39;enquête</strong> avec une mise à jour automatisée contenant l&#39;erreur la plus récente.</p>
+<p>Lorsque le prochain contrôle réussit, l&#39;incident passe à <strong>Résolu</strong> et une mise à jour enregistre approximativement la durée de la panne. L&#39;incident reste sur la page et dans le flux avec son historique complet.</p>
+<p>Si un service fonctionne mais ne tombe pas en panne trois fois de suite, aucun incident automatique n&#39;est ouvert. Le propriétaire peut toujours ajouter une mise à jour manuelle à un incident automatique pendant qu&#39;il est ouvert.</p>
+<h2 id="incidents-manuels-maintenance-et-annonces"><a href="#incidents-manuels-maintenance-et-annonces" class="anchor" aria-hidden="true">#</a>Incidents manuels, maintenance et annonces</h2><p>Le propriétaire peut publier trois types d&#39;entrées :</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Type</th>
+<th>Utilisation pour</th>
+</tr>
+</thead><tbody><tr>
+<td><code>incident</code></td>
+<td>Un problème imprévu.</td>
+</tr>
+<tr>
+<td><code>maintenance</code></td>
+<td>Travail planifié, optionnellement avec une heure de début et de fin.</td>
+</tr>
+<tr>
+<td><code>announcement</code></td>
+<td>Une notification de service général qui n&#39;est pas une panne.</td>
+</tr>
+</tbody></table></div><p>Un incident peut affecter aucun, un ou plusieurs moniteurs. Son impact est celui de <code>none</code>, <code>minor</code>, <code>major</code> ou <code>critical</code>.</p>
+<p>Les statuts de mise à jour sont les suivants :</p>
+<ul>
+<li><code>investigating</code></li>
+<li><code>identified</code></li>
+<li><code>monitoring</code></li>
+<li><code>resolved</code></li>
+<li><code>scheduled</code></li>
+<li><code>in_progress</code></li>
+<li><code>completed</code></li>
+<li><code>published</code></li>
+</ul>
+<p>Chaque mise à jour ajoute une entrée avec une date et une heure au calendrier des incidents et définit l&#39;état actuel de l&#39;incident. La marquage d&#39;une mise à jour <code>resolved</code> ou <code>completed</code> définit également le temps de résolution. La publication d&#39;une mise à jour ultérieure avec un autre statut la rouvre.</p>
+<h2 id="statut-global"><a href="#statut-global" class="anchor" aria-hidden="true">#</a>Statut global</h2><p>Le bannière est décidé dans cet ordre :</p>
+<ol>
+<li>Une fenêtre de maintenance active indique <strong>Maintenance en cours</strong>, ou
+<strong>Entretien programmé</strong> avant qu&#39;il ne commence.</li>
+<li>Un incident majeur actif ou critique indique <strong>Panne majeure</strong>.</li>
+<li>Un incident mineur actif indique <strong>Partiellement dégradé</strong>.</li>
+<li>Les moniteurs défectueux indiquent <strong>Partiellement dégradé</strong> ou <strong>Panne majeure</strong> lorsque chaque
+Le moniteur public échoue.</li>
+<li>Sans échec et au moins un résultat, il indique <strong>Tous les systèmes opérationnels</strong>.</li>
+<li>Avant que les premiers chèques ne soient déposés, il est indiqué <strong>En attente des premiers chèques</strong>.</li>
+</ol>
+<p>Les incidents résolus n&#39;affectent pas le bannière.</p>
+<h2 id="vie-privee"><a href="#vie-privee" class="anchor" aria-hidden="true">#</a>vie privée</h2><p>Le chemin de lecture public est une fonction de base de données, et non un accès direct à la table. Il renvoie les noms des moniteurs, des groupes, des états, de la latence, du temps d&#39;activité et des incidents. Il omet délibérément :</p>
+<ul>
+<li>surveiller URLs ;</li>
+<li>en-têtes de requête ;</li>
+<li>texte d&#39;erreur de sondage ;</li>
+<li>identifiants de contrôle internes ;</li>
+<li>les identités derrière les mises à jour des incidents.</li>
+</ul>
+<p>Les tables de base ont la sécurité au niveau de la ligne activée sans aucune politique publique. Seuls le rôle de service et la fonction de sondage peuvent les lire directement.</p>
+<h2 id="administration"><a href="#administration" class="anchor" aria-hidden="true">#</a>administration</h2><p><code>/status/admin</code> est réservé au <strong>propriétaire de la plate-forme</strong> connecté. Il ne s&#39;agit pas d&#39;un rôle de espace et ne peut pas être accordé à un autre membre. Les demandes non authentifiées reçoivent <code>401</code> ; d&#39;autres comptes connectés reçoivent <code>403</code>.</p>
+<p>L&#39;écran d&#39;administration peut :</p>
+<ul>
+<li>créer, modifier, activer, désactiver, publier ou supprimer des moniteurs ;</li>
+<li>voir le URL, les en-têtes et le dernier résultat de chaque moniteur ;</li>
+<li>publier des rapports sur les incidents, des fenêtres de maintenance et des annonces ;</li>
+<li>ajouter des mises à jour de la chronologie et modifier l&#39;impact d&#39;un incident ou les services affectés ;</li>
+<li>supprimer un moniteur et son historique.</li>
+</ul>
+<h3 id="admin-api"><a href="#admin-api" class="anchor" aria-hidden="true">#</a>Admin API</h3><p>L&#39;écran utilise ces itinéraires réservés aux propriétaires uniquement :</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Méthode</th>
+<th>Point d&#39;extrémité</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code>, <code>POST</code></td>
+<td><code>/api/status-admin/monitors</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code>, <code>DELETE</code></td>
+<td><code>/api/status-admin/monitors/{id}</code></td>
+</tr>
+<tr>
+<td><code>GET</code>, <code>POST</code></td>
+<td><code>/api/status-admin/incidents</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code>, <code>DELETE</code></td>
+<td><code>/api/status-admin/incidents/{id}</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/status-admin/incidents/{id}/updates</code></td>
+</tr>
+</tbody></table></div><p>Ils acceptent le jeton d&#39;accès Supabase du propriétaire sous la forme de <code>Authorization: Bearer &lt;token&gt;</code>. Ce sont des détails d&#39;implémentation de l&#39;écran d&#39;administration, et non une API public ; la forme peut changer.</p>
+<h2 id="notes-operationnelles"><a href="#notes-operationnelles" class="anchor" aria-hidden="true">#</a>Notes opérationnelles</h2><ul>
+<li>La sonde authentifie avec un secret stocké dans Supabase Vault sous
+<code>status_probe_key</code>. Le secret est comparé à l&#39;intérieur de la base de données et n&#39;est pas
+Retourné à la fonction.</li>
+<li>Le travail <code>pg_cron</code> est nommé <code>status-probe</code>. Il lit le secret de Vault sur
+Chaque exécution, donc le rotation du secret ne nécessite pas d&#39;édition du travail.</li>
+<li>La fonction Edge est déployée avec la vérification JWT désactivée, car elle
+authentifie plutôt avec le secret du coffre-fort.</li>
+<li>Si la sonde elle-même cesse de fonctionner, la page s&#39;affichera comme obsolète.
+<strong>dernières fois vérifiées</strong>. C&#39;est le signal pour inspecter le travail cron et Edge.
+Bases de données de fonctions.</li>
+</ul>
+<h2 id="lie"><a href="#lie" class="anchor" aria-hidden="true">#</a>lié</h2><ul>
+<li><a href="/fr/docs/developers/webhooks/">Webhooks</a> - envoyer des notifications d&#39;interruption dans un canal.</li>
+<li><a href="/fr/docs/developers/embeds/">Embeds</a> - formattez ces notifications.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Confidentialité</a> ·
+  <a href="https://www.disband.dev/terms">Conditions</a>
+</footer>
+</body>
+</html>

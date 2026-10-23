@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hospede seu próprio bot — Documentação do Disband</title>
+<meta name="description" content="Disband não hospeda ou executa seu bot. Você executa o cliente onde quiser, e ele conversa com o Disband através de um gateway de polling longo usando o token d" />
+<link rel="canonical" href="https://docs.disband.dev/pt-br/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="fr" href="https://docs.disband.dev/fr/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="de" href="https://docs.disband.dev/de/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="pt-BR" href="https://docs.disband.dev/pt-br/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="ja" href="https://docs.disband.dev/ja/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/bots/hosting-your-own-bot/" />
+<link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/bots/hosting-your-own-bot/" />
+<meta property="og:title" content="Hospede seu próprio bot — Documentação do Disband" />
+<meta property="og:description" content="Disband não hospeda ou executa seu bot. Você executa o cliente onde quiser, e ele conversa com o Disband através de um gateway de polling longo usando o token d" />
+<meta property="og:url" content="https://docs.disband.dev/pt-br/docs/bots/hosting-your-own-bot/" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="pt_BR" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/pt-br/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <label class="sr-only" for="language-select">Idioma</label>
+    <select id="language-select" class="lang-select" aria-label="Idioma" onchange="if(this.value) location.href=this.value">
+      <option value="/docs/bots/hosting-your-own-bot/">English</option><option value="/es/docs/bots/hosting-your-own-bot/">Español</option><option value="/fr/docs/bots/hosting-your-own-bot/">Français</option><option value="/de/docs/bots/hosting-your-own-bot/">Deutsch</option><option value="/pt-br/docs/bots/hosting-your-own-bot/" selected>Português (Brasil)</option><option value="/ja/docs/bots/hosting-your-own-bot/">日本語</option><option value="/ko/docs/bots/hosting-your-own-bot/">한국어</option><option value="/zh-cn/docs/bots/hosting-your-own-bot/">简体中文</option>
+    </select>
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/pt-br/" class="nav-home-link">Início da documentação</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/pt-br/docs/bots/" class="">Visão geral</a><a href="/pt-br/docs/bots/getting-started/" class="">Primeiros passos</a><a href="/pt-br/docs/bots/hosting-your-own-bot/" class="active">Hospede seu próprio bot</a><a href="/pt-br/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/pt-br/docs/bots/clients/python/" class="">Python</a><a href="/pt-br/docs/bots/api-reference/" class="">Referência da API</a><a href="/pt-br/docs/bots/templates/" class="">Modelos</a></div><div class="nav-group"><p class="nav-label">Temas</p><a href="/pt-br/docs/themes/" class="">Temas</a></div><div class="nav-group"><p class="nav-label">Desenvolvedores</p><a href="/pt-br/docs/developers/" class="">Desenvolvedores</a><a href="/pt-br/docs/developers/webhooks/" class="">Webhooks</a><a href="/pt-br/docs/developers/embeds/" class="">Embeds</a><a href="/pt-br/docs/developers/status/" class="">Sistema de status</a><a href="/pt-br/docs/bots/" class="">Bots</a><a href="/pt-br/docs/bots/getting-started/" class="">Primeiros passos</a><a href="/pt-br/docs/bots/api-reference/" class="">Referência da API</a><a href="/pt-br/docs/bots/templates/" class="">Modelos</a></div></nav></aside>
+  <main class="content">
+    <div class="translation-note"><strong>Tradução automática</strong><span>Esta página foi traduzida automaticamente. O original em inglês é a versão de referência.</span><a href="/docs/bots/hosting-your-own-bot/">Leia esta página em inglês</a></div>
+    <h1 id="hospede-seu-proprio-bot"><a href="#hospede-seu-proprio-bot" class="anchor" aria-hidden="true">#</a>Hospede seu próprio bot</h1><p>Disband não hospeda ou executa seu bot. Você executa o cliente onde quiser, e ele conversa com o Disband através de um gateway de polling longo usando o token do bot. Esta página cobre o lado prático de manter um bot vivo.</p>
+<h2 id="onde-executa-lo"><a href="#onde-executa-lo" class="anchor" aria-hidden="true">#</a>Onde executá-lo</h2><p>Qualquer máquina que possa fazer solicitações HTTPS de saída funciona. Como o gateway é de polling contínuo (seu código mantém uma conexão aberta e o Disband retorna eventos quando eles chegam), você não precisa de um endereço público, portas de entrada ou um websocket.</p>
+<p>Boas opções, mais baratas primeiro:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Anfitrião</th>
+<th>Notas</th>
+</tr>
+</thead><tbody><tr>
+<td>Um laptop / desktop</td>
+<td>Bom para um bot pessoal que esteja online quando você estiver.</td>
+</tr>
+<tr>
+<td>Um pequeno VPS (1 GB de RAM)</td>
+<td>~US$4–6/mês; o cliente JavaScript precisa de quase nada.</td>
+</tr>
+<tr>
+<td>Uma função / trabalhador em nuvem</td>
+<td>Serverless funciona se a plataforma permitir um processo de longa duração; os clientes são suficientemente sem estado para reiniciar de forma barata.</td>
+</tr>
+<tr>
+<td>Um contêiner / Pterodáctilo</td>
+<td>Os clientes têm zero dependências de tempo de execução, então qualquer imagem funciona.</td>
+</tr>
+</tbody></table></div><h2 id="o-que-voce-realmente-precisa"><a href="#o-que-voce-realmente-precisa" class="anchor" aria-hidden="true">#</a>O que você realmente precisa</h2><ul>
+<li><strong>JavaScript</strong>: Node.js 18+, ou Deno, ou Bun. Zero dependências de tempo de execução.</li>
+<li><strong>Python</strong>: Python 3.9+. Somente biblioteca padrão (threading + <code>urllib</code>).</li>
+</ul>
+<p>Não há banco de dados, fila ou estrutura para instalar.</p>
+<h2 id="mantendo-o-vivo"><a href="#mantendo-o-vivo" class="anchor" aria-hidden="true">#</a>Mantendo-o vivo</h2><p>O gateway gira para sempre sozinho; ele se reconecta e tenta novamente automaticamente. Três coisas tendem a matar bots reais:</p>
+<ol>
+<li><p><strong>Lolos de falha.</strong> Envolva o cliente em um supervisor e reinicie em caso de falha:</p>
+<pre><code class="hljs language-bash"><span class="hljs-comment"># systemd</span>
+[Unit]
+Description=disband-bot
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/node /opt/my-bot/index.js
+Restart=always
+RestartSec=3
+Environment=DISBAND_BOT_TOKEN=…
+
+[Install]
+WantedBy=multi-user.target
+</code></pre></li>
+<li><p><strong>Tokens vencidos.</strong> Se o bot for revogado (ou um convite expirar antes de ser
+aprovado), o gateway API retorna <code>401</code>. Trate-o: registre claramente e pare,
+Em vez de tentar novamente para sempre. Ambos os clientes fazem isso aparecer como um evento <code>error</code> —
+JavaScript&#39;s <code>AuthError</code> / Python&#39;s <code>AuthError</code> — e o loop para em vez disso
+De martelar.</p>
+</li>
+<li><p><strong>Desvio de configuração silencioso.</strong> Mantenha o token em uma variável de ambiente ou em segredo.
+Armazenar, não na fonte. Se você rolar o token, reinicie o processo com
+O novo valor.</p>
+</li>
+</ol>
+<h2 id="leitura-e-escrita-de-dados"><a href="#leitura-e-escrita-de-dados" class="anchor" aria-hidden="true">#</a>Leitura e escrita de dados</h2><p>Os bots só falam com a API HTTP com escopo definido. Para consultar ou persistir o estado, use qualquer armazenamento que você já opere - um arquivo, um banco de dados, Redis - o cliente não se importa.</p>
+<h2 id="bots-de-varios-servidores"><a href="#bots-de-varios-servidores" class="anchor" aria-hidden="true">#</a>Bots de vários servidores</h2><p>Um bot pode ser convidado para muitos servidores. Os escopos aprovados são por servidor, então um bot que pode ler mensagens em todos os lugares também só pode escrever onde o proprietário concedeu <code>messages.write</code>. Seu código pode se ramificar em <code>message.server_id</code> se o comportamento precisar diferir por servidor.</p>
+<h2 id="vai-mais-longe"><a href="#vai-mais-longe" class="anchor" aria-hidden="true">#</a>Vai mais longe</h2><ul>
+<li>Veja a <strong><a href="/pt-br/docs/bots/api-reference/">Referência da API</a></strong> para os pontos finais exatos que
+Clientes usam — útil se você quiser escrever seu próprio cliente em outra linguagem.</li>
+<li>O <strong><a href="/pt-br/docs/bots/clients/javascript/">JavaScript</a></strong> e <strong><a href="/pt-br/docs/bots/clients/python/">Python</a></strong>
+As páginas de referência incluem todos os métodos e eventos.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Privacidade</a> ·
+  <a href="https://www.disband.dev/terms">Termos</a>
+</footer>
+</body>
+</html>

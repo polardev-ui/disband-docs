@@ -31,6 +31,23 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = resolve(ROOT, "dist");
 const BASE_URL = "https://docs.disband.dev";
 
+const LOCALIZED_UI = JSON.parse(readFileSync(resolve(ROOT, "i18n", "ui.json"), "utf8"));
+
+const LOCALES = [
+  { code: "en", path: "", label: "English" },
+  { code: "es", path: "es", label: "Español" },
+  { code: "fr", path: "fr", label: "Français" },
+  { code: "de", path: "de", label: "Deutsch" },
+  { code: "pt-BR", path: "pt-br", label: "Português (Brasil)" },
+  { code: "ja", path: "ja", label: "日本語" },
+  { code: "ko", path: "ko", label: "한국어" },
+  { code: "zh-CN", path: "zh-cn", label: "简体中文" },
+];
+
+function ui(locale, key) {
+  return LOCALIZED_UI[locale.code]?.[key] ?? LOCALIZED_UI.en?.[key] ?? key;
+}
+
 const PAGES = [
   { src: "index.md",                    out: "index.html",                      label: "Docs home" },
   { src: "bots/index.md",               out: "docs/bots/index.html",            label: "Overview" },
@@ -89,7 +106,10 @@ const marked = new Marked(
 function slugify(text) {
   return text
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/[^\p{Letter}\p{Number}\s-]/gu, "")
     .trim()
     .replace(/\s+/g, "-");
 }
@@ -138,43 +158,50 @@ function extractMeta(md) {
   return { title: titleMatch ? titleMatch[1].trim() : undefined, description };
 }
 
-// Absolute URL for a source markdown file. "index.md" at the root is the home
-// page; anything else lives under /docs/ mirroring the source directory.
-function srcToUrl(srcPath) {
-  if (srcPath === "index.md") return "/";
-  if (srcPath.endsWith("/index.md")) return "/docs/" + posix.dirname(srcPath) + "/";
-  return "/docs/" + srcPath.replace(/\.md$/, "") + "/";
+function localePrefix(locale) {
+  return locale.path ? `/${locale.path}` : "";
 }
 
-function pageUrl(page) {
-  if (page.out === "index.html") return "/";
-  return "/" + posix.dirname(page.out) + "/";
+// Absolute URL for a source markdown file. "index.md" at the root is the home
+// page; anything else lives under /docs/ mirroring the source directory.
+function srcToUrl(srcPath, locale = LOCALES[0]) {
+  const prefix = localePrefix(locale);
+  if (srcPath === "index.md") return `${prefix}/`;
+  if (srcPath.endsWith("/index.md")) return `${prefix}/docs/${posix.dirname(srcPath)}/`;
+  return `${prefix}/docs/${srcPath.replace(/\.md$/, "")}/`;
+}
+
+function pageUrl(page, locale = LOCALES[0]) {
+  const base = page.out === "index.html" ? "/" : "/" + posix.dirname(page.out) + "/";
+  return localePrefix(locale) + base;
 }
 
 // Rewrites relative link targets in rendered HTML. `foo.md` (and `foo.md#sec`)
 // are resolved against the current page's source directory so relative links
 // turn into the correct absolute URL for the target page.
-function rewriteLinks(html, currentSrc) {
+function rewriteLinks(html, currentSrc, locale = LOCALES[0]) {
   const fromDir = posix.dirname(currentSrc);
   return html.replace(/href="([^"]+?\.md)(#[\w-]+)?"/g, (_m, path, hash) => {
     if (path.startsWith("/")) return _m;
     // Strip leading ./ and resolve against the current source directory.
     const resolved = posix.normalize(posix.join(fromDir, path));
-    const url = srcToUrl(resolved);
+    const url = srcToUrl(resolved, locale);
     return `href="${url}${hash ? hash : ""}"`;
   });
 }
 
-function navHTML(currentUrl) {
-  const home = `<a href="/" class="${currentUrl === "/" ? "active nav-home-link" : "nav-home-link"}">Docs home</a>`;
+function navHTML(currentUrl, locale) {
+  const prefix = localePrefix(locale);
+  const homeUrl = `${prefix}/`;
+  const home = `<a href="${homeUrl}" class="${currentUrl === homeUrl ? "active nav-home-link" : "nav-home-link"}">${ui(locale, "Docs home")}</a>`;
   const groups = NAV.map((group) => {
     const items = group.items
-      .map(
-        (item) =>
-          `<a href="${item.href}" class="${item.href === currentUrl ? "active" : ""}">${item.label}</a>`,
-      )
+      .map((item) => {
+        const href = `${prefix}${item.href}`;
+        return `<a href="${href}" class="${href === currentUrl ? "active" : ""}">${ui(locale, item.label)}</a>`;
+      })
       .join("");
-    return `<div class="nav-group"><p class="nav-label">${group.label}</p>${items}</div>`;
+    return `<div class="nav-group"><p class="nav-label">${ui(locale, group.label)}</p>${items}</div>`;
   }).join("");
   return `<nav class="sidebar-nav">${home}${groups}</nav>`;
 }
@@ -201,6 +228,10 @@ const STYLES = `
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
 body {
   margin: 0;
   background: var(--bg-primary);
@@ -223,9 +254,42 @@ a:hover { text-decoration: underline; }
 .wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
 .wordmark:hover { text-decoration: none; }
 .wordmark span { color: var(--brand); margin-left: 2px; }
-.header-links { display: flex; gap: 20px; font-size: 13.5px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
 .header-links a { color: var(--text-muted); text-decoration: none; }
 .header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
 
 .layout {
   display: grid;
@@ -309,40 +373,77 @@ main.content {
 ${HLJS_THEME}
 `;
 
-function pageHTML({ title, description, html, currentUrl }) {
+function pageHTML({ title, description, html, currentUrl, locale, alternates, englishUrl, translated }) {
   const canonical = BASE_URL + currentUrl;
+  const docLabel = ui(locale, "Disband Docs");
+  const prefix = localePrefix(locale);
+  const isHome = currentUrl === `${prefix}/`;
+  const fullTitle =
+    isHome && locale.code !== "en"
+      ? docLabel
+      : title === docLabel
+        ? title
+        : `${title} — ${docLabel}`;
+  const languageLabel = ui(locale, "Language");
+  const homeUrl = `${prefix}/`;
+  const altTags = [
+    ...alternates.map(
+      (alternate) => `<link rel="alternate" hreflang="${alternate.hreflang}" href="${BASE_URL}${alternate.url}" />`,
+    ),
+    `<link rel="alternate" hreflang="x-default" href="${BASE_URL}${alternates[0].url}" />`,
+  ].join("\n");
+  const options = alternates
+    .map(
+      (alternate) =>
+        `<option value="${alternate.url}"${alternate.code === locale.code ? " selected" : ""}>${alternate.label}</option>`,
+    )
+    .join("");
+  const banner =
+    locale.code === "en"
+      ? ""
+      : `<div class="translation-note"><strong>${ui(locale, "Automatic translation")}</strong><span>${ui(
+          locale,
+          "This page was translated automatically. The English original is the source of truth.",
+        )}</span><a href="${englishUrl}">${ui(locale, "Read this page in English")}</a></div>`;
   return `<!doctype html>
-<html lang="en">
+<html lang="${locale.code}">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>${title} — Disband Docs</title>
+<title>${fullTitle}</title>
 <meta name="description" content="${escapeHTML(description)}" />
 <link rel="canonical" href="${canonical}" />
-<meta property="og:title" content="${title} — Disband Docs" />
+${altTags}
+<meta property="og:title" content="${fullTitle}" />
 <meta property="og:description" content="${escapeHTML(description)}" />
 <meta property="og:url" content="${canonical}" />
 <meta property="og:type" content="website" />
+<meta property="og:locale" content="${locale.code.replace("-", "_")}" />
 <meta name="twitter:card" content="summary" />
 <style>${STYLES}</style>
 </head>
 <body>
 <header class="site-header">
-  <a class="wordmark" href="/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <a class="wordmark" href="${homeUrl}"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
   <div class="header-links">
+    <label class="sr-only" for="language-select">${languageLabel}</label>
+    <select id="language-select" class="lang-select" aria-label="${languageLabel}" onchange="if(this.value) location.href=this.value">
+      ${options}
+    </select>
     <a href="https://www.disband.dev">disband.dev</a>
   </div>
 </header>
 <div class="layout">
-  <aside class="sidebar">${navHTML(currentUrl)}</aside>
+  <aside class="sidebar">${navHTML(currentUrl, locale)}</aside>
   <main class="content">
+    ${banner}
     ${html}
   </main>
 </div>
 <footer class="site-footer">
   © ${new Date().getFullYear()} Disband · <a href="https://www.disband.dev">disband.dev</a> ·
-  <a href="https://www.disband.dev/privacy">Privacy</a> ·
-  <a href="https://www.disband.dev/terms">Terms</a>
+  <a href="https://www.disband.dev/privacy">${ui(locale, "Privacy")}</a> ·
+  <a href="https://www.disband.dev/terms">${ui(locale, "Terms")}</a>
 </footer>
 </body>
 </html>`;
@@ -367,19 +468,54 @@ async function build() {
   }
   console.log(`Copied ${(await readdir(assetsDir)).length} asset(s) → dist/`);
 
-  for (const page of PAGES) {
-    const md = await readFile(resolve(ROOT, page.src), "utf8");
-    const { title: mdTitle, description } = extractMeta(md);
-    const title = page.out === "index.html" ? "Docs" : mdTitle ?? page.label;
-    const url = pageUrl(page);
-    const rendered = await marked.parse(md);
-    const linked = rewriteLinks(rendered, page.src);
-    const html = pageHTML({ title, description, html: linked, currentUrl: url });
+  let built = 0;
+  for (const locale of LOCALES) {
+    for (const page of PAGES) {
+      let md;
+      let translated = false;
+      if (locale.code === "en") {
+        md = await readFile(resolve(ROOT, page.src), "utf8");
+      } else {
+        const localizedPath = resolve(ROOT, "i18n", locale.path, page.src);
+        try {
+          md = await readFile(localizedPath, "utf8");
+          translated = true;
+        } catch {
+          console.warn(`  missing translation ${locale.code}/${page.src}; using English`);
+          md = await readFile(resolve(ROOT, page.src), "utf8");
+        }
+      }
 
-    const out = resolve(DIST, page.out);
-    await mkdir(dirname(out), { recursive: true });
-    await writeFile(out, html);
-    console.log(`  built ${page.src}  →  ${url}`);
+      const { title: mdTitle, description } = extractMeta(md);
+      const title =
+        page.out === "index.html" ? ui(locale, "Documentation") : mdTitle ?? ui(locale, page.label);
+      const url = pageUrl(page, locale);
+      const englishUrl = pageUrl(page, LOCALES[0]);
+      const alternates = LOCALES.map((option) => ({
+        code: option.code,
+        hreflang: option.code,
+        label: option.label,
+        url: pageUrl(page, option),
+      }));
+      const rendered = await marked.parse(md);
+      const linked = rewriteLinks(rendered, page.src, locale);
+      const html = pageHTML({
+        title,
+        description,
+        html: linked,
+        currentUrl: url,
+        locale,
+        alternates,
+        englishUrl,
+        translated,
+      });
+
+      const out = resolve(DIST, locale.path, page.out);
+      await mkdir(dirname(out), { recursive: true });
+      await writeFile(out, html);
+      built += 1;
+      console.log(`  built ${locale.code}/${page.src}  →  ${url}`);
+    }
   }
 
   await writeFile(
@@ -387,13 +523,15 @@ async function build() {
     "User-agent: *\nAllow: /\n\nSitemap: " + BASE_URL + "/sitemap.xml\n",
   );
 
-  const urls = PAGES.map((p) => `  <url><loc>${BASE_URL}${pageUrl(p)}</loc></url>`).join("\n");
+  const urls = LOCALES.flatMap((locale) =>
+    PAGES.map((p) => `  <url><loc>${BASE_URL}${pageUrl(p, locale)}</loc></url>`),
+  ).join("\n");
   await writeFile(
     resolve(DIST, "sitemap.xml"),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
   );
 
-  console.log(`\nBuilt ${PAGES.length} page(s) into dist/`);
+  console.log(`\nBuilt ${built} page(s) into dist/`);
 }
 
 build().catch((err) => {

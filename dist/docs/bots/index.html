@@ -7,11 +7,21 @@
 <meta name="description" content="Disband bots are self-hosted integrations. You run the code, Disband relays
 messages to and from it. Disband never hosts or executes your bot's code." />
 <link rel="canonical" href="https://docs.disband.dev/docs/bots/" />
+<link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/bots/" />
+<link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/bots/" />
+<link rel="alternate" hreflang="fr" href="https://docs.disband.dev/fr/docs/bots/" />
+<link rel="alternate" hreflang="de" href="https://docs.disband.dev/de/docs/bots/" />
+<link rel="alternate" hreflang="pt-BR" href="https://docs.disband.dev/pt-br/docs/bots/" />
+<link rel="alternate" hreflang="ja" href="https://docs.disband.dev/ja/docs/bots/" />
+<link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/bots/" />
+<link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/bots/" />
+<link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/bots/" />
 <meta property="og:title" content="Bots — Disband Docs" />
 <meta property="og:description" content="Disband bots are self-hosted integrations. You run the code, Disband relays
 messages to and from it. Disband never hosts or executes your bot's code." />
 <meta property="og:url" content="https://docs.disband.dev/docs/bots/" />
 <meta property="og:type" content="website" />
+<meta property="og:locale" content="en" />
 <meta name="twitter:card" content="summary" />
 <style>
 :root {
@@ -30,6 +40,10 @@ messages to and from it. Disband never hosts or executes your bot's code." />
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
 body {
   margin: 0;
   background: var(--bg-primary);
@@ -52,9 +66,42 @@ a:hover { text-decoration: underline; }
 .wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
 .wordmark:hover { text-decoration: none; }
 .wordmark span { color: var(--brand); margin-left: 2px; }
-.header-links { display: flex; gap: 20px; font-size: 13.5px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
 .header-links a { color: var(--text-muted); text-decoration: none; }
 .header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
 
 .layout {
   display: grid;
@@ -151,12 +198,17 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <header class="site-header">
   <a class="wordmark" href="/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
   <div class="header-links">
+    <label class="sr-only" for="language-select">Language</label>
+    <select id="language-select" class="lang-select" aria-label="Language" onchange="if(this.value) location.href=this.value">
+      <option value="/docs/bots/" selected>English</option><option value="/es/docs/bots/">Español</option><option value="/fr/docs/bots/">Français</option><option value="/de/docs/bots/">Deutsch</option><option value="/pt-br/docs/bots/">Português (Brasil)</option><option value="/ja/docs/bots/">日本語</option><option value="/ko/docs/bots/">한국어</option><option value="/zh-cn/docs/bots/">简体中文</option>
+    </select>
     <a href="https://www.disband.dev">disband.dev</a>
   </div>
 </header>
 <div class="layout">
   <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="active">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="active">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
   <main class="content">
+    
     <h1 id="bots"><a href="#bots" class="anchor" aria-hidden="true">#</a>Bots</h1><p>Disband bots are self-hosted integrations. You run the code, Disband relays
 messages to and from it. Disband never hosts or executes your bot&#39;s code.</p>
 <h2 id="how-it-works"><a href="#how-it-works" class="anchor" aria-hidden="true">#</a>How it works</h2><ol>
