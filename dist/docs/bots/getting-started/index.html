@@ -211,11 +211,12 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
     
     <h1 id="getting-started-your-first-bot"><a href="#getting-started-your-first-bot" class="anchor" aria-hidden="true">#</a>Getting started: your first bot</h1><p>This page walks through creating a bot, getting its token, and inviting it to a
 server. It takes about two minutes.</p>
-<h2 id="1-create-the-bot"><a href="#1-create-the-bot" class="anchor" aria-hidden="true">#</a>1. Create the bot</h2><p>Open <strong>Settings → Bots</strong> in Disband and click <strong>New bot</strong>.</p>
+<h2 id="1-create-the-bot"><a href="#1-create-the-bot" class="anchor" aria-hidden="true">#</a>1. Create the bot</h2><p>Open <strong>Settings → Bots</strong> in Disband (or the <a href="https://disband.dev/developers/applications" target="_blank" rel="noopener noreferrer">Developers portal</a>)
+and click <strong>New bot</strong>.</p>
 <ul>
 <li>Give it a name. The name is what appears in the member list and on messages.</li>
 <li>Pick the <strong>scopes</strong> it needs. Start small — you can always create another bot
-with more scopes. The full list is on the <a href="/docs/bots/">bots overview</a>.</li>
+with more scopes, or edit them later. The full list is on the <a href="/docs/bots/">bots overview</a>.</li>
 <li>Click <strong>Create</strong>.</li>
 </ul>
 <p>Disband returns a <strong>token</strong>, shown once. Copy it somewhere safe now: it is never
@@ -223,22 +224,43 @@ shown again and cannot be retrieved later. If you lose it, revoke the bot and
 create a new one.</p>
 <p>The token is what your code uses to authenticate:</p>
 <pre><code>Authorization: Bot &lt;token&gt;
-</code></pre><h2 id="2-invite-the-bot-to-a-server"><a href="#2-invite-the-bot-to-a-server" class="anchor" aria-hidden="true">#</a>2. Invite the bot to a server</h2><p>In <strong>Settings → Bots</strong>, open the bot you just created:</p>
+</code></pre><h2 id="2-customize-your-bot-optional"><a href="#2-customize-your-bot-optional" class="anchor" aria-hidden="true">#</a>2. Customize your bot (optional)</h2><p>From the Developers portal, click <strong>Edit</strong> on your bot to set:</p>
+<ul>
+<li><strong>Avatar URL</strong> — profile picture (any HTTPS image).</li>
+<li><strong>Banner URL</strong> — banner image for the bot&#39;s profile.</li>
+<li><strong>Bio</strong> — a short description shown on the bot&#39;s profile.</li>
+<li><strong>Scopes</strong> — add or remove permissions.</li>
+</ul>
+<h2 id="3-invite-the-bot-to-a-server"><a href="#3-invite-the-bot-to-a-server" class="anchor" aria-hidden="true">#</a>3. Invite the bot to a server</h2><p>In <strong>Settings → Bots</strong>, open the bot you just created:</p>
 <ol>
 <li>Click <strong>Generate invite</strong>.</li>
-<li>Pick the target server and the scope set to grant.</li>
-<li>Send the resulting link to that server&#39;s <strong>owner</strong>.</li>
+<li>Choose <strong>targeted</strong> (pick a specific server) or <strong>general</strong> (anyone with the
+link can pick a server they manage).</li>
+<li>Pick the scope set to grant.</li>
+<li>Send the resulting link to the server&#39;s <strong>owner</strong> or a <strong>channel manager</strong>.</li>
 </ol>
-<p>Only the owner can approve a bot invite. Invites expire after 7 days.</p>
-<h2 id="3-the-owner-approves"><a href="#3-the-owner-approves" class="anchor" aria-hidden="true">#</a>3. The owner approves</h2><p>The owner opens the link and clicks <strong>Approve</strong>. The bot becomes a member of the
+<p>Targeted invites lock to a specific server and require you to be a member.
+General invites work for anyone — the recipient signs in and picks a space.</p>
+<p>Only owners and channel managers can approve a bot invite. Invites expire after
+7 days.</p>
+<h2 id="4-the-owner-approves"><a href="#4-the-owner-approves" class="anchor" aria-hidden="true">#</a>4. The owner approves</h2><p>The owner opens the link and clicks <strong>Approve</strong>. The bot becomes a member of the
 server, limited to the scopes that were approved. (The approved scopes are the
 intersection of the bot account&#39;s scopes and what the owner granted — you cannot
 approve more than the bot was created with.)</p>
-<h2 id="4-connect-with-a-client"><a href="#4-connect-with-a-client" class="anchor" aria-hidden="true">#</a>4. Connect with a client</h2><p>Save the token to an environment variable and run one of the clients:</p>
-<pre><code class="hljs language-javascript"><span class="hljs-comment">// JavaScript — install with: npm install /path/to/packages/bot</span>
+<h2 id="5-install-a-client-and-connect"><a href="#5-install-a-client-and-connect" class="anchor" aria-hidden="true">#</a>5. Install a client and connect</h2><pre><code class="hljs language-bash"><span class="hljs-comment"># JavaScript / TypeScript</span>
+npm install @disband/bot
+
+<span class="hljs-comment"># Python</span>
+pip install disband-bot
+</code></pre><p>Save the token to an environment variable and run one of the clients:</p>
+<pre><code class="hljs language-javascript"><span class="hljs-comment">// JavaScript</span>
 <span class="hljs-keyword">import</span> { <span class="hljs-title class_">Client</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@disband/bot&quot;</span>;
 
 <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Client</span>({ <span class="hljs-attr">token</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DISBAND_BOT_TOKEN</span> });
+
+client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;ready&quot;</span>, <span class="hljs-function">(<span class="hljs-params">me</span>) =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Logged in as <span class="hljs-subst">${me.name}</span> (<span class="hljs-subst">${me.scopes.join(<span class="hljs-string">&quot;, &quot;</span>)}</span>)`</span>);
+});
 
 client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;messageCreate&quot;</span>, <span class="hljs-title function_">async</span> (message) =&gt; {
   <span class="hljs-keyword">if</span> (message.<span class="hljs-property">author</span>?.<span class="hljs-property">is_bot</span>) <span class="hljs-keyword">return</span>;
@@ -247,10 +269,14 @@ client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&q
 });
 
 <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">connect</span>();
-</code></pre><pre><code class="hljs language-python"><span class="hljs-comment"># Python — install with: pip install ./packages/disband-bot-python</span>
+</code></pre><pre><code class="hljs language-python"><span class="hljs-comment"># Python</span>
 <span class="hljs-keyword">from</span> disband_bot <span class="hljs-keyword">import</span> Client
 
 client = Client(token=DISBAND_BOT_TOKEN)
+
+<span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;ready&quot;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">on_ready</span>(<span class="hljs-params">me</span>):
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Logged in as <span class="hljs-subst">{me[<span class="hljs-string">&#x27;name&#x27;</span>]}</span> (<span class="hljs-subst">{<span class="hljs-string">&#x27;, &#x27;</span>.join(me[<span class="hljs-string">&#x27;scopes&#x27;</span>])}</span>)&quot;</span>)
 
 <span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;messageCreate&quot;</span></span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">handle</span>(<span class="hljs-params">message</span>):

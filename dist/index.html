@@ -220,21 +220,7 @@ client and how to keep it alive.</li>
 Zero dependencies; works on Node.js 18+, Deno, Bun, and the browser.</li>
 <li><strong><a href="/docs/bots/clients/python/">Python client</a></strong> — <code>disband-bot</code>.
 Standard library only; works on Python 3.9+.</li>
-<li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> — the HTTP API both clients talk to.</li>
-</ul>
-<h2 id="developers"><a href="#developers" class="anchor" aria-hidden="true">#</a>Developers</h2><p>Build bots and integrate Disband into your games and apps using the HTTP API.</p>
-<ul>
-<li><strong><a href="/docs/developers/">Developers</a></strong> — overview, start here, and security
-notes for game/app integrations.</li>
-<li><strong><a href="/docs/bots/">Bots overview</a></strong> — scopes, invites, limits, and safety.</li>
-<li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> — the HTTP API both clients talk to.</li>
-<li><strong><a href="/docs/bots/templates/">Bot templates</a></strong> — ready-to-adapt welcomers, ticket managers, and more.</li>
-<li><strong><a href="/docs/developers/webhooks/">Webhooks</a></strong> — post from CI, monitoring, or a game
-server through a secret URL. No bot needed.</li>
-<li><strong><a href="/docs/developers/embeds/">Embeds</a></strong> — Discord-shaped cards for releases,
-alerts, and status updates.</li>
-<li><strong><a href="/docs/developers/status/">Status system</a></strong> — how the public status page checks
-services, records uptime, and handles incidents.</li>
+<li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> if you want to talk to the API directly.</li>
 </ul>
 <h2 id="themes"><a href="#themes" class="anchor" aria-hidden="true">#</a>Themes</h2><p>SUPER members can restyle the whole app with custom CSS, shipped skins, and
 uploaded icons.</p>
@@ -242,12 +228,14 @@ uploaded icons.</p>
 <li><strong><a href="/docs/themes/">Themes</a></strong> — the CSS variables that are a stable API, the
 selectors that are safe to target, and a starter template.</li>
 </ul>
-<h2 id="download-the-clients"><a href="#download-the-clients" class="anchor" aria-hidden="true">#</a>Download the clients</h2><ul>
-<li><strong><a href="https://raw.githubusercontent.com/polardev-ui/disband-docs/main/zips/disband-bot-0.1.0.tgz" target="_blank" rel="noopener noreferrer">@disband/bot</a></strong> — the JavaScript client
-(<code>npm install ./disband-bot-0.1.0.tgz</code>).</li>
-<li><strong><a href="https://raw.githubusercontent.com/polardev-ui/disband-docs/main/zips/disband-bot-python-0.1.0.tar.gz" target="_blank" rel="noopener noreferrer">disband-bot</a></strong> — the Python client
-(<code>pip install ./disband-bot-python-0.1.0.tar.gz</code>).</li>
-</ul>
+<h2 id="install-the-clients"><a href="#install-the-clients" class="anchor" aria-hidden="true">#</a>Install the clients</h2><pre><code class="hljs language-bash"><span class="hljs-comment"># JavaScript / TypeScript</span>
+npm install @disband/bot
+
+<span class="hljs-comment"># Python</span>
+pip install disband-bot
+</code></pre><p>No more zip downloads — install directly from npm and PyPI. See the
+<a href="/docs/bots/clients/javascript/">JavaScript</a> and <a href="/docs/bots/clients/python/">Python</a>
+pages for full setup instructions.</p>
 
   </main>
 </div>

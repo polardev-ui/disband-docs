@@ -78,7 +78,6 @@ Message object:
   "content": "Deploy finished",
   "reply_to_id": null,
   "mentions": [],
-  "embeds": [],
   "attachment_url": null,
   "attachment_type": null,
   "created_at": "2026-01-01T00:00:00Z",
@@ -97,18 +96,8 @@ server) receive events.
 **POST `/api/v1/channels/:id/messages`** — sends a message (`messages.write`).
 
 ```json
-{
-  "content": "Deploy finished",
-  "reply_to_id": null,
-  "embeds": [
-    { "title": "Build 1842", "description": "All 412 tests passed.", "color": 5793266 }
-  ]
-}
+{ "content": "Deploy finished", "reply_to_id": null }
 ```
-
-`content` may be omitted when `embeds` is present. Embeds use Discord's shape and
-limits; see [Embeds](../developers/embeds.md) for every field and the exact
-limits. A message with neither content nor embeds is rejected with `400`.
 
 Returns `201` with `{ "message": { … } }`.
 
@@ -166,8 +155,37 @@ a server.
 { "server_id": "…", "scopes": ["messages.read", "messages.write"] }
 ```
 
-Returns the invite (including an `invite_url`) to send to the server owner.
-Only the owner can approve; invites expire after 7 days.
+Set `server_id` to `null` (or omit it with `"general": true`) to create a
+**general invite** — anyone with the link can sign in and pick a space they
+manage. Returns the invite (including an `invite_url`) to send to the server
+owner or share publicly. Only the owner or a channel manager can approve;
+invites expire after 7 days.
+
+### Bot management (owner only)
+
+**POST `/api/bot/update`** — update a bot's name, avatar, banner, bio, or scopes.
+
+```json
+{ "botId": "…", "name": "New Name", "avatarUrl": "https://…", "bannerUrl": "https://…", "bio": "…", "scopes": ["messages.read", "messages.write"] }
+```
+
+All fields except `botId` are optional. Returns `{ "ok": true }`.
+
+**POST `/api/bot/register`** — create a new bot.
+
+```json
+{ "name": "My Bot", "scopes": ["messages.read", "messages.write"] }
+```
+
+Returns `{ "bot": { … }, "token": "…" }`. The token is shown once.
+
+**POST `/api/bot/revoke`** — revoke a bot's token.
+
+```json
+{ "botId": "…" }
+```
+
+Returns `{ "ok": true }`. Revocation is immediate and irreversible.
 
 ### Identity (used at startup)
 
@@ -190,8 +208,6 @@ Only the owner can approve; invites expire after 7 days.
 - Up to **5 bots per account**; a bot's token dies instantly on revoke.
 - Messages up to **4,000 characters**; `@everyone` needs the `mention_everyone`
   role permission.
-- Up to **10 embeds per message**, with the same field limits as webhooks. See
-  [Embeds](../developers/embeds.md).
 - Rate limits apply per bot token. If you hit `429`, honor `Retry-After`.
 
 ## Writing your own client
@@ -200,13 +216,6 @@ Only the owner can approve; invites expire after 7 days.
 2. Loop on `GET /api/v1/gateway?timeout=20`, handle events by `type`.
 3. Use the endpoints above with the same auth header; map `401` → "bad token",
    `403` → "missing permission", `429` → "slow down and retry after `Retry-After`".
-
-## Webhooks are a different surface
-
-The bot API authenticates with `Authorization: Bot <token>` and can read events
-through the gateway. A [webhook](../developers/webhooks.md) is a one-way secret
-URL: no bot account, no auth header, and no ability to read messages. Use a
-webhook for notifications and a bot when you need to react to chat.
 
 The official clients are `@disband/bot` (JavaScript) and `disband-bot` (Python)
 — see the [JavaScript](clients/javascript.md) and [Python](clients/python.md)

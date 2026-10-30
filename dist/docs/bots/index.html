@@ -212,11 +212,12 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
     <h1 id="bots"><a href="#bots" class="anchor" aria-hidden="true">#</a>Bots</h1><p>Disband bots are self-hosted integrations. You run the code, Disband relays
 messages to and from it. Disband never hosts or executes your bot&#39;s code.</p>
 <h2 id="how-it-works"><a href="#how-it-works" class="anchor" aria-hidden="true">#</a>How it works</h2><ol>
-<li><strong>Create a bot</strong> in <strong>Settings → Bots</strong> and pick the scopes it needs. You get
-a token back — it is shown <strong>once</strong>.</li>
-<li>In <strong>Settings → Bots</strong>, generate an <strong>invite link</strong> for the server you want
-the bot to join, and send it to that server&#39;s <strong>owner</strong>.</li>
-<li>The owner opens the link and approves. The bot becomes a member of the server.</li>
+<li><strong>Create a bot</strong> in <strong>Settings → Bots</strong> (or the <a href="https://disband.dev/developers/applications" target="_blank" rel="noopener noreferrer">Developers portal</a>)
+and pick the scopes it needs. You get a token back — it is shown <strong>once</strong>.</li>
+<li>Generate an <strong>invite link</strong> — targeted to a specific server, or a <strong>general
+invite</strong> that anyone can use (the recipient picks the server).</li>
+<li>The server owner (or a channel manager) opens the link and approves. The bot
+becomes a member of the server.</li>
 <li>You run one of the client libraries somewhere (a server, a cloud function,
 your laptop) and it connects to Disband with the token.</li>
 </ol>
@@ -235,35 +236,71 @@ when creating it and the scopes the owner approved for that specific server:</p>
 <td>Send and reply to messages in channels the bot can see.</td>
 </tr>
 <tr>
+<td><code>messages.delete</code></td>
+<td>Delete messages the bot can see.</td>
+</tr>
+<tr>
+<td><code>messages.react</code></td>
+<td>Add and remove reactions on messages.</td>
+</tr>
+<tr>
 <td><code>members.read</code></td>
 <td>List the members of servers the bot has joined.</td>
 </tr>
 <tr>
+<td><code>channels.read</code></td>
+<td>List channels and categories.</td>
+</tr>
+<tr>
 <td><code>channels.manage</code></td>
 <td>Create, rename, and delete channels — also needs the <code>manage_channels</code> role in the server.</td>
+</tr>
+<tr>
+<td><code>webhooks.manage</code></td>
+<td>Create, edit, and delete webhooks.</td>
 </tr>
 </tbody></table></div><h2 id="token-authentication"><a href="#token-authentication" class="anchor" aria-hidden="true">#</a>Token authentication</h2><p>Every API call is authenticated with the bot token:</p>
 <pre><code>Authorization: Bot &lt;token&gt;
 </code></pre><p>Bot tokens are <strong>hashed at rest</strong> — the raw token is never stored or retrievable.
 If it leaks (or you no longer need the bot), revoke it in <strong>Settings → Bots</strong>;
 revocation kills the token immediately.</p>
+<h2 id="customizing-your-bot"><a href="#customizing-your-bot" class="anchor" aria-hidden="true">#</a>Customizing your bot</h2><p>Bots can be customized from the <strong>Developers portal</strong> (<code>/developers/applications</code>):</p>
+<ul>
+<li><strong>Name</strong> — the display name shown in the member list and on messages.</li>
+<li><strong>Avatar</strong> — profile picture URL (any HTTPS image).</li>
+<li><strong>Banner</strong> — banner image URL for the bot&#39;s profile.</li>
+<li><strong>Bio</strong> — a short description shown on the bot&#39;s profile.</li>
+<li><strong>Scopes</strong> — add or remove scopes at any time (existing grants are not
+affected until a new invite is approved).</li>
+</ul>
+<h2 id="general-invite-links"><a href="#general-invite-links" class="anchor" aria-hidden="true">#</a>General invite links</h2><p>When creating an invite, enable <strong>General invite</strong> to generate a link that anyone
+can use. The recipient signs in to Disband, picks a space they manage, and
+approves the bot there. Great for distributing bots publicly or in documentation.</p>
+<p>Targeted invites (the default) lock the invite to a specific server and require
+the bot owner to be a member of that server.</p>
 <h2 id="limits-safety"><a href="#limits-safety" class="anchor" aria-hidden="true">#</a>Limits & safety</h2><ul>
 <li>Up to <strong>5 bots per account</strong>. A bot can be revoked at any time, which kills its
 token.</li>
 <li>Messages up to <strong>4,000 characters</strong>. Bots need the <code>mention_everyone</code> role
 permission to use <code>@everyone</code>.</li>
-<li>Only a server&#39;s <strong>owner</strong> can approve a bot invite. Invites expire after
-<strong>7 days</strong>.</li>
+<li>Only a server&#39;s <strong>owner</strong> or a <strong>channel manager</strong> can approve a bot invite.
+Invites expire after <strong>7 days</strong>.</li>
 <li>Bot tokens are hashed at rest; the raw token is never stored or retrievable.</li>
 <li>Bots can never reach the database directly — every action goes through scoped
 API endpoints.</li>
+<li>Rate limits apply per bot token. If you hit <code>429</code>, honor <code>Retry-After</code>.</li>
 </ul>
+<h2 id="install-the-clients"><a href="#install-the-clients" class="anchor" aria-hidden="true">#</a>Install the clients</h2><pre><code class="hljs language-bash"><span class="hljs-comment"># JavaScript / TypeScript</span>
+npm install @disband/bot
+
+<span class="hljs-comment"># Python</span>
+pip install disband-bot
+</code></pre><p>No zip downloads — install directly from npm and PyPI.</p>
 <h2 id="pick-a-path"><a href="#pick-a-path" class="anchor" aria-hidden="true">#</a>Pick a path</h2><ul>
 <li><strong><a href="/docs/bots/getting-started/">Getting started</a></strong> — create a bot and invite it.</li>
 <li><strong><a href="/docs/bots/hosting-your-own-bot/">Hosting your own bot</a></strong> — where to run the client.</li>
 <li><strong><a href="/docs/bots/clients/javascript/">JavaScript client</a></strong> / <strong><a href="/docs/bots/clients/python/">Python client</a></strong>.</li>
 <li><strong><a href="/docs/bots/api-reference/">API reference</a></strong> if you want to talk to the API directly.</li>
-<li><strong><a href="/docs/bots/templates/">Bot templates</a></strong> — ready-to-adapt welcomers, ticket managers, and more.</li>
 </ul>
 
   </main>

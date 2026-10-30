@@ -281,7 +281,6 @@ same event again. Handle them idempotently (by <code>payload.id</code>).</p>
   <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy finished&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;reply_to_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;mentions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;embeds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;attachment_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;attachment_type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-01-01T00:00:00Z&quot;</span><span class="hljs-punctuation">,</span>
@@ -291,17 +290,8 @@ same event again. Handle them idempotently (by <code>payload.id</code>).</p>
 </code></pre><p>Only bots with <code>messages.read</code> (both on the bot account <strong>and</strong> granted in that
 server) receive events.</p>
 <h2 id="endpoints"><a href="#endpoints" class="anchor" aria-hidden="true">#</a>Endpoints</h2><h3 id="messages"><a href="#messages" class="anchor" aria-hidden="true">#</a>Messages</h3><p><strong>POST <code>/api/v1/channels/:id/messages</code></strong> — sends a message (<code>messages.write</code>).</p>
-<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy finished&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;reply_to_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;embeds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
-    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Build 1842&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;All 412 tests passed.&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;color&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5793266</span> <span class="hljs-punctuation">}</span>
-  <span class="hljs-punctuation">]</span>
-<span class="hljs-punctuation">}</span>
-</code></pre><p><code>content</code> may be omitted when <code>embeds</code> is present. Embeds use Discord&#39;s shape and
-limits; see <a href="/docs/developers/embeds/">Embeds</a> for every field and the exact
-limits. A message with neither content nor embeds is rejected with <code>400</code>.</p>
-<p>Returns <code>201</code> with <code>{ &quot;message&quot;: { … } }</code>.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy finished&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;reply_to_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Returns <code>201</code> with <code>{ &quot;message&quot;: { … } }</code>.</p>
 <p><strong>GET <code>/api/v1/channels/:id/messages</code></strong> — reads messages (<code>messages.read</code>).</p>
 <p>Query: <code>limit</code> (1–100, default 50), <code>before</code> (message id, for paging backwards).</p>
 <p>Returns <code>200</code> with <code>{ &quot;messages&quot;: [ … ] }</code>.</p>
@@ -323,8 +313,20 @@ limits. A message with neither content nor embeds is rejected with <code>400</co
 <h3 id="invites"><a href="#invites" class="anchor" aria-hidden="true">#</a>Invites</h3><p><strong>POST <code>/api/v1/bots/:botId/invites</code></strong> — generates an invite for the bot to join
 a server.</p>
 <pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;scopes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;messages.read&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;messages.write&quot;</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span>
-</code></pre><p>Returns the invite (including an <code>invite_url</code>) to send to the server owner.
-Only the owner can approve; invites expire after 7 days.</p>
+</code></pre><p>Set <code>server_id</code> to <code>null</code> (or omit it with <code>&quot;general&quot;: true</code>) to create a
+<strong>general invite</strong> — anyone with the link can sign in and pick a space they
+manage. Returns the invite (including an <code>invite_url</code>) to send to the server
+owner or share publicly. Only the owner or a channel manager can approve;
+invites expire after 7 days.</p>
+<h3 id="bot-management-owner-only"><a href="#bot-management-owner-only" class="anchor" aria-hidden="true">#</a>Bot management (owner only)</h3><p><strong>POST <code>/api/bot/update</code></strong> — update a bot&#39;s name, avatar, banner, bio, or scopes.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;botId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;New Name&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;avatarUrl&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;bannerUrl&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;bio&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;scopes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;messages.read&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;messages.write&quot;</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span>
+</code></pre><p>All fields except <code>botId</code> are optional. Returns <code>{ &quot;ok&quot;: true }</code>.</p>
+<p><strong>POST <code>/api/bot/register</code></strong> — create a new bot.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;My Bot&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;scopes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;messages.read&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;messages.write&quot;</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Returns <code>{ &quot;bot&quot;: { … }, &quot;token&quot;: &quot;…&quot; }</code>. The token is shown once.</p>
+<p><strong>POST <code>/api/bot/revoke</code></strong> — revoke a bot&#39;s token.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;botId&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Returns <code>{ &quot;ok&quot;: true }</code>. Revocation is immediate and irreversible.</p>
 <h3 id="identity-used-at-startup"><a href="#identity-used-at-startup" class="anchor" aria-hidden="true">#</a>Identity (used at startup)</h3><p><strong>GET <code>/api/bot/me</code></strong> — returns the bot account, used by the clients to fire
 <code>ready</code>. Not part of the versioned <code>v1</code> surface.</p>
 <h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><div class="table-wrap"><table><thead><tr>
@@ -366,8 +368,6 @@ Only the owner can approve; invites expire after 7 days.</p>
 <li>Up to <strong>5 bots per account</strong>; a bot&#39;s token dies instantly on revoke.</li>
 <li>Messages up to <strong>4,000 characters</strong>; <code>@everyone</code> needs the <code>mention_everyone</code>
 role permission.</li>
-<li>Up to <strong>10 embeds per message</strong>, with the same field limits as webhooks. See
-<a href="/docs/developers/embeds/">Embeds</a>.</li>
 <li>Rate limits apply per bot token. If you hit <code>429</code>, honor <code>Retry-After</code>.</li>
 </ul>
 <h2 id="writing-your-own-client"><a href="#writing-your-own-client" class="anchor" aria-hidden="true">#</a>Writing your own client</h2><ol>
@@ -376,10 +376,6 @@ role permission.</li>
 <li>Use the endpoints above with the same auth header; map <code>401</code> → &quot;bad token&quot;,
 <code>403</code> → &quot;missing permission&quot;, <code>429</code> → &quot;slow down and retry after <code>Retry-After</code>&quot;.</li>
 </ol>
-<h2 id="webhooks-are-a-different-surface"><a href="#webhooks-are-a-different-surface" class="anchor" aria-hidden="true">#</a>Webhooks are a different surface</h2><p>The bot API authenticates with <code>Authorization: Bot &lt;token&gt;</code> and can read events
-through the gateway. A <a href="/docs/developers/webhooks/">webhook</a> is a one-way secret
-URL: no bot account, no auth header, and no ability to read messages. Use a
-webhook for notifications and a bot when you need to react to chat.</p>
 <p>The official clients are <code>@disband/bot</code> (JavaScript) and <code>disband-bot</code> (Python)
 — see the <a href="/docs/bots/clients/javascript/">JavaScript</a> and <a href="/docs/bots/clients/python/">Python</a>
 pages.</p>

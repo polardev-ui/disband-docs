@@ -16,23 +16,7 @@ messages to and from it. Disband never hosts or executes your bot.
   Zero dependencies; works on Node.js 18+, Deno, Bun, and the browser.
 - **[Python client](bots/clients/python.md)** — `disband-bot`.
   Standard library only; works on Python 3.9+.
-- **[API reference](bots/api-reference.md)** — the HTTP API both clients talk to.
-
-## Developers
-
-Build bots and integrate Disband into your games and apps using the HTTP API.
-
-- **[Developers](developers/index.md)** — overview, start here, and security
-  notes for game/app integrations.
-- **[Bots overview](bots/index.md)** — scopes, invites, limits, and safety.
-- **[API reference](bots/api-reference.md)** — the HTTP API both clients talk to.
-- **[Bot templates](bots/templates.md)** — ready-to-adapt welcomers, ticket managers, and more.
-- **[Webhooks](developers/webhooks.md)** — post from CI, monitoring, or a game
-  server through a secret URL. No bot needed.
-- **[Embeds](developers/embeds.md)** — Discord-shaped cards for releases,
-  alerts, and status updates.
-- **[Status system](developers/status.md)** — how the public status page checks
-  services, records uptime, and handles incidents.
+- **[API reference](bots/api-reference.md)** if you want to talk to the API directly.
 
 ## Themes
 
@@ -42,9 +26,16 @@ uploaded icons.
 - **[Themes](themes/index.md)** — the CSS variables that are a stable API, the
   selectors that are safe to target, and a starter template.
 
-## Download the clients
+## Install the clients
 
-- **[@disband/bot](https://raw.githubusercontent.com/polardev-ui/disband-docs/main/zips/disband-bot-0.1.0.tgz)** — the JavaScript client
-  (`npm install ./disband-bot-0.1.0.tgz`).
-- **[disband-bot](https://raw.githubusercontent.com/polardev-ui/disband-docs/main/zips/disband-bot-python-0.1.0.tar.gz)** — the Python client
-  (`pip install ./disband-bot-python-0.1.0.tar.gz`).
+```bash
+# JavaScript / TypeScript
+npm install @disband/bot
+
+# Python
+pip install disband-bot
+```
+
+No more zip downloads — install directly from npm and PyPI. See the
+[JavaScript](bots/clients/javascript.md) and [Python](bots/clients/python.md)
+pages for full setup instructions.
