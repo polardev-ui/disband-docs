@@ -20,7 +20,7 @@
 // is served from. dist/zips/* is copied through so download links work.
 
 import { rm, mkdir, copyFile, readFile, writeFile, readdir } from "node:fs/promises";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { dirname, resolve, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Marked } from "marked";
@@ -452,14 +452,18 @@ ${altTags}
 async function build() {
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
-  await mkdir(resolve(DIST, "zips"), { recursive: true });
 
   const zipsDir = resolve(ROOT, "zips");
-  const zipFiles = await readdir(zipsDir);
-  for (const file of zipFiles) {
-    await copyFile(resolve(zipsDir, file), resolve(DIST, "zips", file));
+  if (existsSync(zipsDir)) {
+    const zipFiles = await readdir(zipsDir);
+    await mkdir(resolve(DIST, "zips"), { recursive: true });
+    for (const file of zipFiles) {
+      await copyFile(resolve(zipsDir, file), resolve(DIST, "zips", file));
+    }
+    console.log(`Copied ${zipFiles.length} zip(s) → dist/zips/`);
+  } else {
+    console.log("No zips/ directory — skipping zip copy.");
   }
-  console.log(`Copied ${zipFiles.length} zip(s) → dist/zips/`);
 
   // Copy static assets (e.g. the brand logo) into the site root.
   const assetsDir = resolve(ROOT, "assets");
