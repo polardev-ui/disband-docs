@@ -217,7 +217,6 @@ or static asset delivery is having trouble.</p>
 <ul>
 <li>Public page: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
 <li>RSS feed: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
-<li>Owner admin: <a href="https://www.disband.dev/status/admin" target="_blank" rel="noopener noreferrer">disband.dev/status/admin</a></li>
 </ul>
 <h2 id="what-the-public-page-shows"><a href="#what-the-public-page-shows" class="anchor" aria-hidden="true">#</a>What the public page shows</h2><p>The page groups monitors by service. For each monitor it shows:</p>
 <ul>
@@ -229,80 +228,28 @@ or static asset delivery is having trouble.</p>
 <p>Below the monitors are incidents, scheduled maintenance, and announcements. Each
 opens a detail page with the full update timeline. The feed publishes the latest
 25 incidents, maintenance windows, and published announcements as RSS 2.0.</p>
-<h2 id="checks"><a href="#checks" class="anchor" aria-hidden="true">#</a>Checks</h2><p>A Supabase Edge Function called <code>status-probe</code> runs every minute under
-<code>pg_cron</code>. It probes every enabled monitor in parallel and records one row per
-check.</p>
-<p>Each monitor has:</p>
-<div class="table-wrap"><table><thead><tr>
-<th>Setting</th>
-<th>Meaning</th>
-</tr>
-</thead><tbody><tr>
-<td>Name</td>
-<td>The public label, for example <strong>Website</strong>.</td>
-</tr>
-<tr>
-<td>Group</td>
-<td>The section it appears under, for example <strong>Disband</strong>.</td>
-</tr>
-<tr>
-<td>URL</td>
-<td>The absolute <code>http</code> or <code>https</code> URL to request.</td>
-</tr>
-<tr>
-<td>Method</td>
-<td><code>GET</code> or <code>HEAD</code>. Defaults to <code>GET</code>.</td>
-</tr>
-<tr>
-<td>Expected status</td>
-<td>The exact HTTP status that counts as healthy. Defaults to <code>200</code>.</td>
-</tr>
-<tr>
-<td>Keyword</td>
-<td>Optional text that must appear in the response body.</td>
-</tr>
-<tr>
-<td>Timeout</td>
-<td>1–30 seconds. Defaults to 10 seconds.</td>
-</tr>
-<tr>
-<td>Headers</td>
-<td>Optional request headers, stored server-side.</td>
-</tr>
-<tr>
-<td>Enabled</td>
-<td>Whether the probe requests it at all.</td>
-</tr>
-<tr>
-<td>Public</td>
-<td>Whether it contributes to the public snapshot.</td>
-</tr>
-</tbody></table></div><p>A monitor is healthy only when the status code matches <strong>and</strong> the optional
-keyword is present. Redirects are followed. A timeout, network error, wrong
-status, or missing keyword is recorded as a failed check with the reason.</p>
-<p>The probe runs independently of the web app. A failure at the web host does not
+<h2 id="checks"><a href="#checks" class="anchor" aria-hidden="true">#</a>Checks</h2><p>Automated checks run every minute and record one result per monitor. A monitor
+is healthy only when its expected HTTP status matches and any configured keyword
+is present. Timeouts, network errors, wrong statuses, and missing keywords are
+recorded as failures.</p>
+<p>Checks run independently of the web app, so a failure at the web host does not
 stop checks being recorded.</p>
-<h2 id="history-and-uptime"><a href="#history-and-uptime" class="anchor" aria-hidden="true">#</a>History and uptime</h2><p>Every check is stored in <code>status_checks</code>. A database trigger folds each check
-into <code>status_daily</code>, so the 90-day bar is a cheap read rather than an aggregation
-over millions of rows.</p>
+<h2 id="history-and-uptime"><a href="#history-and-uptime" class="anchor" aria-hidden="true">#</a>History and uptime</h2><p>Each check is stored and rolled up into daily history, so the 90-day uptime bar
+is read from precomputed data rather than aggregated on demand.</p>
 <ul>
-<li>Raw checks are kept for <strong>90 days</strong>.</li>
-<li>Daily roll-ups are kept for <strong>180 days</strong>.</li>
-<li>The public page displays the latest <strong>90 days</strong>.</li>
+<li>Raw checks are retained for 90 days.</li>
+<li>Daily roll-ups are retained for 180 days.</li>
+<li>The public page displays the latest 90 days.</li>
 <li>Each day&#39;s segment is the percentage of successful checks that day.</li>
 </ul>
 <p>A gap — a day with no checks — is shown as no data, not as downtime.</p>
-<h2 id="automatic-incidents"><a href="#automatic-incidents" class="anchor" aria-hidden="true">#</a>Automatic incidents</h2><p>The probe opens an incident automatically when a monitor has failed <strong>three
-checks in a row</strong>. The incident is a <strong>major</strong> incident, linked to that monitor,
-and starts in <strong>Investigating</strong> with an automated update containing the last
-error.</p>
-<p>When the next check succeeds, the incident moves to <strong>Resolved</strong> and an update
-records roughly how long the outage lasted. The incident stays on the page and
-in the feed with its full history.</p>
+<h2 id="automatic-incidents"><a href="#automatic-incidents" class="anchor" aria-hidden="true">#</a>Automatic incidents</h2><p>When a monitor fails three checks in a row, a major incident is opened
+automatically and linked to that monitor. When the next check succeeds, the
+incident is resolved with an update describing the outage duration. The incident
+remains visible with its full history.</p>
 <p>If a service is flapping but not failing three times consecutively, no automatic
-incident is opened. The owner can still add a manual update to an automatic
-incident while it is open.</p>
-<h2 id="manual-incidents-maintenance-and-announcements"><a href="#manual-incidents-maintenance-and-announcements" class="anchor" aria-hidden="true">#</a>Manual incidents, maintenance, and announcements</h2><p>The owner can publish three kinds of entry:</p>
+incident is opened.</p>
+<h2 id="incidents-maintenance-and-announcements"><a href="#incidents-maintenance-and-announcements" class="anchor" aria-hidden="true">#</a>Incidents, maintenance, and announcements</h2><p>The status page can publish three kinds of entry:</p>
 <div class="table-wrap"><table><thead><tr>
 <th>Kind</th>
 <th>Use for</th>
@@ -319,22 +266,10 @@ incident while it is open.</p>
 <td><code>announcement</code></td>
 <td>A general service notice that is not an outage.</td>
 </tr>
-</tbody></table></div><p>An incident can affect none, one, or several monitors. Its impact is one of
-<code>none</code>, <code>minor</code>, <code>major</code>, or <code>critical</code>.</p>
-<p>The update statuses are:</p>
-<ul>
-<li><code>investigating</code></li>
-<li><code>identified</code></li>
-<li><code>monitoring</code></li>
-<li><code>resolved</code></li>
-<li><code>scheduled</code></li>
-<li><code>in_progress</code></li>
-<li><code>completed</code></li>
-<li><code>published</code></li>
-</ul>
-<p>Every update adds a timestamped entry to the incident timeline and sets the
-incident&#39;s current status. Marking an update <code>resolved</code> or <code>completed</code> also sets
-the resolved time. Posting a later update with another status reopens it.</p>
+</tbody></table></div><p>An incident can affect one or more monitors and carry an impact level of
+<code>none</code>, <code>minor</code>, <code>major</code>, or <code>critical</code>. Each update adds a timestamped entry to
+the timeline. Marking an update <code>resolved</code> or <code>completed</code> sets the resolved
+time; a later update can reopen it.</p>
 <h2 id="overall-status"><a href="#overall-status" class="anchor" aria-hidden="true">#</a>Overall status</h2><p>The banner is decided in this order:</p>
 <ol>
 <li>An active maintenance window says <strong>Maintenance in progress</strong>, or
@@ -347,69 +282,9 @@ public monitor is failing.</li>
 <li>Before the first checks land, it says <strong>Waiting for the first checks</strong>.</li>
 </ol>
 <p>Resolved incidents do not affect the banner.</p>
-<h2 id="privacy"><a href="#privacy" class="anchor" aria-hidden="true">#</a>Privacy</h2><p>The public read path is a database function, not direct table access. It returns
-monitor names, groups, states, latency, uptime, and incidents. It deliberately
-omits:</p>
-<ul>
-<li>monitor URLs;</li>
-<li>request headers;</li>
-<li>probe error text;</li>
-<li>internal check ids;</li>
-<li>the identities behind incident updates.</li>
-</ul>
-<p>The base tables have row-level security enabled with no public policies. Only the
-service role and the probe function can read them directly.</p>
-<h2 id="administration"><a href="#administration" class="anchor" aria-hidden="true">#</a>Administration</h2><p><code>/status/admin</code> is restricted to the signed-in <strong>platform owner</strong>. It is not a
-space role and cannot be granted to another member. Unauthenticated requests
-receive <code>401</code>; other signed-in accounts receive <code>403</code>.</p>
-<p>The admin screen can:</p>
-<ul>
-<li>create, edit, enable, disable, publish, or delete monitors;</li>
-<li>see each monitor&#39;s URL, headers, and last result;</li>
-<li>post incidents, maintenance windows, and announcements;</li>
-<li>add timeline updates and change an incident&#39;s impact or affected services;</li>
-<li>delete a monitor and its history.</li>
-</ul>
-<h3 id="admin-api"><a href="#admin-api" class="anchor" aria-hidden="true">#</a>Admin API</h3><p>The screen uses these owner-only routes:</p>
-<div class="table-wrap"><table><thead><tr>
-<th>Method</th>
-<th>Endpoint</th>
-</tr>
-</thead><tbody><tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/monitors</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/monitors/{id}</code></td>
-</tr>
-<tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/incidents</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/incidents/{id}</code></td>
-</tr>
-<tr>
-<td><code>POST</code></td>
-<td><code>/api/status-admin/incidents/{id}/updates</code></td>
-</tr>
-</tbody></table></div><p>They accept the owner&#39;s Supabase access token as <code>Authorization: Bearer &lt;token&gt;</code>.
-They are implementation details of the admin screen, not a public API; the
-shape can change.</p>
-<h2 id="operational-notes"><a href="#operational-notes" class="anchor" aria-hidden="true">#</a>Operational notes</h2><ul>
-<li>The probe authenticates with a secret stored in Supabase Vault under
-<code>status_probe_key</code>. The secret is compared inside the database and is not
-returned to the function.</li>
-<li>The <code>pg_cron</code> job is named <code>status-probe</code>. It reads the secret from Vault on
-every run, so rotating the secret does not require editing the job.</li>
-<li>The Edge Function is deployed with JWT verification off, because it
-authenticates with the Vault secret instead.</li>
-<li>If the probe itself stops running, the page will show stale
-<strong>last checked</strong> times. That is the signal to inspect the cron job and Edge
-Function logs.</li>
-</ul>
+<h2 id="privacy"><a href="#privacy" class="anchor" aria-hidden="true">#</a>Privacy</h2><p>The public status page and feed expose service state, uptime, and incident
+history. Internal monitoring configuration, probe details, and administrative
+controls are not part of the public interface.</p>
 <h2 id="related"><a href="#related" class="anchor" aria-hidden="true">#</a>Related</h2><ul>
 <li><a href="/docs/developers/webhooks/">Webhooks</a> — send outage notifications into a channel.</li>
 <li><a href="/docs/developers/embeds/">Embeds</a> — format those notifications.</li>

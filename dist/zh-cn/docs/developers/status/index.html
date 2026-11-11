@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>状态系统 — Disband 文档</title>
-<meta name="description" content="Disband的状态页面是自托管的。它不依赖于第三方状态服务，因此当主网络主机API或静态资产交付出现问题时，它仍然可以准确报告。" />
+<title>Status system — Disband 文档</title>
+<meta name="description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <link rel="canonical" href="https://docs.disband.dev/zh-cn/docs/developers/status/" />
 <link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/developers/status/" />
 <link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/developers/status/" />
@@ -15,8 +17,10 @@
 <link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/developers/status/" />
 <link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/developers/status/" />
 <link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/developers/status/" />
-<meta property="og:title" content="状态系统 — Disband 文档" />
-<meta property="og:description" content="Disband的状态页面是自托管的。它不依赖于第三方状态服务，因此当主网络主机API或静态资产交付出现问题时，它仍然可以准确报告。" />
+<meta property="og:title" content="Status system — Disband 文档" />
+<meta property="og:description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <meta property="og:url" content="https://docs.disband.dev/zh-cn/docs/developers/status/" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="zh_CN" />
@@ -206,181 +210,84 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <div class="layout">
   <aside class="sidebar"><nav class="sidebar-nav"><a href="/zh-cn/" class="nav-home-link">文档首页</a><div class="nav-group"><p class="nav-label">机器人</p><a href="/zh-cn/docs/bots/" class="">概述</a><a href="/zh-cn/docs/bots/getting-started/" class="">开始使用</a><a href="/zh-cn/docs/bots/hosting-your-own-bot/" class="">托管你自己的机器人</a><a href="/zh-cn/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/zh-cn/docs/bots/clients/python/" class="">Python</a><a href="/zh-cn/docs/bots/api-reference/" class="">API 参考</a><a href="/zh-cn/docs/bots/templates/" class="">模板</a></div><div class="nav-group"><p class="nav-label">主题</p><a href="/zh-cn/docs/themes/" class="">主题</a></div><div class="nav-group"><p class="nav-label">开发者</p><a href="/zh-cn/docs/developers/" class="">开发者</a><a href="/zh-cn/docs/developers/webhooks/" class="">Webhook</a><a href="/zh-cn/docs/developers/extended-api/" class="">Extended API</a><a href="/zh-cn/docs/developers/embeds/" class="">嵌入</a><a href="/zh-cn/docs/developers/status/" class="active">状态系统</a><a href="/zh-cn/docs/bots/" class="">机器人</a><a href="/zh-cn/docs/bots/getting-started/" class="">开始使用</a><a href="/zh-cn/docs/bots/api-reference/" class="">API 参考</a><a href="/zh-cn/docs/bots/templates/" class="">模板</a></div></nav></aside>
   <main class="content">
-    <div class="translation-note"><strong>自动翻译</strong><span>本页面为自动翻译，英文原文为最终版本。</span><a href="/docs/developers/status/">阅读此页的英文版</a></div>
-    <h1 id="状态系统"><a href="#状态系统" class="anchor" aria-hidden="true">#</a>状态系统</h1><p>Disband的状态页面是自托管的。它不依赖于第三方状态服务，因此当主网络主机API或静态资产交付出现问题时，它仍然可以准确报告。</p>
+    <div class="translation-note"><strong>English only</strong><span>This page is not translated yet. The English original is the source of truth.</span><a href="/docs/developers/status/">Read this page in English</a></div>
+    <h1 id="status-system"><a href="#status-system" class="anchor" aria-hidden="true">#</a>Status system</h1><p>Disband&#39;s status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or static asset delivery is having trouble.</p>
 <ul>
-<li>公共页面：<a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
-<li>RSS 订阅：<a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
-<li>所有者管理员：<a href="https://www.disband.dev/status/admin" target="_blank" rel="noopener noreferrer">disband.dev/status/admin</a></li>
+<li>Public page: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
+<li>RSS feed: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
 </ul>
-<h2 id="公共页面显示的内容"><a href="#公共页面显示的内容" class="anchor" aria-hidden="true">#</a>公共页面显示的内容</h2><p>该页面按服务分组监控。对于每个监控器，它显示：</p>
+<h2 id="what-the-public-page-shows"><a href="#what-the-public-page-shows" class="anchor" aria-hidden="true">#</a>What the public page shows</h2><p>The page groups monitors by service. For each monitor it shows:</p>
 <ul>
-<li>来自最新检查的当前状态；</li>
-<li>该检查的HTTP状态和响应时间；</li>
-<li>一个90天的正常运行时间条，每天一个部分；</li>
-<li>上次支票运行的时间。</li>
+<li>the current state from the latest check;</li>
+<li>the HTTP status and response time of that check;</li>
+<li>a 90-day uptime bar, one segment per day;</li>
+<li>the last time a check ran.</li>
 </ul>
-<p>在显示器下方是事件、计划维护和公告。每个事件都打开一个包含完整更新时间线的详细页面。该源以RSS 2.0格式发布最新的25个事件、维护窗口和已发布的公告。</p>
-<h2 id="支票"><a href="#支票" class="anchor" aria-hidden="true">#</a>支票</h2><p>一个名为<code>status-probe</code>的Supabase Edge函数在<code>pg_cron</code>下每分钟运行一次。它并行探测每个启用的显示器，并在每次检查中记录一行。</p>
-<p>每个显示器都有：</p>
+<p>Below the monitors are incidents, scheduled maintenance, and announcements. Each
+opens a detail page with the full update timeline. The feed publishes the latest
+25 incidents, maintenance windows, and published announcements as RSS 2.0.</p>
+<h2 id="checks"><a href="#checks" class="anchor" aria-hidden="true">#</a>Checks</h2><p>Automated checks run every minute and record one result per monitor. A monitor
+is healthy only when its expected HTTP status matches and any configured keyword
+is present. Timeouts, network errors, wrong statuses, and missing keywords are
+recorded as failures.</p>
+<p>Checks run independently of the web app, so a failure at the web host does not
+stop checks being recorded.</p>
+<h2 id="history-and-uptime"><a href="#history-and-uptime" class="anchor" aria-hidden="true">#</a>History and uptime</h2><p>Each check is stored and rolled up into daily history, so the 90-day uptime bar
+is read from precomputed data rather than aggregated on demand.</p>
+<ul>
+<li>Raw checks are retained for 90 days.</li>
+<li>Daily roll-ups are retained for 180 days.</li>
+<li>The public page displays the latest 90 days.</li>
+<li>Each day&#39;s segment is the percentage of successful checks that day.</li>
+</ul>
+<p>A gap — a day with no checks — is shown as no data, not as downtime.</p>
+<h2 id="automatic-incidents"><a href="#automatic-incidents" class="anchor" aria-hidden="true">#</a>Automatic incidents</h2><p>When a monitor fails three checks in a row, a major incident is opened
+automatically and linked to that monitor. When the next check succeeds, the
+incident is resolved with an update describing the outage duration. The incident
+remains visible with its full history.</p>
+<p>If a service is flapping but not failing three times consecutively, no automatic
+incident is opened.</p>
+<h2 id="incidents-maintenance-and-announcements"><a href="#incidents-maintenance-and-announcements" class="anchor" aria-hidden="true">#</a>Incidents, maintenance, and announcements</h2><p>The status page can publish three kinds of entry:</p>
 <div class="table-wrap"><table><thead><tr>
-<th>设定</th>
-<th>含义</th>
-</tr>
-</thead><tbody><tr>
-<td>名称</td>
-<td>公共标签，例如<strong>网站</strong>。</td>
-</tr>
-<tr>
-<td>组</td>
-<td>它出现的部分，例如<strong>Disband</strong>。</td>
-</tr>
-<tr>
-<td>URL</td>
-<td>要请求的绝对<code>http</code>或<code>https</code> URL。</td>
-</tr>
-<tr>
-<td>方法</td>
-<td><code>GET</code> 或 <code>HEAD</code>。默认值为 <code>GET</code>。</td>
-</tr>
-<tr>
-<td>预期状态</td>
-<td>被视为健康的确切HTTP状态。默认值为<code>200</code>。</td>
-</tr>
-<tr>
-<td>关键词</td>
-<td>必须出现在响应正文中可选文本。</td>
-</tr>
-<tr>
-<td>超时</td>
-<td>1-30秒。默认值为10秒。</td>
-</tr>
-<tr>
-<td>头信息</td>
-<td>可选请求头信息，存储在服务器端。</td>
-</tr>
-<tr>
-<td>启用</td>
-<td>探头是否完全请求它。</td>
-</tr>
-<tr>
-<td>公共</td>
-<td>它是否有助于公共快照。</td>
-</tr>
-</tbody></table></div><p>只有当状态代码匹配<strong>并且</strong>存在可选关键字时，监控器才健康。会跟随重定向。超时、网络错误、状态错误或缺少关键字将记录为检查失败，并附有原因。</p>
-<p>探测器与网络应用独立运行。网络主机出现故障不会阻止检查记录。</p>
-<h2 id="历史记录和正常运行时间"><a href="#历史记录和正常运行时间" class="anchor" aria-hidden="true">#</a>历史记录和正常运行时间</h2><p>每个支票都存储在<code>status_checks</code>中。一个数据库触发器将每个支票折叠到<code>status_daily</code>中，因此90天的条形图是一个廉价的读取，而不是对数百万行进行聚合。</p>
-<ul>
-<li>原始支票保留<strong>90天</strong>。</li>
-<li>每日滚动保留<strong>180天</strong>。</li>
-<li>公共页面显示了最近<strong>90天</strong>的内容。</li>
-<li>每天的段落是当天的成功检查的百分比。</li>
-</ul>
-<p>一个空白——没有检查的日子——显示为没有数据，而不是停机时间。</p>
-<h2 id="自动事件"><a href="#自动事件" class="anchor" aria-hidden="true">#</a>自动事件</h2><p>当显示器连续<strong>三次检查失败</strong>时，探测器会自动打开事件。事件是<strong>重大</strong>事件，与该显示器相关联，并以自动更新开始<strong>调查</strong>，其中包含最后一个错误。</p>
-<p>当下次检查成功时，事件将转为<strong>已解决</strong>，并记录一个更新记录了停机时间的大致长度。事件将保留在页面和提要中，并保留完整的历史记录。</p>
-<p>如果服务正在闪烁但没有连续三次出现故障，则不会打开自动事件。在自动事件处于打开状态时，所有者仍然可以为自动事件添加手动更新。</p>
-<h2 id="手动事件维护和公告"><a href="#手动事件维护和公告" class="anchor" aria-hidden="true">#</a>手动事件、维护和公告</h2><p>所有者可以发布三种类型的条目：</p>
-<div class="table-wrap"><table><thead><tr>
-<th>类型</th>
-<th>用于</th>
+<th>Kind</th>
+<th>Use for</th>
 </tr>
 </thead><tbody><tr>
 <td><code>incident</code></td>
-<td>一个意外的问题。</td>
+<td>An unplanned problem.</td>
 </tr>
 <tr>
 <td><code>maintenance</code></td>
-<td>计划工作，可选带有开始和结束时间。</td>
+<td>Planned work, optionally with a start and end time.</td>
 </tr>
 <tr>
 <td><code>announcement</code></td>
-<td>一般服务通知，不是停机。</td>
+<td>A general service notice that is not an outage.</td>
 </tr>
-</tbody></table></div><p>事件可以影响一个、多个或多个显示器。其影响是<code>none</code>、<code>minor</code>、<code>major</code>或<code>critical</code>之一。</p>
-<p>更新状态是：</p>
-<ul>
-<li><code>investigating</code></li>
-<li><code>identified</code></li>
-<li><code>monitoring</code></li>
-<li><code>resolved</code></li>
-<li><code>scheduled</code></li>
-<li><code>in_progress</code></li>
-<li><code>completed</code></li>
-<li><code>published</code></li>
-</ul>
-<p>每次更新都会在事件时间线中添加一个带有时间戳的条目，并设置事件的当前状态。标记更新<code>resolved</code>或<code>completed</code>也会设置已解决时间。发布带有其他状态的更晚更新会重新打开它。</p>
-<h2 id="总体状态"><a href="#总体状态" class="anchor" aria-hidden="true">#</a>总体状态</h2><p>横幅的决定顺序如下：</p>
+</tbody></table></div><p>An incident can affect one or more monitors and carry an impact level of
+<code>none</code>, <code>minor</code>, <code>major</code>, or <code>critical</code>. Each update adds a timestamped entry to
+the timeline. Marking an update <code>resolved</code> or <code>completed</code> sets the resolved
+time; a later update can reopen it.</p>
+<h2 id="overall-status"><a href="#overall-status" class="anchor" aria-hidden="true">#</a>Overall status</h2><p>The banner is decided in this order:</p>
 <ol>
-<li>一个活跃的维护窗口显示“<strong>维护中进行中</strong>”，或者
-<strong>启动前计划维护</strong>。</li>
-<li>活跃的重大故障或重大事件会显示为“<strong>重大停机</strong>”。</li>
-<li>一个活跃的小故障显示为“<strong>部分损坏</strong>”。</li>
-<li>显示器故障时，显示屏会显示“<strong>部分损坏</strong>”或“<strong>重大停机</strong>”，具体情况取决于
-公共监控器正在故障。</li>
-<li>没有故障且至少有一个结果，它显示为<strong>所有系统正常运行</strong>。</li>
-<li>在第一批支票到达之前，它会显示<strong>正在等待第一批支票</strong>。</li>
+<li>An active maintenance window says <strong>Maintenance in progress</strong>, or
+<strong>Scheduled maintenance</strong> before it starts.</li>
+<li>An active major or critical incident says <strong>Major outage</strong>.</li>
+<li>An active minor incident says <strong>Partially degraded</strong>.</li>
+<li>Failed monitors say <strong>Partially degraded</strong>, or <strong>Major outage</strong> when every
+public monitor is failing.</li>
+<li>With no failures and at least one result, it says <strong>All systems operational</strong>.</li>
+<li>Before the first checks land, it says <strong>Waiting for the first checks</strong>.</li>
 </ol>
-<p>已解决的事件不会影响横幅。</p>
-<h2 id="隐居"><a href="#隐居" class="anchor" aria-hidden="true">#</a>隐居</h2><p>公共读取路径是一个数据库函数，而不是直接访问表格。它返回监控名称、组、状态、延迟、正常运行时间和事件。它故意省略了：</p>
-<ul>
-<li>监控URLs；</li>
-<li>请求头；</li>
-<li>探针错误文本；</li>
-<li>内部检查ID；</li>
-<li>事件更新背后的身份。</li>
-</ul>
-<p>基本表格启用了行级安全性，没有公共策略。只有服务角色和探测功能才能直接读取它们。</p>
-<h2 id="组织"><a href="#组织" class="anchor" aria-hidden="true">#</a>组织</h2><p><code>/status/admin</code>仅限已登录的<strong>平台所有者</strong>使用。它不是空间角色，不能授予其他成员。未经身份验证的请求将收到<code>401</code>；其他已登录的帐户将收到<code>403</code>。</p>
-<p>管理员屏幕可以：</p>
-<ul>
-<li>创建、编辑、启用、禁用、发布或删除监控器；</li>
-<li>查看每个显示器的URL、头和最后结果；</li>
-<li>发布事件后，维护窗口和公告；</li>
-<li>添加时间线更新，并更改事件的影响或受影响的服务；</li>
-<li>删除一个显示器及其历史记录。</li>
-</ul>
-<h3 id="管理员api"><a href="#管理员api" class="anchor" aria-hidden="true">#</a>管理员API</h3><p>屏幕使用以下仅限所有者使用的路线：</p>
-<div class="table-wrap"><table><thead><tr>
-<th>方法</th>
-<th>端点</th>
-</tr>
-</thead><tbody><tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/monitors</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/monitors/{id}</code></td>
-</tr>
-<tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/incidents</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/incidents/{id}</code></td>
-</tr>
-<tr>
-<td><code>POST</code></td>
-<td><code>/api/status-admin/incidents/{id}/updates</code></td>
-</tr>
-</tbody></table></div><p>它们接受所有者的Supabase访问令牌为<code>Authorization: Bearer &lt;token&gt;</code>。它们是管理员屏幕的实现细节，而不是公共API；形状可能会发生变化。</p>
-<h2 id="操作说明"><a href="#操作说明" class="anchor" aria-hidden="true">#</a>操作说明</h2><ul>
-<li>探测器使用存储在Supabase Vault中的秘密进行身份验证
-<code>status_probe_key</code>。秘密是在数据库内比较的，而不是
-返回函数。</li>
-<li><code>pg_cron</code>任务名为<code>status-probe</code>。它从Vault中读取秘密
-每次运行，所以旋转秘密不需要编辑工作。</li>
-<li>Edge功能在JWT验证关闭的情况下部署，因为它
-而是用Vault秘密进行身份验证。</li>
-<li>如果探测器本身停止运行，页面将显示过期
-<strong>最后检查</strong>次数。这是检查cron任务和Edge的信号
-功能日志。</li>
-</ul>
-<h2 id="有亲属关系的"><a href="#有亲属关系的" class="anchor" aria-hidden="true">#</a>有亲属关系的</h2><ul>
-<li><a href="/zh-cn/docs/developers/webhooks/">Webhook</a> — 将停机通知发送到一个频道。</li>
-<li><a href="/zh-cn/docs/developers/embeds/">嵌入</a> — 格式化这些通知。</li>
+<p>Resolved incidents do not affect the banner.</p>
+<h2 id="privacy"><a href="#privacy" class="anchor" aria-hidden="true">#</a>Privacy</h2><p>The public status page and feed expose service state, uptime, and incident
+history. Internal monitoring configuration, probe details, and administrative
+controls are not part of the public interface.</p>
+<h2 id="related"><a href="#related" class="anchor" aria-hidden="true">#</a>Related</h2><ul>
+<li><a href="/zh-cn/docs/developers/webhooks/">Webhooks</a> — send outage notifications into a channel.</li>
+<li><a href="/zh-cn/docs/developers/embeds/">Embeds</a> — format those notifications.</li>
 </ul>
 
   </main>

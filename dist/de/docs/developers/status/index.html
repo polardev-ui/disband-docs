@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Statusseite — Disband-Dokumentation</title>
-<meta name="description" content="Die Statusseite von Disband ist selbstgehostet. Sie ist nicht auf einen Statusdienst von Drittanbietern angewiesen, so dass sie immer noch genau berichten kann," />
+<title>Status system — Disband-Dokumentation</title>
+<meta name="description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <link rel="canonical" href="https://docs.disband.dev/de/docs/developers/status/" />
 <link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/developers/status/" />
 <link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/developers/status/" />
@@ -15,8 +17,10 @@
 <link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/developers/status/" />
 <link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/developers/status/" />
 <link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/developers/status/" />
-<meta property="og:title" content="Statusseite — Disband-Dokumentation" />
-<meta property="og:description" content="Die Statusseite von Disband ist selbstgehostet. Sie ist nicht auf einen Statusdienst von Drittanbietern angewiesen, so dass sie immer noch genau berichten kann," />
+<meta property="og:title" content="Status system — Disband-Dokumentation" />
+<meta property="og:description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <meta property="og:url" content="https://docs.disband.dev/de/docs/developers/status/" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="de" />
@@ -206,181 +210,84 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <div class="layout">
   <aside class="sidebar"><nav class="sidebar-nav"><a href="/de/" class="nav-home-link">Dokumentationsstartseite</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/de/docs/bots/" class="">Übersicht</a><a href="/de/docs/bots/getting-started/" class="">Erste Schritte</a><a href="/de/docs/bots/hosting-your-own-bot/" class="">Eigenen Bot hosten</a><a href="/de/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/de/docs/bots/clients/python/" class="">Python</a><a href="/de/docs/bots/api-reference/" class="">API-Referenz</a><a href="/de/docs/bots/templates/" class="">Vorlagen</a></div><div class="nav-group"><p class="nav-label">Themen</p><a href="/de/docs/themes/" class="">Themen</a></div><div class="nav-group"><p class="nav-label">Entwickler</p><a href="/de/docs/developers/" class="">Entwickler</a><a href="/de/docs/developers/webhooks/" class="">Webhooks</a><a href="/de/docs/developers/extended-api/" class="">Extended API</a><a href="/de/docs/developers/embeds/" class="">Einbettungen</a><a href="/de/docs/developers/status/" class="active">Statusseite</a><a href="/de/docs/bots/" class="">Bots</a><a href="/de/docs/bots/getting-started/" class="">Erste Schritte</a><a href="/de/docs/bots/api-reference/" class="">API-Referenz</a><a href="/de/docs/bots/templates/" class="">Vorlagen</a></div></nav></aside>
   <main class="content">
-    <div class="translation-note"><strong>Automatische Übersetzung</strong><span>Diese Seite wurde automatisch übersetzt. Das englische Original ist maßgeblich.</span><a href="/docs/developers/status/">Lesen Sie diese Seite auf Englisch</a></div>
-    <h1 id="statusseite"><a href="#statusseite" class="anchor" aria-hidden="true">#</a>Statusseite</h1><p>Die Statusseite von Disband ist selbstgehostet. Sie ist nicht auf einen Statusdienst von Drittanbietern angewiesen, so dass sie immer noch genau berichten kann, wenn der Hauptwebhost API oder die Bereitstellung statischer Assets Probleme haben.</p>
+    <div class="translation-note"><strong>English only</strong><span>This page is not translated yet. The English original is the source of truth.</span><a href="/docs/developers/status/">Read this page in English</a></div>
+    <h1 id="status-system"><a href="#status-system" class="anchor" aria-hidden="true">#</a>Status system</h1><p>Disband&#39;s status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or static asset delivery is having trouble.</p>
 <ul>
-<li>Öffentliche Seite: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
-<li>RSS-Feed: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
-<li>Eigentümer-Admin: <a href="https://www.disband.dev/status/admin" target="_blank" rel="noopener noreferrer">disband.dev/status/admin</a></li>
+<li>Public page: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
+<li>RSS feed: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
 </ul>
-<h2 id="was-die-offentliche-seite-zeigt"><a href="#was-die-offentliche-seite-zeigt" class="anchor" aria-hidden="true">#</a>Was die öffentliche Seite zeigt</h2><p>Die Seite gruppiert Monitore nach Dienstleistung. Für jeden Monitor werden folgende Informationen angezeigt:</p>
+<h2 id="what-the-public-page-shows"><a href="#what-the-public-page-shows" class="anchor" aria-hidden="true">#</a>What the public page shows</h2><p>The page groups monitors by service. For each monitor it shows:</p>
 <ul>
-<li>der aktuelle Stand aus dem letzten Check;</li>
-<li>der Status und die Antwortzeit des HTTP-Checks;</li>
-<li>eine 90-tägige Betriebszeit-Bar, ein Segment pro Tag;</li>
-<li>das letzte Mal, als ein Scheck ausgezahlt wurde.</li>
+<li>the current state from the latest check;</li>
+<li>the HTTP status and response time of that check;</li>
+<li>a 90-day uptime bar, one segment per day;</li>
+<li>the last time a check ran.</li>
 </ul>
-<p>Unter den Monitoren befinden sich Vorfälle, geplante Wartungsarbeiten und Ankündigungen. Jeder öffnet eine Detailseite mit der vollständigen Aktualisierungszeitlinie. Der Feed veröffentlicht die letzten 25 Vorfälle, Wartungsfenster und veröffentlichte Ankündigungen als RSS 2.0.</p>
-<h2 id="schecks"><a href="#schecks" class="anchor" aria-hidden="true">#</a>Schecks</h2><p>Eine Supabase Edge-Funktion namens <code>status-probe</code> läuft jede Minute unter <code>pg_cron</code>. Sie untersucht alle eingeschalteten Monitore parallel und speichert eine Zeile pro Überprüfung.</p>
-<p>Jeder Monitor hat:</p>
+<p>Below the monitors are incidents, scheduled maintenance, and announcements. Each
+opens a detail page with the full update timeline. The feed publishes the latest
+25 incidents, maintenance windows, and published announcements as RSS 2.0.</p>
+<h2 id="checks"><a href="#checks" class="anchor" aria-hidden="true">#</a>Checks</h2><p>Automated checks run every minute and record one result per monitor. A monitor
+is healthy only when its expected HTTP status matches and any configured keyword
+is present. Timeouts, network errors, wrong statuses, and missing keywords are
+recorded as failures.</p>
+<p>Checks run independently of the web app, so a failure at the web host does not
+stop checks being recorded.</p>
+<h2 id="history-and-uptime"><a href="#history-and-uptime" class="anchor" aria-hidden="true">#</a>History and uptime</h2><p>Each check is stored and rolled up into daily history, so the 90-day uptime bar
+is read from precomputed data rather than aggregated on demand.</p>
+<ul>
+<li>Raw checks are retained for 90 days.</li>
+<li>Daily roll-ups are retained for 180 days.</li>
+<li>The public page displays the latest 90 days.</li>
+<li>Each day&#39;s segment is the percentage of successful checks that day.</li>
+</ul>
+<p>A gap — a day with no checks — is shown as no data, not as downtime.</p>
+<h2 id="automatic-incidents"><a href="#automatic-incidents" class="anchor" aria-hidden="true">#</a>Automatic incidents</h2><p>When a monitor fails three checks in a row, a major incident is opened
+automatically and linked to that monitor. When the next check succeeds, the
+incident is resolved with an update describing the outage duration. The incident
+remains visible with its full history.</p>
+<p>If a service is flapping but not failing three times consecutively, no automatic
+incident is opened.</p>
+<h2 id="incidents-maintenance-and-announcements"><a href="#incidents-maintenance-and-announcements" class="anchor" aria-hidden="true">#</a>Incidents, maintenance, and announcements</h2><p>The status page can publish three kinds of entry:</p>
 <div class="table-wrap"><table><thead><tr>
-<th>Setting</th>
-<th>Bedeutung</th>
-</tr>
-</thead><tbody><tr>
-<td>Name</td>
-<td>Die öffentliche Marke, zum Beispiel <strong>Website</strong>.</td>
-</tr>
-<tr>
-<td>Gruppe</td>
-<td>Der Abschnitt, unter dem er erscheint, zum Beispiel <strong>Disband</strong>.</td>
-</tr>
-<tr>
-<td>URL</td>
-<td>Der absolute <code>http</code> oder <code>https</code> URL, um anzufordern.</td>
-</tr>
-<tr>
-<td>Methode</td>
-<td><code>GET</code> oder <code>HEAD</code>. Standardmäßig ist <code>GET</code>.</td>
-</tr>
-<tr>
-<td>Erwarteter Status</td>
-<td>Der genaue HTTP-Status, der als gesund gilt. Standardmäßig ist <code>200</code>.</td>
-</tr>
-<tr>
-<td>Schlüsselwort</td>
-<td>Optionale Textpassage, die im Antwortkörper erscheinen muss.</td>
-</tr>
-<tr>
-<td>Zeitüberschreitung</td>
-<td>1–30 Sekunden. Standardmäßig 10 Sekunden.</td>
-</tr>
-<tr>
-<td>Headers</td>
-<td>Optionale Anfrage-Header, auf der Serverseite gespeichert.</td>
-</tr>
-<tr>
-<td>Aktiviert</td>
-<td>Ob die Probe es überhaupt anfordert.</td>
-</tr>
-<tr>
-<td>Öffentlich</td>
-<td>Ob es zum öffentlichen Snapshot beiträgt.</td>
-</tr>
-</tbody></table></div><p>Ein Monitor ist nur gesund, wenn der Statuscode <strong>gleich</strong> ist und der optionale Schlüsselwort vorhanden ist. Umleitungen werden befolgt. Ein Zeitüberschreitung, Netzwerkfehler, falscher Status oder fehlendes Schlüsselwort wird als fehlgeschlagener Check mit dem Grund aufgezeichnet.</p>
-<p>Die Probe läuft unabhängig von der Web-App. Ein Fehler beim Web-Host stoppt die Aufzeichnung der Überprüfungen nicht.</p>
-<h2 id="geschichte-und-betriebszeit"><a href="#geschichte-und-betriebszeit" class="anchor" aria-hidden="true">#</a>Geschichte und Betriebszeit</h2><p>Jeder Scheck wird in <code>status_checks</code> gespeichert. Ein Datenbank-Trigger fasst jeden Scheck in <code>status_daily</code> zusammen, so dass die 90-Tage-Säule eine günstige Abfrage ist und nicht eine Aggregation über Millionen von Zeilen.</p>
-<ul>
-<li>Rohe Schecks werden <strong>90 Tage</strong> aufbewahrt.</li>
-<li>Tägliche Zusammenfassungen werden <strong>180 Tage</strong> aufbewahrt.</li>
-<li>Die öffentliche Seite zeigt die letzten <strong>90 Tage</strong> an.</li>
-<li>Das Tagessegment ist der Prozentsatz der erfolgreichen Überweisungen an diesem Tag.</li>
-</ul>
-<p>Ein Loch - ein Tag ohne Kontrollen - wird als keine Daten angezeigt, nicht als Ausfallzeit.</p>
-<h2 id="automatische-vorfalle"><a href="#automatische-vorfalle" class="anchor" aria-hidden="true">#</a>Automatische Vorfälle</h2><p>Die Probe öffnet einen Vorfall automatisch, wenn ein Monitor <strong>drei Kontrollen in Folge</strong> fehlgeschlagen hat. Der Vorfall ist ein <strong>großer</strong> Vorfall, der mit diesem Monitor verbunden ist und mit der <strong>Untersuchung</strong> beginnt, mit einem automatisierten Update, das den letzten Fehler enthält.</p>
-<p>Wenn der nächste Check erfolgreich ist, wird der Vorfall auf <strong>Gelöst</strong> umgestellt und ein Update erfasst, wie lange der Ausfall gedauert hat. Der Vorfall bleibt auf der Seite und im Feed mit seiner vollständigen Geschichte.</p>
-<p>Wenn ein Dienst klappert, aber nicht dreimal hintereinander abstürzt, wird kein automatischer Vorfall eröffnet. Der Eigentümer kann trotzdem ein manuelles Update zu einem automatischen Vorfall hinzufügen, während dieser geöffnet ist.</p>
-<h2 id="manuelle-vorfalle-wartung-und-ankundigungen"><a href="#manuelle-vorfalle-wartung-und-ankundigungen" class="anchor" aria-hidden="true">#</a>Manuelle Vorfälle, Wartung und Ankündigungen</h2><p>Der Eigentümer kann drei Arten von Einträgen veröffentlichen:</p>
-<div class="table-wrap"><table><thead><tr>
-<th>Art</th>
-<th>Verwendung für</th>
+<th>Kind</th>
+<th>Use for</th>
 </tr>
 </thead><tbody><tr>
 <td><code>incident</code></td>
-<td>Ein unerwartetes Problem.</td>
+<td>An unplanned problem.</td>
 </tr>
 <tr>
 <td><code>maintenance</code></td>
-<td>Geplante Arbeit, optional mit Start- und Endzeit.</td>
+<td>Planned work, optionally with a start and end time.</td>
 </tr>
 <tr>
 <td><code>announcement</code></td>
-<td>Eine allgemeine Servicehinweis, die keine Ausfallzeit ist.</td>
+<td>A general service notice that is not an outage.</td>
 </tr>
-</tbody></table></div><p>Ein Vorfall kann keinen, einen oder mehrere Monitore betreffen. Seine Auswirkung ist eine von <code>none</code>, <code>minor</code>, <code>major</code> oder <code>critical</code>.</p>
-<p>Die Aktualisierungsstatus sind:</p>
-<ul>
-<li><code>investigating</code></li>
-<li><code>identified</code></li>
-<li><code>monitoring</code></li>
-<li><code>resolved</code></li>
-<li><code>scheduled</code></li>
-<li><code>in_progress</code></li>
-<li><code>completed</code></li>
-<li><code>published</code></li>
-</ul>
-<p>Jede Aktualisierung fügt einen zeitstempelten Eintrag in die Ereigniszeitleiste hinzu und setzt den aktuellen Status des Ereignisses fest. Die Markierung einer Aktualisierung mit dem <code>resolved</code> oder <code>completed</code> setzt auch die behobene Zeit fest. Die Veröffentlichung einer späteren Aktualisierung mit einem anderen Status öffnet sie erneut.</p>
-<h2 id="allgemeiner-status"><a href="#allgemeiner-status" class="anchor" aria-hidden="true">#</a>Allgemeiner Status</h2><p>Die Banner werden in dieser Reihenfolge entschieden:</p>
+</tbody></table></div><p>An incident can affect one or more monitors and carry an impact level of
+<code>none</code>, <code>minor</code>, <code>major</code>, or <code>critical</code>. Each update adds a timestamped entry to
+the timeline. Marking an update <code>resolved</code> or <code>completed</code> sets the resolved
+time; a later update can reopen it.</p>
+<h2 id="overall-status"><a href="#overall-status" class="anchor" aria-hidden="true">#</a>Overall status</h2><p>The banner is decided in this order:</p>
 <ol>
-<li>Ein aktives Wartungsfenster zeigt <strong>Wartung im Gange</strong> oder
-<strong>Planmäßige Wartung</strong> bevor es beginnt.</li>
-<li>Ein aktiver Hauptausfall oder ein kritischer Vorfall sagt <strong>Hauptausfall</strong>.</li>
-<li>Ein aktiver kleiner Vorfall sagt <strong>Teilweise degradiert</strong>.</li>
-<li>Fehlende Monitore sagen <strong>Teilweise beeinträchtigt</strong> oder <strong>Großer Ausfall</strong>, wenn jedes
-Der öffentliche Monitor funktioniert nicht mehr.</li>
-<li>Ohne Fehler und mindestens ein Ergebnis heißt es <strong>Alle Systeme betriebsbereit</strong>.</li>
-<li>Bevor die ersten Schecks eintreffen, heißt es <strong>Wartend auf die ersten Schecks</strong>.</li>
+<li>An active maintenance window says <strong>Maintenance in progress</strong>, or
+<strong>Scheduled maintenance</strong> before it starts.</li>
+<li>An active major or critical incident says <strong>Major outage</strong>.</li>
+<li>An active minor incident says <strong>Partially degraded</strong>.</li>
+<li>Failed monitors say <strong>Partially degraded</strong>, or <strong>Major outage</strong> when every
+public monitor is failing.</li>
+<li>With no failures and at least one result, it says <strong>All systems operational</strong>.</li>
+<li>Before the first checks land, it says <strong>Waiting for the first checks</strong>.</li>
 </ol>
-<p>Lösungsgeschlossene Vorfälle haben keinen Einfluss auf den Banner.</p>
-<h2 id="privatsphare"><a href="#privatsphare" class="anchor" aria-hidden="true">#</a>Privatsphäre</h2><p>Der öffentliche Lesepfad ist eine Datenbankfunktion, nicht direktem Tabelleneintrag. Er gibt Monitornamen, Gruppen, Zustände, Latenz, Betriebszeit und Vorfälle zurück. Er weicht absichtlich aus:</p>
-<ul>
-<li>Überwachung von URLs;</li>
-<li>Anfrage-Header;</li>
-<li>Probenfehlertext;</li>
-<li>interne Kontroll-IDs;</li>
-<li>die Identitäten hinter den Ereignisaktualisierungen.</li>
-</ul>
-<p>Die Basistabellen haben die Sicherheit auf Zeilenebene aktiviert, ohne öffentliche Richtlinien. Nur die Servicefunktion und die Probedarstellung können sie direkt lesen.</p>
-<h2 id="verwaltung"><a href="#verwaltung" class="anchor" aria-hidden="true">#</a>Verwaltung</h2><p><code>/status/admin</code> ist auf den <strong>Plattformbesitzer</strong> beschränkt, der angemeldet ist. Es handelt sich nicht um eine Platzrolle und kann nicht an ein anderes Mitglied vergeben werden. Unauthentifizierte Anfragen erhalten <code>401</code>; andere angemeldete Konten erhalten <code>403</code>.</p>
-<p>Der Admin-Bildschirm kann:</p>
-<ul>
-<li>Monitore erstellen, bearbeiten, aktivieren, deaktivieren, veröffentlichen oder löschen;</li>
-<li>sehen Sie sich die URL, Header und das letzte Ergebnis jedes Monitors an;</li>
-<li>Veröffentlichung von Vorfällen, Wartungsfenster und Ankündigungen;</li>
-<li>Zeitlinienaktualisierungen hinzufügen und die Auswirkungen oder betroffenen Dienste eines Vorfalls ändern;</li>
-<li>löschen Sie einen Monitor und seine Historie.</li>
-</ul>
-<h3 id="admin-api"><a href="#admin-api" class="anchor" aria-hidden="true">#</a>Admin API</h3><p>Der Bildschirm verwendet diese für Besitzer nur zugänglichen Routen:</p>
-<div class="table-wrap"><table><thead><tr>
-<th>Methode</th>
-<th>Endpunkt</th>
-</tr>
-</thead><tbody><tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/monitors</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/monitors/{id}</code></td>
-</tr>
-<tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/incidents</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/incidents/{id}</code></td>
-</tr>
-<tr>
-<td><code>POST</code></td>
-<td><code>/api/status-admin/incidents/{id}/updates</code></td>
-</tr>
-</tbody></table></div><p>Sie akzeptieren den Supabase-Zugriffstoken des Eigentümers als <code>Authorization: Bearer &lt;token&gt;</code>. Es handelt sich um Implementierungsdetails des Admin-Bildschirms, nicht um ein öffentliches API; die Form kann sich ändern.</p>
-<h2 id="betriebliche-anmerkungen"><a href="#betriebliche-anmerkungen" class="anchor" aria-hidden="true">#</a>Betriebliche Anmerkungen</h2><ul>
-<li>Die Probe authentifiziert sich mit einem Geheimnis, das in Supabase Vault unter gespeichert ist
-<code>status_probe_key</code>. Das Geheimnis wird innerhalb der Datenbank verglichen und ist nicht
-Zur Funktion zurückgekehrt.</li>
-<li>Die Aufgabe <code>pg_cron</code> heißt <code>status-probe</code>. Sie liest das Geheimnis aus dem Safe auf
-Jede Ausführung, so dass die Rotation des Geheimnisses keine Bearbeitung der Aufgabe erfordert.</li>
-<li>Die Edge-Funktion wird mit deaktivierter JWT-Verifizierung bereitgestellt, weil sie
-Authentifiziert stattdessen mit dem Vault-Geheimnis.</li>
-<li>Wenn die Probe selbst nicht mehr läuft, wird die Seite als veraltet angezeigt.
-<strong>letztmals überprüfte</strong> Zeiten. Das ist das Signal, den Cron-Job und Edge zu überprüfen.
-Funktionsprotokolle.</li>
-</ul>
-<h2 id="verwandt"><a href="#verwandt" class="anchor" aria-hidden="true">#</a>verwandt</h2><ul>
-<li><a href="/de/docs/developers/webhooks/">Webhooks</a> - senden Sie Ausfallbenachrichtigungen in einen Kanal.</li>
-<li><a href="/de/docs/developers/embeds/">Einbettungen</a> - formatieren Sie diese Benachrichtigungen.</li>
+<p>Resolved incidents do not affect the banner.</p>
+<h2 id="privacy"><a href="#privacy" class="anchor" aria-hidden="true">#</a>Privacy</h2><p>The public status page and feed expose service state, uptime, and incident
+history. Internal monitoring configuration, probe details, and administrative
+controls are not part of the public interface.</p>
+<h2 id="related"><a href="#related" class="anchor" aria-hidden="true">#</a>Related</h2><ul>
+<li><a href="/de/docs/developers/webhooks/">Webhooks</a> — send outage notifications into a channel.</li>
+<li><a href="/de/docs/developers/embeds/">Embeds</a> — format those notifications.</li>
 </ul>
 
   </main>

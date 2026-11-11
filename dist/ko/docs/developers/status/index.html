@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>상태 시스템 — Disband 문서</title>
-<meta name="description" content="Disband의 상태 페이지는 자체 호스팅됩니다. 타사 상태 서비스에 의존하지 않기 때문에 주요 웹 호스트인 API 또는 정적 자산 전달이 문제가 발생할 때에도 여전히 정확하게 보고할 수 있습니다." />
+<title>Status system — Disband 문서</title>
+<meta name="description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <link rel="canonical" href="https://docs.disband.dev/ko/docs/developers/status/" />
 <link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/developers/status/" />
 <link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/developers/status/" />
@@ -15,8 +17,10 @@
 <link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/developers/status/" />
 <link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/developers/status/" />
 <link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/developers/status/" />
-<meta property="og:title" content="상태 시스템 — Disband 문서" />
-<meta property="og:description" content="Disband의 상태 페이지는 자체 호스팅됩니다. 타사 상태 서비스에 의존하지 않기 때문에 주요 웹 호스트인 API 또는 정적 자산 전달이 문제가 발생할 때에도 여전히 정확하게 보고할 수 있습니다." />
+<meta property="og:title" content="Status system — Disband 문서" />
+<meta property="og:description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <meta property="og:url" content="https://docs.disband.dev/ko/docs/developers/status/" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="ko" />
@@ -206,181 +210,84 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <div class="layout">
   <aside class="sidebar"><nav class="sidebar-nav"><a href="/ko/" class="nav-home-link">문서 홈</a><div class="nav-group"><p class="nav-label">봇</p><a href="/ko/docs/bots/" class="">개요</a><a href="/ko/docs/bots/getting-started/" class="">시작하기</a><a href="/ko/docs/bots/hosting-your-own-bot/" class="">나만의 봇 호스팅</a><a href="/ko/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/ko/docs/bots/clients/python/" class="">Python</a><a href="/ko/docs/bots/api-reference/" class="">API 참조</a><a href="/ko/docs/bots/templates/" class="">템플릿</a></div><div class="nav-group"><p class="nav-label">테마</p><a href="/ko/docs/themes/" class="">테마</a></div><div class="nav-group"><p class="nav-label">개발자</p><a href="/ko/docs/developers/" class="">개발자</a><a href="/ko/docs/developers/webhooks/" class="">웹훅</a><a href="/ko/docs/developers/extended-api/" class="">Extended API</a><a href="/ko/docs/developers/embeds/" class="">임베드</a><a href="/ko/docs/developers/status/" class="active">상태 시스템</a><a href="/ko/docs/bots/" class="">봇</a><a href="/ko/docs/bots/getting-started/" class="">시작하기</a><a href="/ko/docs/bots/api-reference/" class="">API 참조</a><a href="/ko/docs/bots/templates/" class="">템플릿</a></div></nav></aside>
   <main class="content">
-    <div class="translation-note"><strong>자동 번역</strong><span>이 페이지는 자동으로 번역되었습니다. 영어 원문이 기준입니다.</span><a href="/docs/developers/status/">이 페이지를 영어로 읽어보세요</a></div>
-    <h1 id="상태-시스템"><a href="#상태-시스템" class="anchor" aria-hidden="true">#</a>상태 시스템</h1><p>Disband의 상태 페이지는 자체 호스팅됩니다. 타사 상태 서비스에 의존하지 않기 때문에 주요 웹 호스트인 API 또는 정적 자산 전달이 문제가 발생할 때에도 여전히 정확하게 보고할 수 있습니다.</p>
+    <div class="translation-note"><strong>English only</strong><span>This page is not translated yet. The English original is the source of truth.</span><a href="/docs/developers/status/">Read this page in English</a></div>
+    <h1 id="status-system"><a href="#status-system" class="anchor" aria-hidden="true">#</a>Status system</h1><p>Disband&#39;s status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or static asset delivery is having trouble.</p>
 <ul>
-<li>공개 페이지: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
-<li>RSS 피드: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
-<li>소유자 관리자: <a href="https://www.disband.dev/status/admin" target="_blank" rel="noopener noreferrer">disband.dev/status/admin</a></li>
+<li>Public page: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
+<li>RSS feed: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
 </ul>
-<h2 id="공개-페이지가-보여주는-내용"><a href="#공개-페이지가-보여주는-내용" class="anchor" aria-hidden="true">#</a>공개 페이지가 보여주는 내용</h2><p>이 페이지에서는 서비스별로 모니터가 그룹화되어 있습니다. 각 모니터에 대해 다음 정보가 표시됩니다.</p>
+<h2 id="what-the-public-page-shows"><a href="#what-the-public-page-shows" class="anchor" aria-hidden="true">#</a>What the public page shows</h2><p>The page groups monitors by service. For each monitor it shows:</p>
 <ul>
-<li>최신 체크에서부터의 현재 상태;</li>
-<li>그 확인서의 HTTP 상태와 응답 시간;</li>
-<li>90일 가동 시간 막대, 하루에 한 개의 구간;</li>
-<li>마지막으로 수표가 실행된 시간.</li>
+<li>the current state from the latest check;</li>
+<li>the HTTP status and response time of that check;</li>
+<li>a 90-day uptime bar, one segment per day;</li>
+<li>the last time a check ran.</li>
 </ul>
-<p>모니터 아래에는 인시던트, 예정된 유지 보수 및 공지가 있습니다. 각 항목은 전체 업데이트 타임라인이 포함된 세부 정보 페이지를 열 수 있습니다. 피드는 RSS 2.0으로 최신 25건의 인시던트, 유지 보수 기간 및 게시된 공지를 게시합니다.</p>
-<h2 id="수표"><a href="#수표" class="anchor" aria-hidden="true">#</a>수표</h2><p><code>status-probe</code>라는 Supabase Edge 함수가 <code>pg_cron</code> 아래에서 매 분 실행됩니다. <code>pg_cron</code> 아래에서 모든 활성화된 모니터에 병렬로 프로브하고 체크당 한 행을 기록합니다.</p>
-<p>각 모니터에는 다음과 같은 기능이 있습니다.</p>
+<p>Below the monitors are incidents, scheduled maintenance, and announcements. Each
+opens a detail page with the full update timeline. The feed publishes the latest
+25 incidents, maintenance windows, and published announcements as RSS 2.0.</p>
+<h2 id="checks"><a href="#checks" class="anchor" aria-hidden="true">#</a>Checks</h2><p>Automated checks run every minute and record one result per monitor. A monitor
+is healthy only when its expected HTTP status matches and any configured keyword
+is present. Timeouts, network errors, wrong statuses, and missing keywords are
+recorded as failures.</p>
+<p>Checks run independently of the web app, so a failure at the web host does not
+stop checks being recorded.</p>
+<h2 id="history-and-uptime"><a href="#history-and-uptime" class="anchor" aria-hidden="true">#</a>History and uptime</h2><p>Each check is stored and rolled up into daily history, so the 90-day uptime bar
+is read from precomputed data rather than aggregated on demand.</p>
+<ul>
+<li>Raw checks are retained for 90 days.</li>
+<li>Daily roll-ups are retained for 180 days.</li>
+<li>The public page displays the latest 90 days.</li>
+<li>Each day&#39;s segment is the percentage of successful checks that day.</li>
+</ul>
+<p>A gap — a day with no checks — is shown as no data, not as downtime.</p>
+<h2 id="automatic-incidents"><a href="#automatic-incidents" class="anchor" aria-hidden="true">#</a>Automatic incidents</h2><p>When a monitor fails three checks in a row, a major incident is opened
+automatically and linked to that monitor. When the next check succeeds, the
+incident is resolved with an update describing the outage duration. The incident
+remains visible with its full history.</p>
+<p>If a service is flapping but not failing three times consecutively, no automatic
+incident is opened.</p>
+<h2 id="incidents-maintenance-and-announcements"><a href="#incidents-maintenance-and-announcements" class="anchor" aria-hidden="true">#</a>Incidents, maintenance, and announcements</h2><p>The status page can publish three kinds of entry:</p>
 <div class="table-wrap"><table><thead><tr>
-<th>설정</th>
-<th>의미</th>
-</tr>
-</thead><tbody><tr>
-<td>이름</td>
-<td>예를 들어 <strong>웹사이트</strong>를 위한 공공 레이블.</td>
-</tr>
-<tr>
-<td>그룹</td>
-<td>예를 들어 <strong>Disband</strong>와 같이 아래에 나타나는 섹션.</td>
-</tr>
-<tr>
-<td>URL</td>
-<td>요청할 절대적인 <code>http</code> 또는 <code>https</code> URL입니다.</td>
-</tr>
-<tr>
-<td>방법</td>
-<td><code>GET</code> 또는 <code>HEAD</code>. 기본값은 <code>GET</code>입니다.</td>
-</tr>
-<tr>
-<td>예상 상태</td>
-<td>건강으로 간주되는 정확한 HTTP 상태입니다. 기본값은 <code>200</code>입니다.</td>
-</tr>
-<tr>
-<td>키워드</td>
-<td>응답 본문에 반드시 표시되어야 하는 선택적 텍스트.</td>
-</tr>
-<tr>
-<td>타임아웃</td>
-<td>1~30초. 기본값은 10초입니다.</td>
-</tr>
-<tr>
-<td>헤더</td>
-<td>선택적 요청 헤더, 서버 측에 저장됨.</td>
-</tr>
-<tr>
-<td>활성화됨</td>
-<td>프로브가 요청하는지 여부.</td>
-</tr>
-<tr>
-<td>공개</td>
-<td>공공 스냅샷에 기여하는지 여부.</td>
-</tr>
-</tbody></table></div><p>모니터는 상태 코드가 <strong>과</strong> 선택적 키워드가 있는 경우에만 건강합니다. 리디렉션이 따릅니다. 타임아웃, 네트워크 오류, 잘못된 상태 또는 키워드 누락이 이유와 함께 실패한 체크로 기록됩니다.</p>
-<p>프로브는 웹 앱과 독립적으로 실행됩니다. 웹 호스트에 문제가 발생하더라도 체크가 기록되는 것은 멈추지 않습니다.</p>
-<h2 id="역사-및-가동-시간"><a href="#역사-및-가동-시간" class="anchor" aria-hidden="true">#</a>역사 및 가동 시간</h2><p>각 수표는 <code>status_checks</code>에 저장됩니다. 데이터베이스 트리거는 각 수표를 <code>status_daily</code>로 접습니다. 따라서 90일 차트는 수백만 행을 합산하는 것이 아니라 저렴한 읽기입니다.</p>
-<ul>
-<li>원본 수표는 <strong>90일</strong> 동안 보관됩니다.</li>
-<li>매일의 롤업은 <strong>180일</strong> 동안 보관됩니다.</li>
-<li>공개 페이지에는 최신 <strong>90일</strong>이 표시됩니다.</li>
-<li>각 일의 세그먼트는 그날의 성공적인 체크의 비율입니다.</li>
-</ul>
-<p>체크가 없는 날인 공백은 다운타임이 아니라 데이터가 없는 것으로 표시됩니다.</p>
-<h2 id="자동-인시던트"><a href="#자동-인시던트" class="anchor" aria-hidden="true">#</a>자동 인시던트</h2><p>모니터가 <strong>3회 연속</strong> 검사를 실패하면 프로브가 자동으로 인시던트를 열습니다. 이 인시던트은 해당 모니터와 관련된 <strong>중대한</strong> 인시던트이며, 마지막 오류를 포함하는 자동 업데이트로 <strong>수사</strong> 단계에서 시작됩니다.</p>
-<p>다음 체크가 성공하면, 인시던트은 <strong>해결됨</strong>으로 이동하고, 다운타임이 얼마나 지속되었는지에 대한 대략적인 시간이 업데이트로 기록됩니다. 인시던트은 전체 이력을 함께 페이지와 피드에 계속 표시됩니다.</p>
-<p>서비스 상태가 불안정하지만 연속으로 세 번 이상 실패하지 않는 경우 자동 사고가 열리지 않습니다. 소유자는 여전히 열린 자동 사고에 수동 업데이트를 추가할 수 있습니다.</p>
-<h2 id="수동적인-인시던트-유지-보수-및-공지사항"><a href="#수동적인-인시던트-유지-보수-및-공지사항" class="anchor" aria-hidden="true">#</a>수동적인 인시던트, 유지 보수 및 공지사항</h2><p>소유자는 세 가지 종류의 항목을 게시할 수 있습니다.</p>
-<div class="table-wrap"><table><thead><tr>
-<th>종류</th>
-<th>사용 목적</th>
+<th>Kind</th>
+<th>Use for</th>
 </tr>
 </thead><tbody><tr>
 <td><code>incident</code></td>
-<td>계획되지 않은 문제.</td>
+<td>An unplanned problem.</td>
 </tr>
 <tr>
 <td><code>maintenance</code></td>
-<td>계획된 작업, 선택적으로 시작 및 종료 시간을 포함할 수 있습니다.</td>
+<td>Planned work, optionally with a start and end time.</td>
 </tr>
 <tr>
 <td><code>announcement</code></td>
-<td>장애가 아닌 일반 서비스 공지입니다.</td>
+<td>A general service notice that is not an outage.</td>
 </tr>
-</tbody></table></div><p>인시던트은 하나 이상의 모니터에 영향을 미칠 수 있습니다. 그 영향은 <code>none</code>, <code>minor</code>, <code>major</code> 또는 <code>critical</code> 중 하나입니다.</p>
-<p>업데이트 상태는 다음과 같습니다.</p>
-<ul>
-<li><code>investigating</code></li>
-<li><code>identified</code></li>
-<li><code>monitoring</code></li>
-<li><code>resolved</code></li>
-<li><code>scheduled</code></li>
-<li><code>in_progress</code></li>
-<li><code>completed</code></li>
-<li><code>published</code></li>
-</ul>
-<p>각 업데이트에는 타임스탬프가 찍힌 항목이 인시던트 타임라인에 추가되고 인시던트의 현재 상태가 설정됩니다. 업데이트 <code>resolved</code> 또는 <code>completed</code>을 표시하면 해결 시간도 설정됩니다. 다른 상태의 더 최근 업데이트를 게시하면 다시 열립니다.</p>
-<h2 id="전체-상태"><a href="#전체-상태" class="anchor" aria-hidden="true">#</a>전체 상태</h2><p>배너는 이 순서로 결정됩니다:</p>
+</tbody></table></div><p>An incident can affect one or more monitors and carry an impact level of
+<code>none</code>, <code>minor</code>, <code>major</code>, or <code>critical</code>. Each update adds a timestamped entry to
+the timeline. Marking an update <code>resolved</code> or <code>completed</code> sets the resolved
+time; a later update can reopen it.</p>
+<h2 id="overall-status"><a href="#overall-status" class="anchor" aria-hidden="true">#</a>Overall status</h2><p>The banner is decided in this order:</p>
 <ol>
-<li>활성 유지 관리 창에 <strong>현재 유지 관리 중</strong>이라고 표시되거나
-<strong>시작하기 전에 예정된 유지 보수</strong>.</li>
-<li>활성 중지 사항 또는 심각한 인시던트에는 <strong>중단</strong>이라는 문구가 표시됩니다.</li>
-<li>활성 중인 경미한 사고에 <strong>부분적으로 손상됨</strong>이라고 표시됩니다.</li>
-<li>모든 모니터가 <strong>부분적으로 성능 저하</strong> 또는 <strong>주요 장애</strong>라고 표시되는 경우
-공용 모니터가 고장났습니다.</li>
-<li>실패가 없었고 적어도 하나의 결과가 있을 경우 <strong>모든 시스템이 정상 작동</strong>이라고 표시됩니다.</li>
-<li>첫 번째 수표가 도착하기 전에 <strong>첫 번째 수표를 기다리고 있습니다</strong>라고 표시됩니다.</li>
+<li>An active maintenance window says <strong>Maintenance in progress</strong>, or
+<strong>Scheduled maintenance</strong> before it starts.</li>
+<li>An active major or critical incident says <strong>Major outage</strong>.</li>
+<li>An active minor incident says <strong>Partially degraded</strong>.</li>
+<li>Failed monitors say <strong>Partially degraded</strong>, or <strong>Major outage</strong> when every
+public monitor is failing.</li>
+<li>With no failures and at least one result, it says <strong>All systems operational</strong>.</li>
+<li>Before the first checks land, it says <strong>Waiting for the first checks</strong>.</li>
 </ol>
-<p>해결된 인시던트은 배너에 영향을 미치지 않습니다.</p>
-<h2 id="사생활"><a href="#사생활" class="anchor" aria-hidden="true">#</a>사생활</h2><p>공개 읽기 경로는 직접 테이블 액세스가 아닌 데이터베이스 함수입니다. 모니터 이름, 그룹, 상태, 지연 시간, 가동 시간 및 인시던트를 반환합니다. 의도적으로 다음과 같은 내용을 생략합니다.</p>
-<ul>
-<li>URLs를 모니터링합니다;</li>
-<li>요청 헤더;</li>
-<li>프로브 오류 텍스트;</li>
-<li>내부 체크 아이디;</li>
-<li>인시던트 업데이트 뒤에 숨겨진 정체성.</li>
-</ul>
-<p>기본 테이블에는 공개 정책 없이 행 수준 보안이 활성화되어 있습니다. 서비스 역할과 프로브 기능만 직접 읽을 수 있습니다.</p>
-<h2 id="행정-기관"><a href="#행정-기관" class="anchor" aria-hidden="true">#</a>행정 기관</h2><p><code>/status/admin</code>는 로그인한 <strong>플랫폼 소유자</strong>에게만 제한됩니다. 스페이스 역할이 아니며 다른 회원에 부여할 수 없습니다. 인증되지 않은 요청에는 <code>401</code>가 전송되며, 다른 로그인된 계정에는 <code>403</code>가 전송됩니다.</p>
-<p>관리자 화면은 다음과 같은 작업을 수행할 수 있습니다.</p>
-<ul>
-<li>모니터 생성, 편집, 활성화, 비활성화, 게시 또는 삭제;</li>
-<li>각 모니터의 URL, 헤더 및 마지막 결과를 확인하세요;</li>
-<li>인시던트 발생 후, 유지 보수 기간 및 공지사항 게시;</li>
-<li>타임라인 업데이트를 추가하고 인시던트의 영향 또는 영향을 받는 서비스를 변경합니다.</li>
-<li>모니터와 그 이력을 삭제합니다.</li>
-</ul>
-<h3 id="관리자-api"><a href="#관리자-api" class="anchor" aria-hidden="true">#</a>관리자 API</h3><p>이 화면은 다음 소유자 전용 경로를 사용합니다.</p>
-<div class="table-wrap"><table><thead><tr>
-<th>방법</th>
-<th>엔드포인트</th>
-</tr>
-</thead><tbody><tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/monitors</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/monitors/{id}</code></td>
-</tr>
-<tr>
-<td><code>GET</code>, <code>POST</code></td>
-<td><code>/api/status-admin/incidents</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>, <code>DELETE</code></td>
-<td><code>/api/status-admin/incidents/{id}</code></td>
-</tr>
-<tr>
-<td><code>POST</code></td>
-<td><code>/api/status-admin/incidents/{id}/updates</code></td>
-</tr>
-</tbody></table></div><p>그들은 소유자의 Supabase 액세스 토큰을 <code>Authorization: Bearer &lt;token&gt;</code>로 받아들입니다. 그들은 공개적인 API가 아니라 관리자 화면의 구현 세부 사항입니다; 모양은 변경될 수 있습니다.</p>
-<h2 id="운영-메모"><a href="#운영-메모" class="anchor" aria-hidden="true">#</a>운영 메모</h2><ul>
-<li>프로브는 Supabase Vault에 저장된 비밀과 함께 인증합니다.
-<code>status_probe_key</code>. 비밀은 데이터베이스 내에서 비교되며 그렇지 않습니다.
-기능으로 돌아왔습니다.</li>
-<li><code>pg_cron</code> 작업은 <code>status-probe</code>로 이름이 지정되었습니다. 그것은 Vault에서 비밀을 읽습니다.
-모든 실행에서, 비밀을 회전시키려면 작업을 편집할 필요가 없습니다.</li>
-<li>Edge 기능은 JWT 확인을 비활성화하여 배포됩니다. 왜냐하면
-대신 Vault 비밀로 인증합니다.</li>
-<li>프로브 자체에서 실행이 중지되면, 페이지가 오래된 것으로 표시됩니다.
-<strong>마지막으로 확인된</strong> 시간들. 그것은 크론 작업과 Edge를 검사할 신호입니다.
-기능 로그.</li>
-</ul>
-<h2 id="관계가-있는"><a href="#관계가-있는" class="anchor" aria-hidden="true">#</a>관계가 있는</h2><ul>
-<li><a href="/ko/docs/developers/webhooks/">웹훅</a> — 채널에 장애 알림을 보내세요.</li>
-<li><a href="/ko/docs/developers/embeds/">임베드</a> — 해당 알림을 형식화합니다.</li>
+<p>Resolved incidents do not affect the banner.</p>
+<h2 id="privacy"><a href="#privacy" class="anchor" aria-hidden="true">#</a>Privacy</h2><p>The public status page and feed expose service state, uptime, and incident
+history. Internal monitoring configuration, probe details, and administrative
+controls are not part of the public interface.</p>
+<h2 id="related"><a href="#related" class="anchor" aria-hidden="true">#</a>Related</h2><ul>
+<li><a href="/ko/docs/developers/webhooks/">Webhooks</a> — send outage notifications into a channel.</li>
+<li><a href="/ko/docs/developers/embeds/">Embeds</a> — format those notifications.</li>
 </ul>
 
   </main>

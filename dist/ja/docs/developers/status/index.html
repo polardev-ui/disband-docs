@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ステータスシステム — Disband ドキュメント</title>
-<meta name="description" content="Disbandのステータスページは自己ホストされています。 3 社間のステータス サービスに依存しないため、メイン Web ホストである API または静的アセット配信に問題が発生した場合でも、正確な報告を行うことができます。" />
+<title>Status system — Disband ドキュメント</title>
+<meta name="description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <link rel="canonical" href="https://docs.disband.dev/ja/docs/developers/status/" />
 <link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/developers/status/" />
 <link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/developers/status/" />
@@ -15,8 +17,10 @@
 <link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/developers/status/" />
 <link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/developers/status/" />
 <link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/developers/status/" />
-<meta property="og:title" content="ステータスシステム — Disband ドキュメント" />
-<meta property="og:description" content="Disbandのステータスページは自己ホストされています。 3 社間のステータス サービスに依存しないため、メイン Web ホストである API または静的アセット配信に問題が発生した場合でも、正確な報告を行うことができます。" />
+<meta property="og:title" content="Status system — Disband ドキュメント" />
+<meta property="og:description" content="Disband's status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or stat" />
 <meta property="og:url" content="https://docs.disband.dev/ja/docs/developers/status/" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="ja" />
@@ -206,181 +210,84 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <div class="layout">
   <aside class="sidebar"><nav class="sidebar-nav"><a href="/ja/" class="nav-home-link">ドキュメントホーム</a><div class="nav-group"><p class="nav-label">ボット</p><a href="/ja/docs/bots/" class="">概要</a><a href="/ja/docs/bots/getting-started/" class="">はじめに</a><a href="/ja/docs/bots/hosting-your-own-bot/" class="">独自のボットをホストする</a><a href="/ja/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/ja/docs/bots/clients/python/" class="">Python</a><a href="/ja/docs/bots/api-reference/" class="">APIリファレンス</a><a href="/ja/docs/bots/templates/" class="">テンプレート</a></div><div class="nav-group"><p class="nav-label">テーマ</p><a href="/ja/docs/themes/" class="">テーマ</a></div><div class="nav-group"><p class="nav-label">開発者</p><a href="/ja/docs/developers/" class="">開発者</a><a href="/ja/docs/developers/webhooks/" class="">Webhook</a><a href="/ja/docs/developers/extended-api/" class="">Extended API</a><a href="/ja/docs/developers/embeds/" class="">埋め込み</a><a href="/ja/docs/developers/status/" class="active">ステータスシステム</a><a href="/ja/docs/bots/" class="">ボット</a><a href="/ja/docs/bots/getting-started/" class="">はじめに</a><a href="/ja/docs/bots/api-reference/" class="">APIリファレンス</a><a href="/ja/docs/bots/templates/" class="">テンプレート</a></div></nav></aside>
   <main class="content">
-    <div class="translation-note"><strong>自動翻訳</strong><span>このページは自動翻訳されました。英語の原文が正式な情報源です。</span><a href="/docs/developers/status/">このページを英語で読む</a></div>
-    <h1 id="ステータスシステム"><a href="#ステータスシステム" class="anchor" aria-hidden="true">#</a>ステータスシステム</h1><p>Disbandのステータスページは自己ホストされています。 3 社間のステータス サービスに依存しないため、メイン Web ホストである API または静的アセット配信に問題が発生した場合でも、正確な報告を行うことができます。</p>
+    <div class="translation-note"><strong>English only</strong><span>This page is not translated yet. The English original is the source of truth.</span><a href="/docs/developers/status/">Read this page in English</a></div>
+    <h1 id="status-system"><a href="#status-system" class="anchor" aria-hidden="true">#</a>Status system</h1><p>Disband&#39;s status page is self-hosted. It does not depend on a third-party
+status service, so it can still report accurately when the main web host, API,
+or static asset delivery is having trouble.</p>
 <ul>
-<li>公開ページ：<a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
-<li>RSSフィード：<a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
-<li>オーナー管理者：<a href="https://www.disband.dev/status/admin" target="_blank" rel="noopener noreferrer">disband.dev/status/admin</a></li>
+<li>Public page: <a href="https://www.disband.dev/status" target="_blank" rel="noopener noreferrer">disband.dev/status</a></li>
+<li>RSS feed: <a href="https://www.disband.dev/status/feed.xml" target="_blank" rel="noopener noreferrer">disband.dev/status/feed.xml</a></li>
 </ul>
-<h2 id="公開ヘーシに表示されるもの"><a href="#公開ヘーシに表示されるもの" class="anchor" aria-hidden="true">#</a>公開ページに表示されるもの</h2><p>このページでは、サービス別モニターがグループ化されています。各モニターには、次の情報が表示されます。</p>
+<h2 id="what-the-public-page-shows"><a href="#what-the-public-page-shows" class="anchor" aria-hidden="true">#</a>What the public page shows</h2><p>The page groups monitors by service. For each monitor it shows:</p>
 <ul>
-<li>最新のチェックからの現在の状態。</li>
-<li>そのチェックのHTTPステータスと応答時間。</li>
-<li>90日間の稼働時間バー、1日1つのセグメント。</li>
-<li>最後にチェックが実行されたとき。</li>
+<li>the current state from the latest check;</li>
+<li>the HTTP status and response time of that check;</li>
+<li>a 90-day uptime bar, one segment per day;</li>
+<li>the last time a check ran.</li>
 </ul>
-<p>モニターの下には、インシデント、スケジュールされたメンテナンス、およびお知らせがあります。それぞれが、完全な更新タイムラインを含む詳細ページを開きます。フィードは、RSS 2.0として最新の25件のインシデント、メンテナンスウィンドウ、および公開されたお知らせを配信します。</p>
-<h2 id="チェック"><a href="#チェック" class="anchor" aria-hidden="true">#</a>チェック</h2><p><code>status-probe</code>と呼ばれるSupabase Edge関数が<code>pg_cron</code>の下で毎分実行されます。 すべての有効なモニターを並行してプローブし、チェックごとに1行を記録します。</p>
-<p>各モニターには次のものが含まれます。</p>
+<p>Below the monitors are incidents, scheduled maintenance, and announcements. Each
+opens a detail page with the full update timeline. The feed publishes the latest
+25 incidents, maintenance windows, and published announcements as RSS 2.0.</p>
+<h2 id="checks"><a href="#checks" class="anchor" aria-hidden="true">#</a>Checks</h2><p>Automated checks run every minute and record one result per monitor. A monitor
+is healthy only when its expected HTTP status matches and any configured keyword
+is present. Timeouts, network errors, wrong statuses, and missing keywords are
+recorded as failures.</p>
+<p>Checks run independently of the web app, so a failure at the web host does not
+stop checks being recorded.</p>
+<h2 id="history-and-uptime"><a href="#history-and-uptime" class="anchor" aria-hidden="true">#</a>History and uptime</h2><p>Each check is stored and rolled up into daily history, so the 90-day uptime bar
+is read from precomputed data rather than aggregated on demand.</p>
+<ul>
+<li>Raw checks are retained for 90 days.</li>
+<li>Daily roll-ups are retained for 180 days.</li>
+<li>The public page displays the latest 90 days.</li>
+<li>Each day&#39;s segment is the percentage of successful checks that day.</li>
+</ul>
+<p>A gap — a day with no checks — is shown as no data, not as downtime.</p>
+<h2 id="automatic-incidents"><a href="#automatic-incidents" class="anchor" aria-hidden="true">#</a>Automatic incidents</h2><p>When a monitor fails three checks in a row, a major incident is opened
+automatically and linked to that monitor. When the next check succeeds, the
+incident is resolved with an update describing the outage duration. The incident
+remains visible with its full history.</p>
+<p>If a service is flapping but not failing three times consecutively, no automatic
+incident is opened.</p>
+<h2 id="incidents-maintenance-and-announcements"><a href="#incidents-maintenance-and-announcements" class="anchor" aria-hidden="true">#</a>Incidents, maintenance, and announcements</h2><p>The status page can publish three kinds of entry:</p>
 <div class="table-wrap"><table><thead><tr>
-<th>設定</th>
-<th>意味</th>
-</tr>
-</thead><tbody><tr>
-<td>名前</td>
-<td>例えば、<strong>ウェブサイト</strong>などのパブリックラベル。</td>
-</tr>
-<tr>
-<td>グループ</td>
-<td>それが表示されるセクション、例えば<strong>Disband</strong>。</td>
-</tr>
-<tr>
-<td>URL</td>
-<td>リクエストする絶対的な<code>http</code>または<code>https</code> URL。</td>
-</tr>
-<tr>
-<td>方法</td>
-<td><code>GET</code>または<code>HEAD</code>。デフォルトは<code>GET</code>です。</td>
-</tr>
-<tr>
-<td>予想されるステータス</td>
-<td>健康と見なされる正確なHTTPステータス。デフォルトは<code>200</code>です。</td>
-</tr>
-<tr>
-<td>キーワード</td>
-<td>応答本文に表示される必須のオプションテキスト。</td>
-</tr>
-<tr>
-<td>タイムアウト</td>
-<td>1〜30秒。デフォルトは10秒です。</td>
-</tr>
-<tr>
-<td>ヘッダー</td>
-<td>オプションのリクエストヘッダー、サーバー側で保存されます。</td>
-</tr>
-<tr>
-<td>有効化済み</td>
-<td>プローブがそれ自体を要求するかどうか。</td>
-</tr>
-<tr>
-<td>公開</td>
-<td>それが公共のスナップショットに貢献するかどうか。</td>
-</tr>
-</tbody></table></div><p>モニターは、ステータスコードが<strong>一致し</strong>、オプションのキーワードが存在する場合にのみ正常です。リダイレクトは従います。タイムアウト、ネットワークエラー、ステータスが正しくない、またはキーワードが欠落している場合は、理由とともにチェックに失敗したとして記録されます。</p>
-<p>プローブはウェブアプリとは独立して実行されます。ウェブホストの障害があっても、チェックの記録は停止しません。</p>
-<h2 id="履歴と稼働時間"><a href="#履歴と稼働時間" class="anchor" aria-hidden="true">#</a>履歴と稼働時間</h2><p>すべてのチェックは<code>status_checks</code>に保存されます。データベーストリガーは各チェックを<code>status_daily</code>に折りたたみます。したがって、90日間のバーは、何百万人もの行をアグリゲートするのではなく、安価な読み取りです。</p>
-<ul>
-<li>未加工のチェックは<strong>90日間</strong>保管されます。</li>
-<li>毎日のロールアップは<strong>180日間</strong>保持されます。</li>
-<li>公開ページには最新の<strong>90日間</strong>が表示されます。</li>
-<li>各日のセグメントは、その日の成功したチェックの割合です。</li>
-</ul>
-<p>チェックが行われていない日（ギャップ）は、ダウンタイムではなく、データなしとして表示されます。</p>
-<h2 id="自動発生事故"><a href="#自動発生事故" class="anchor" aria-hidden="true">#</a>自動発生事故</h2><p>プローブは、モニターが<strong>3回連続でチェックに失敗</strong>した場合、自動的にインシデントを開きます。インシデントは、そのモニターに関連付けられた<strong>重大な</strong>インシデントであり、最後のエラーを含む自動更新で<strong>調査</strong>を開始します。</p>
-<p>次のチェックが成功すると、インシデントは<strong>解決済み</strong>に移動し、障害が発生した時間が概算的に記録されます。インシデントは、完全な履歴とともにページとフィードに残ります。</p>
-<p>サービスがフラップしている場合でも、連続して3回失敗していない場合は、自動インシデントは開かれません。 所有者は、インシデントが開いている間、まだ手動更新を追加できます。</p>
-<h2 id="手動の事件メンテナンスおよひお知らせ"><a href="#手動の事件メンテナンスおよひお知らせ" class="anchor" aria-hidden="true">#</a>手動の事件、メンテナンス、およびお知らせ</h2><p>オーナーは、次の3種類のエントリーを投稿できます。</p>
-<div class="table-wrap"><table><thead><tr>
-<th>種類</th>
-<th>使用目的に</th>
+<th>Kind</th>
+<th>Use for</th>
 </tr>
 </thead><tbody><tr>
 <td><code>incident</code></td>
-<td>予期せぬ問題です。</td>
+<td>An unplanned problem.</td>
 </tr>
 <tr>
 <td><code>maintenance</code></td>
-<td>計画された作業、オプションで開始時間と終了時間を含める。</td>
+<td>Planned work, optionally with a start and end time.</td>
 </tr>
 <tr>
 <td><code>announcement</code></td>
-<td>障害ではなく、一般的なサービスに関するお知らせです。</td>
+<td>A general service notice that is not an outage.</td>
 </tr>
-</tbody></table></div><p>イベントは、1つ、複数、またはすべてのモニターに影響を与える可能性があります。その影響は、<code>none</code>、<code>minor</code>、<code>major</code>、または<code>critical</code>のいずれかになります。</p>
-<p>更新ステータスは次のとおりです。</p>
-<ul>
-<li><code>investigating</code></li>
-<li><code>identified</code></li>
-<li><code>monitoring</code></li>
-<li><code>resolved</code></li>
-<li><code>scheduled</code></li>
-<li><code>in_progress</code></li>
-<li><code>completed</code></li>
-<li><code>published</code></li>
-</ul>
-<p>各更新により、インシデントタイムラインにタイムスタンプ付きのエントリが追加され、インシデントの現在のステータスが設定されます。更新を<code>resolved</code>または<code>completed</code>とマークすると、解決時間も設定されます。別のステータスで後続の更新を投稿すると、インシデントが再び開きます。</p>
-<h2 id="全体的な状況"><a href="#全体的な状況" class="anchor" aria-hidden="true">#</a>全体的な状況</h2><p>バナーは次の順番で決定されます。</p>
+</tbody></table></div><p>An incident can affect one or more monitors and carry an impact level of
+<code>none</code>, <code>minor</code>, <code>major</code>, or <code>critical</code>. Each update adds a timestamped entry to
+the timeline. Marking an update <code>resolved</code> or <code>completed</code> sets the resolved
+time; a later update can reopen it.</p>
+<h2 id="overall-status"><a href="#overall-status" class="anchor" aria-hidden="true">#</a>Overall status</h2><p>The banner is decided in this order:</p>
 <ol>
-<li>アクティブなメンテナンスウィンドウに「<strong>メンテナンス中</strong>」と表示されている場合、または
-<strong>開始前にスケジュールされたメンテナンス</strong>。</li>
-<li>アクティブなメジャーまたはクリティカルインシデントには「<strong>メジャー障害</strong>」と表示されます。</li>
-<li>アクティブな軽度のインシデントには「<strong>部分的に劣化</strong>」と表示されます。</li>
-<li>モニターが故障している場合は、すべてのモニターで「<strong>部分的に劣化</strong>」または「<strong>大きな障害</strong>」と表示されます。
-公共モニターが故障しています。</li>
-<li>失敗がなく、少なくとも 1 つの結果がある場合、「<strong>すべてのシステムが正常に動作しています</strong>」と表示されます。</li>
-<li>最初のチェックが到着する前に、「<strong>最初のチェックを待っています</strong>」と表示されます。</li>
+<li>An active maintenance window says <strong>Maintenance in progress</strong>, or
+<strong>Scheduled maintenance</strong> before it starts.</li>
+<li>An active major or critical incident says <strong>Major outage</strong>.</li>
+<li>An active minor incident says <strong>Partially degraded</strong>.</li>
+<li>Failed monitors say <strong>Partially degraded</strong>, or <strong>Major outage</strong> when every
+public monitor is failing.</li>
+<li>With no failures and at least one result, it says <strong>All systems operational</strong>.</li>
+<li>Before the first checks land, it says <strong>Waiting for the first checks</strong>.</li>
 </ol>
-<p>解決済みの事件はバナーに影響しません。</p>
-<h2 id="フライハシー"><a href="#フライハシー" class="anchor" aria-hidden="true">#</a>プライバシー</h2><p>公開読み取りパスは、直接テーブルへのアクセスではなく、データベース機能です。モニタ名、グループ、ステータス、レイテンシ、稼働時間、およびインシデントを返します。意図的に省略されています。</p>
-<ul>
-<li>URLsを監視する。</li>
-<li>リクエストヘッダー；</li>
-<li>プローブエラーテキスト;</li>
-<li>内部チェックID;</li>
-<li>事件更新の背後にある人物。</li>
-</ul>
-<p>基本テーブルには、パブリックポリシーなしで行レベルのセキュリティが有効になっています。サービスロールとプローブ機能のみが直接読み込むことができます。</p>
-<h2 id="管理"><a href="#管理" class="anchor" aria-hidden="true">#</a>管理</h2><p><code>/status/admin</code>は、サインインした<strong>プラットフォーム所有者</strong>にのみ制限されています。スペースロールではなく、他のメンバーに割り当てることはできません。認証されていないリクエストには<code>401</code>が返されます。他のサインインしたアカウントには<code>403</code>が返されます。</p>
-<p>管理画面は次のことができます。</p>
-<ul>
-<li>モニターを作成、編集、有効化、無効化、公開、または削除する。</li>
-<li>各モニターのURL、ヘッダー、および最終結果を確認します。</li>
-<li>事件後、メンテナンスウィンドウ、および発表を投稿する。</li>
-<li>タイムラインの更新を追加し、インシデントの影響や影響を受けるサービスに変更する。</li>
-<li>モニターとその履歴を削除します。</li>
-</ul>
-<h3 id="管理者api"><a href="#管理者api" class="anchor" aria-hidden="true">#</a>管理者API</h3><p>この画面では、これらのオーナー専用ルートを使用します。</p>
-<div class="table-wrap"><table><thead><tr>
-<th>方法</th>
-<th>エンドポイント</th>
-</tr>
-</thead><tbody><tr>
-<td><code>GET</code>、<code>POST</code></td>
-<td><code>/api/status-admin/monitors</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>、<code>DELETE</code></td>
-<td><code>/api/status-admin/monitors/{id}</code></td>
-</tr>
-<tr>
-<td><code>GET</code>、<code>POST</code></td>
-<td><code>/api/status-admin/incidents</code></td>
-</tr>
-<tr>
-<td><code>PATCH</code>、<code>DELETE</code></td>
-<td><code>/api/status-admin/incidents/{id}</code></td>
-</tr>
-<tr>
-<td><code>POST</code></td>
-<td><code>/api/status-admin/incidents/{id}/updates</code></td>
-</tr>
-</tbody></table></div><p>彼らはオーナーのSupabaseアクセストークンを<code>Authorization: Bearer &lt;token&gt;</code>として受け付けます。それらは、公開のAPIではなく、管理画面の実装詳細です。形状は変更される場合があります。</p>
-<h2 id="運用ノート"><a href="#運用ノート" class="anchor" aria-hidden="true">#</a>運用ノート</h2><ul>
-<li>プローブは、Supabase Vaultに保存されている秘密で認証されます。
-<code>status_probe_key</code>。秘密はデータベース内で比較され、ありません。
-関数に戻りました。</li>
-<li><code>pg_cron</code>ジョブは<code>status-probe</code>と名付けられています。それはVaultから秘密を読み取ります
-すべての実行で、秘密を回転させるにはジョブの編集は必要ありません。</li>
-<li>エッジ機能は、JWT検証をオフに配置されています。なぜなら、それは
-代わりにVaultの秘密で認証します。</li>
-<li>プローブ自体が実行を停止した場合、ページは古いと表示されます。
-<strong>最後に確認された</strong>回数。これは、クロンジョブとEdgeを検査するためのシグナルです
-機能ログ。</li>
-</ul>
-<h2 id="関連した"><a href="#関連した" class="anchor" aria-hidden="true">#</a>関連した</h2><ul>
-<li><a href="/ja/docs/developers/webhooks/">Webhook</a> — 障害通知をチャンネルに送信します。</li>
-<li><a href="/ja/docs/developers/embeds/">埋め込み</a> — それらの通知をフォーマットします。</li>
+<p>Resolved incidents do not affect the banner.</p>
+<h2 id="privacy"><a href="#privacy" class="anchor" aria-hidden="true">#</a>Privacy</h2><p>The public status page and feed expose service state, uptime, and incident
+history. Internal monitoring configuration, probe details, and administrative
+controls are not part of the public interface.</p>
+<h2 id="related"><a href="#related" class="anchor" aria-hidden="true">#</a>Related</h2><ul>
+<li><a href="/ja/docs/developers/webhooks/">Webhooks</a> — send outage notifications into a channel.</li>
+<li><a href="/ja/docs/developers/embeds/">Embeds</a> — format those notifications.</li>
 </ul>
 
   </main>
