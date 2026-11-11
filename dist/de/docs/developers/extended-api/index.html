@@ -1,0 +1,1396 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Extended API and private channels — Disband-Dokumentation</title>
+<meta name="description" content="The extended bot API is shipped. It adds private text channels, category and
+channel management, message editing and bulk tools, pins and reactions, richer
+memb" />
+<link rel="canonical" href="https://docs.disband.dev/de/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="fr" href="https://docs.disband.dev/fr/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="de" href="https://docs.disband.dev/de/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="pt-BR" href="https://docs.disband.dev/pt-br/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="ja" href="https://docs.disband.dev/ja/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="ko" href="https://docs.disband.dev/ko/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/developers/extended-api/" />
+<link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/developers/extended-api/" />
+<meta property="og:title" content="Extended API and private channels — Disband-Dokumentation" />
+<meta property="og:description" content="The extended bot API is shipped. It adds private text channels, category and
+channel management, message editing and bulk tools, pins and reactions, richer
+memb" />
+<meta property="og:url" content="https://docs.disband.dev/de/docs/developers/extended-api/" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="de" />
+<meta name="twitter:card" content="summary" />
+<style>
+:root {
+  --bg-primary: #0f1012;
+  --bg-secondary: #17181b;
+  --bg-tertiary: #1e1f22;
+  --brand: #5865f2;
+  --brand-hover: #4752c4;
+  --text-normal: #dbdee1;
+  --text-muted: #9aa3ab;
+  --text-bright: #f2f3f5;
+  --divider: #2f3136;
+  --code-bg: #15161a;
+  --link: #7c9cff;
+  --sidebar-w: 248px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-normal);
+  font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; padding: 0 24px;
+  background: rgba(15,16,18,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+}
+.site-logo { width: auto; height: 28px; margin-right: 10px; display: inline-block; vertical-align: -6px; }
+.wordmark { font-weight: 700; color: var(--text-bright); font-size: 16px; letter-spacing: 0.2px; text-decoration: none; display: inline-flex; align-items: center; }
+.wordmark:hover { text-decoration: none; }
+.wordmark span { color: var(--brand); margin-left: 2px; }
+.header-links { display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
+.header-links a { color: var(--text-muted); text-decoration: none; }
+.header-links a:hover { color: var(--text-bright); }
+.lang-select {
+  appearance: none;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-normal);
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 28px 6px 10px;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 52%, calc(100% - 9px) 52%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+.lang-select:hover { border-color: var(--text-muted); }
+.lang-select:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.translation-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 28px;
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  background: rgba(88, 101, 242, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.translation-note strong { color: var(--text-normal); font-weight: 600; }
+.translation-note a { color: var(--link); white-space: nowrap; }
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  padding: 24px 16px;
+  border-right: 1px solid var(--divider);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 20px; }
+.sidebar-nav a {
+  display: block; padding: 7px 12px; border-radius: 6px;
+  color: var(--text-muted); font-size: 13.5px; transition: background 0.12s, color 0.12s;
+}
+.nav-home-link { font-weight: 600; color: var(--text-normal) !important; }
+.sidebar-nav a:hover { background: var(--bg-tertiary); color: var(--text-normal); text-decoration: none; }
+.sidebar-nav a.active { background: var(--brand); color: #fff !important; }
+.nav-group .nav-label {
+  margin: 0 0 6px; padding: 0 12px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+main.content {
+  max-width: 820px; width: 100%;
+  margin: 0 auto; padding: 56px 40px 80px;
+}
+.content h1 {
+  margin: 0 0 10px; font-size: 34px; font-weight: 700; color: var(--text-bright);
+  letter-spacing: -0.5px; line-height: 1.15;
+}
+.content .lede { color: var(--text-muted); font-size: 17px; margin: 0 0 32px; max-width: 640px; line-height: 1.5; }
+.content h2 { margin: 44px 0 12px; font-size: 22px; font-weight: 700; color: var(--text-bright); letter-spacing: -0.2px; }
+.content h3 { margin: 30px 0 8px; font-size: 17px; font-weight: 700; color: var(--text-bright); }
+.content p { margin: 12px 0; }
+.content ul, .content ol { margin: 12px 0; padding-left: 24px; }
+.content li { margin: 6px 0; }
+.content strong { color: var(--text-bright); }
+.content code:not(.hljs) {
+  background: var(--code-bg); border: 1px solid var(--divider);
+  border-radius: 5px; padding: 2px 6px;
+  font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #9aa9f0;
+}
+.content pre { margin: 16px 0; border-radius: 10px; overflow: auto; border: 1px solid var(--divider); }
+.content pre code.hljs { padding: 16px 18px; border: none; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--divider); border-radius: 10px; }
+.content table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.content thead th {
+  text-align: left; padding: 10px 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--text-muted); background: var(--bg-tertiary); border-bottom: 1px solid var(--divider);
+}
+.content td { padding: 10px 14px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+.content tbody tr:last-child td { border-bottom: none; }
+.content td code:not(.hljs) { white-space: nowrap; }
+.content a.anchor { color: var(--text-muted); opacity: 0; margin-right: 6px; text-decoration: none; }
+.content h1:hover a.anchor, .content h2:hover a.anchor, .content h3:hover a.anchor { opacity: 1; }
+.content hr { border: none; border-top: 1px solid var(--divider); margin: 32px 0; }
+
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px; text-align: center;
+  font-size: 12.5px; color: var(--text-muted);
+}
+.site-footer a { color: var(--text-muted); }
+.site-footer a:hover { color: var(--text-bright); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  main.content { padding: 32px 20px 64px; }
+  .header-links { display: none; }
+}
+
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="wordmark" href="/de/"><img class="site-logo" src="/logo.png" alt="Disband" width="500" height="500" />Disband<span>Docs</span></a>
+  <div class="header-links">
+    <label class="sr-only" for="language-select">Sprache</label>
+    <select id="language-select" class="lang-select" aria-label="Sprache" onchange="if(this.value) location.href=this.value">
+      <option value="/docs/developers/extended-api/">English</option><option value="/es/docs/developers/extended-api/">Español</option><option value="/fr/docs/developers/extended-api/">Français</option><option value="/de/docs/developers/extended-api/" selected>Deutsch</option><option value="/pt-br/docs/developers/extended-api/">Português (Brasil)</option><option value="/ja/docs/developers/extended-api/">日本語</option><option value="/ko/docs/developers/extended-api/">한국어</option><option value="/zh-cn/docs/developers/extended-api/">简体中文</option>
+    </select>
+    <a href="https://www.disband.dev">disband.dev</a>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/de/" class="nav-home-link">Dokumentationsstartseite</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/de/docs/bots/" class="">Übersicht</a><a href="/de/docs/bots/getting-started/" class="">Erste Schritte</a><a href="/de/docs/bots/hosting-your-own-bot/" class="">Eigenen Bot hosten</a><a href="/de/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/de/docs/bots/clients/python/" class="">Python</a><a href="/de/docs/bots/api-reference/" class="">API-Referenz</a><a href="/de/docs/bots/templates/" class="">Vorlagen</a></div><div class="nav-group"><p class="nav-label">Themen</p><a href="/de/docs/themes/" class="">Themen</a></div><div class="nav-group"><p class="nav-label">Entwickler</p><a href="/de/docs/developers/" class="">Entwickler</a><a href="/de/docs/developers/webhooks/" class="">Webhooks</a><a href="/de/docs/developers/extended-api/" class="active">Extended API</a><a href="/de/docs/developers/embeds/" class="">Einbettungen</a><a href="/de/docs/developers/status/" class="">Statusseite</a><a href="/de/docs/bots/" class="">Bots</a><a href="/de/docs/bots/getting-started/" class="">Erste Schritte</a><a href="/de/docs/bots/api-reference/" class="">API-Referenz</a><a href="/de/docs/bots/templates/" class="">Vorlagen</a></div></nav></aside>
+  <main class="content">
+    <div class="translation-note"><strong>English only</strong><span>This page is not translated yet. The English original is the source of truth.</span><a href="/docs/developers/extended-api/">Read this page in English</a></div>
+    <h1 id="extended-api-and-private-channels"><a href="#extended-api-and-private-channels" class="anchor" aria-hidden="true">#</a>Extended API and private channels</h1><p>The extended bot API is <strong>shipped</strong>. It adds private text channels, category and
+channel management, message editing and bulk tools, pins and reactions, richer
+member and role tools, audit log reads, server settings, and webhook management.
+Everything is versioned under <code>/api/v1</code>.</p>
+<p>This page is the deep reference for those surfaces. The
+<a href="/de/docs/bots/api-reference/">API reference</a> covers the core message and gateway
+contract, and <a href="/de/docs/developers/webhooks/">Webhooks</a> covers posting through a webhook URL.</p>
+<h2 id="authentication"><a href="#authentication" class="anchor" aria-hidden="true">#</a>Authentication</h2><p>Every endpoint uses the bot token:</p>
+<pre><code class="hljs language-http">Authorization: Bot &lt;token&gt;
+Content-Type: application/json
+</code></pre><p>A missing, invalid, or revoked token returns:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;error&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Invalid bot token&quot;</span> <span class="hljs-punctuation">}</span>
+</code></pre><p>with status <code>401</code>. There is no unauthenticated read path in this API.</p>
+<h2 id="scopes"><a href="#scopes" class="anchor" aria-hidden="true">#</a>Scopes</h2><p>A bot has an account-level scope list chosen when it is created (and editable by
+its owner), plus a <strong>per-space grant</strong> approved when the bot joins that space.
+The effective scopes are the intersection of the two.</p>
+<p>Lowering a bot&#39;s account scopes applies immediately: the removed scopes are
+trimmed from every existing space grant. Adding a scope back does not restore old
+grants; the bot has to be approved for that scope again.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Scope</th>
+<th>What it unlocks</th>
+</tr>
+</thead><tbody><tr>
+<td><code>messages.read</code></td>
+<td>Gateway message events, message history, channel and category lists, channel detail, pinned messages</td>
+</tr>
+<tr>
+<td><code>messages.write</code></td>
+<td>Send and edit messages and pin messages</td>
+</tr>
+<tr>
+<td><code>messages.delete</code></td>
+<td>Delete messages, bulk delete, unpin messages, edit messages</td>
+</tr>
+<tr>
+<td><code>messages.react</code></td>
+<td>Add and remove the bot&#39;s reactions</td>
+</tr>
+<tr>
+<td><code>members.read</code></td>
+<td>Member list, member detail, role list</td>
+</tr>
+<tr>
+<td><code>members.kick</code></td>
+<td>Kick members</td>
+</tr>
+<tr>
+<td><code>members.ban</code></td>
+<td>Ban, unban, and list bans</td>
+</tr>
+<tr>
+<td><code>members.timeout</code></td>
+<td>Time out members</td>
+</tr>
+<tr>
+<td><code>channels.read</code></td>
+<td>Channel and category lists, channel detail, channel permission list</td>
+</tr>
+<tr>
+<td><code>channels.manage</code></td>
+<td>Create, update, reorder, and delete channels and categories; set channel overwrites</td>
+</tr>
+<tr>
+<td><code>webhooks.manage</code></td>
+<td>List, create, update, and delete webhooks</td>
+</tr>
+<tr>
+<td><code>roles.manage</code></td>
+<td>Create, edit, and delete roles; assign and remove roles; manage channel overwrites</td>
+</tr>
+<tr>
+<td><code>servers.read</code></td>
+<td>Read a space&#39;s name, description, icon, banner, and member count</td>
+</tr>
+<tr>
+<td><code>audit.read</code></td>
+<td>Read the audit log</td>
+</tr>
+</tbody></table></div><blockquote>
+<p>Earlier drafts of this page used colon names such as <code>channels:read</code> and
+<code>messages:send</code>. Those names were never accepted in production. Use the dotted
+names above.</p>
+</blockquote>
+<h3 id="the-two-authorization-gates"><a href="#the-two-authorization-gates" class="anchor" aria-hidden="true">#</a>The two authorization gates</h3><p>Most write endpoints require <strong>both</strong>:</p>
+<ol>
+<li>the relevant scope, granted on the bot <strong>and</strong> in that space, and</li>
+<li>a role permission on the bot&#39;s account in that space.</li>
+</ol>
+<p>For example, creating a channel needs <code>channels.manage</code> and the
+<code>manage_channels</code> role permission. A bot with the scope but not the role
+permission gets <code>403</code>.</p>
+<p>Reads are usually scope-only. A few read endpoints also accept a role
+permission as an alternative; those exceptions are called out below.</p>
+<p>Every check is deny-by-default and runs against the bot&#39;s real account, roles,
+and channel overwrites. Client-supplied role IDs or permission flags are never
+trusted.</p>
+<h2 id="private-text-channels"><a href="#private-text-channels" class="anchor" aria-hidden="true">#</a>Private text channels</h2><p>There is no <code>visibility</code> column and no separate private-channel object. A
+private channel is a normal text channel with <strong>role permission overwrites</strong> in
+<code>channel_permissions</code>.</p>
+<h3 id="overwrite-fields"><a href="#overwrite-fields" class="anchor" aria-hidden="true">#</a>Overwrite fields</h3><div class="table-wrap"><table><thead><tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><code>can_view</code></td>
+<td>See the channel, its metadata, and its messages</td>
+</tr>
+<tr>
+<td><code>can_post</code></td>
+<td>Send messages</td>
+</tr>
+<tr>
+<td><code>can_react</code></td>
+<td>Add reactions</td>
+</tr>
+<tr>
+<td><code>can_attach</code></td>
+<td>Upload attachments</td>
+</tr>
+</tbody></table></div><p>Each field is <code>true</code> (allow), <code>false</code> (deny), or <code>null</code> (inherit).</p>
+<h3 id="how-to-make-a-channel-private"><a href="#how-to-make-a-channel-private" class="anchor" aria-hidden="true">#</a>How to make a channel private</h3><ol>
+<li>Deny <code>can_view</code> for the <code>@everyone</code> role.</li>
+<li>Allow <code>can_view</code> for each staff or participant role that should see it.</li>
+</ol>
+<p><code>@everyone</code> is the default role in the space — the role with <code>is_default: true</code>
+in <code>GET /api/v1/servers/{server_id}/roles</code>.</p>
+<pre><code class="hljs language-bash">curl -X POST https://www.disband.dev/api/v1/servers/SERVER_ID/channels \
+  -H <span class="hljs-string">&quot;Authorization: Bot <span class="hljs-variable">$DISBAND_BOT_TOKEN</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+  -d <span class="hljs-string">&#x27;{
+    &quot;name&quot;: &quot;staff-chat&quot;,
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;permissions&quot;: [
+      { &quot;role_id&quot;: &quot;EVERYONE_ROLE_ID&quot;, &quot;can_view&quot;: false },
+      { &quot;role_id&quot;: &quot;STAFF_ROLE_ID&quot;, &quot;can_view&quot;: true, &quot;can_post&quot;: true }
+    ]
+  }&#x27;</span>
+</code></pre><p>Notes:</p>
+<ul>
+<li><code>role_id</code> in channel creation must be a role <strong>UUID</strong>. Use the <code>id</code> field from
+<code>GET /api/v1/servers/{server_id}/roles</code>.</li>
+<li>Up to 100 overwrites can be supplied when creating a channel.</li>
+<li>A role used in an overwrite must sit below the bot&#39;s highest role.</li>
+<li><code>@everyone</code> is always allowed as an overwrite target.</li>
+</ul>
+<h3 id="viewing-rules"><a href="#viewing-rules" class="anchor" aria-hidden="true">#</a>Viewing rules</h3><ul>
+<li>Access is evaluated per role. If <strong>any</strong> role assigned to the member (including
+<code>@everyone</code>) allows the permission, the member has it. A <code>false</code> overwrite on
+one role does not veto another role&#39;s <code>true</code>; it only withholds that role&#39;s
+grant.</li>
+<li>For <code>can_view</code>, a role with no row inherits the <code>@everyone</code> overwrite. If
+<code>@everyone</code> has no row either, it is allowed.</li>
+<li>For <code>can_post</code>, <code>can_react</code>, and <code>can_attach</code>, a role with no overwrite falls
+back to that role&#39;s server permissions (<code>send_messages</code>, <code>add_reactions</code>,
+<code>attach_files</code>).</li>
+<li>If a channel has no overwrites at all, every member can view it and posting is
+governed by the normal server permissions and <code>read_only</code>.</li>
+<li>The space <strong>owner</strong>, members with <strong>Administrator</strong>, and members with the
+<strong><code>manage_channels</code></strong> role permission bypass channel overwrites and can always
+view every channel. This is intentional: space managers can always audit what
+is in their space.</li>
+<li>A channel with <code>read_only: true</code> blocks posting for everyone except the
+bypasses above. It does not block reading.</li>
+</ul>
+<h3 id="what-a-bot-without-access-sees"><a href="#what-a-bot-without-access-sees" class="anchor" aria-hidden="true">#</a>What a bot without access sees</h3><ul>
+<li><code>GET /servers/{id}/channels</code> silently omits channels the bot cannot view.</li>
+<li><code>GET /channels/{id}</code> returns <code>404</code> and the message <code>Channel not found</code>.</li>
+<li>Message reads and writes return <code>403</code> with <code>Channel permission denied</code>.</li>
+<li>Gateway events are only queued for channels the bot can view. A private
+channel&#39;s events never reach a bot that cannot see it.</li>
+</ul>
+<p>Treat both <code>403</code> and <code>404</code> as &quot;not available to this bot&quot;; do not build logic
+that depends on the exact status for a hidden channel.</p>
+<h3 id="no-category-level-permissions"><a href="#no-category-level-permissions" class="anchor" aria-hidden="true">#</a>No category-level permissions</h3><p>Production has <strong>no <code>category_permissions</code> table</strong>. Categories are for display
+and ordering only. Channel-level overwrites are authoritative. Do not design an
+integration around inheriting permissions from a category — it does not happen.</p>
+<h3 id="bot-access-to-the-channels-it-creates"><a href="#bot-access-to-the-channels-it-creates" class="anchor" aria-hidden="true">#</a>Bot access to the channels it creates</h3><p>A bot follows the same overwrite rules as everyone else. If it creates a
+channel that denies <code>@everyone</code> and does not allow a role the bot has, the bot
+will not be able to read or post in its own new channel. Either:</p>
+<ul>
+<li>give the bot&#39;s highest role <code>can_view: true</code> in the new channel, or</li>
+<li>give the bot a role with <code>manage_channels</code> / Administrator (which bypasses
+overwrites).</li>
+</ul>
+<p><code>POST /servers/{id}/channels</code> still returns <code>201</code> with the new <code>channel_id</code> in
+this case; <code>channel</code> may be <code>null</code> because the follow-up detail read is denied.</p>
+<h2 id="ticket-systems"><a href="#ticket-systems" class="anchor" aria-hidden="true">#</a>Ticket systems</h2><p>Disband deliberately does <strong>not</strong> implement ticket objects, claiming, or
+transcripts in the API. It exposes the primitives a ticket bot needs:</p>
+<ul>
+<li>categories and channels,</li>
+<li>private channels with role overwrites,</li>
+<li>roles and member role assignment,</li>
+<li>messages, embeds, buttons, and interactions,</li>
+<li>audit logging.</li>
+</ul>
+<p>A typical private ticket flow:</p>
+<ol>
+<li><strong>Find or create a category</strong> for tickets (<code>GET</code>/<code>POST /servers/{id}/categories</code>).</li>
+<li><strong>Create a per-ticket role</strong> with <code>POST /servers/{id}/roles</code> (requires
+<code>roles.manage</code> + <code>manage_roles</code>). The role must sit below the bot&#39;s highest
+role.</li>
+<li><strong>Assign that role to the opener</strong> with
+<code>PUT /servers/{id}/members/{user_id}/roles/{role_id}</code>. The target must be
+below the bot&#39;s highest role and must not be the space owner.</li>
+<li><strong>Create the ticket channel</strong> with <code>can_view: false</code> for <code>@everyone</code>,
+<code>can_view: true</code> for the ticket role, and <code>can_view: true</code> for the staff
+role. Include the bot&#39;s own role if the bot does not have
+<code>manage_channels</code>.</li>
+<li><strong>Post the ticket panel</strong> with a message containing buttons. Button presses
+arrive on the gateway as <code>interactionCreate</code> events; answer them through the
+interaction callback endpoint.</li>
+<li><strong>Close the ticket</strong> by deleting the channel and the per-ticket role.</li>
+</ol>
+<p>Every ticket role counts toward the <strong>250 roles per space</strong> limit. Plan for
+that: a role-per-ticket design supports roughly 249 simultaneously open tickets
+(plus the <code>@everyone</code> role and any permanent staff roles). If you need more,
+reuse a smaller set of staff channels rather than one channel per ticket.</p>
+<p>For private <strong>staff</strong> channels, skip the per-ticket role: deny <code>@everyone</code>, and
+allow the existing staff role. That costs no extra roles.</p>
+<h2 id="endpoint-reference"><a href="#endpoint-reference" class="anchor" aria-hidden="true">#</a>Endpoint reference</h2><p>All paths are relative to <code>https://www.disband.dev</code>.</p>
+<h3 id="servers"><a href="#servers" class="anchor" aria-hidden="true">#</a>Servers</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}</code></td>
+<td>Any of <code>servers.read</code>, <code>messages.read</code>, <code>channels.read</code>, <code>channels.manage</code>, <code>members.read</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/v1/servers/{server_id}</code></td>
+<td>Any granted scope</td>
+<td><code>manage_server</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/permissions</code></td>
+<td>Any granted scope</td>
+<td>—</td>
+</tr>
+</tbody></table></div><p><code>GET</code> returns server metadata plus <code>member_count</code>:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;server&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Space&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;icon_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;banner_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;owner_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;discoverable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;verified&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;member_count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">42</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>PATCH</code> accepts <code>name</code>, <code>description</code>, and <code>discoverable</code>:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;New name&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;New description&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;discoverable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">}</span>
+</code></pre><p>Unknown fields are rejected with <code>400</code>. The bot must be a member of the space;
+otherwise the response is <code>403</code>.</p>
+<p><code>GET /permissions</code> is a self-check endpoint. It returns the bot&#39;s granted
+scopes, its role IDs, its highest role position, and a map of the role
+permissions it currently holds:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;user_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;scopes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;messages.read&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;channels.manage&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;permissions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;add_reactions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;attach_files&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;ban&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;create_invites&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;kick&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;manage_channels&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;manage_emojis&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;manage_messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;manage_roles&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;manage_server&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;manage_webhooks&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;mention_everyone&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;pin_messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;send_messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;timeout_members&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;view_audit_log&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;highest_role_position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;roles&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><h3 id="categories"><a href="#categories" class="anchor" aria-hidden="true">#</a>Categories</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/categories</code></td>
+<td>Any of <code>messages.read</code>, <code>channels.read</code>, <code>channels.manage</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/servers/{server_id}/categories</code></td>
+<td><code>channels.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/v1/categories/{category_id}</code></td>
+<td><code>channels.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/categories/{category_id}</code></td>
+<td><code>channels.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+</tbody></table></div><p><code>GET</code> returns categories ordered by position. <code>channel_count</code> counts only the
+channels the bot can view, so private channels are not leaked through it:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;categories&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Text Channels&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;channel_count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span> <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>POST</code> body: <code>{ &quot;name&quot;: &quot;Support&quot; }</code>. Returns <code>201</code> with
+<code>{ &quot;category&quot;: { … } }</code>.</p>
+<p><code>PATCH</code> body: <code>{ &quot;name&quot;: &quot;Renamed&quot;, &quot;position&quot;: 2 }</code>. Position is a
+zero-based whole number. Returns <code>{ &quot;category&quot;: { … } }</code>.</p>
+<p><code>DELETE</code> returns <code>204</code>. Its channels become uncategorized; they are not deleted.</p>
+<h3 id="channels"><a href="#channels" class="anchor" aria-hidden="true">#</a>Channels</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/channels</code></td>
+<td>Any of <code>messages.read</code>, <code>channels.read</code>, <code>channels.manage</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/servers/{server_id}/channels</code></td>
+<td><code>channels.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/channels/{channel_id}</code></td>
+<td>Any of <code>messages.read</code>, <code>channels.read</code>, <code>channels.manage</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/v1/channels/{channel_id}</code></td>
+<td><code>channels.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/channels/{channel_id}</code></td>
+<td><code>channels.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+</tbody></table></div><p><code>GET /servers/{id}/channels</code> returns only channels the bot can view, ordered by
+position. Each channel includes effective <code>can_post</code>, <code>can_react</code>, <code>can_attach</code>,
+and <code>can_manage</code> flags:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;channels&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;category_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;category_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Text Channels&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;general&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;text&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;slow_mode_seconds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;read_only&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;locked&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;is_stage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;user_limit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_post&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_react&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_attach&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_manage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>POST</code> body:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;staff-only&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;text&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;category_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Staff discussion&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;slow_mode_seconds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;read_only&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;user_limit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;permissions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;role_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;@everyone-uuid&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_view&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;role_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;staff-uuid&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_view&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_post&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>type</code> is <code>text</code> or <code>voice</code> (default <code>text</code>).</li>
+<li>Names are trimmed, lowercased, and limited to 100 characters.</li>
+<li>Topics are up to 1,024 characters.</li>
+<li><code>slow_mode_seconds</code> is 0–21,600.</li>
+<li><code>user_limit</code> is 0–99 for voice channels, or <code>null</code>.</li>
+<li><code>permissions</code> is optional, up to 100 role overwrites.</li>
+<li>Returns <code>201</code> with <code>{ &quot;channel_id&quot;: &quot;…&quot;, &quot;channel&quot;: { … } }</code>.</li>
+<li><code>channel</code> can be <code>null</code> if creating the overwrites made the channel invisible
+to the bot; see &quot;Bot access to the channels it creates&quot;.</li>
+</ul>
+<p><code>GET /channels/{id}</code> returns <code>{ &quot;channel&quot;: { … } }</code> with the same fields plus
+<code>can_view: true</code> and, when the bot has <code>manage_channels</code>, a <code>permissions</code> array:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;permissions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;role_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;role_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;@everyone&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_view&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_post&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_react&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;can_attach&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>PATCH</code> accepts any of <code>name</code>, <code>topic</code>, <code>slow_mode_seconds</code>, <code>category_id</code>,
+<code>position</code>, <code>read_only</code>, <code>locked</code>, <code>user_limit</code>, and <code>type</code>:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;deploys-2&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;slow_mode_seconds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span> <span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>type</code> is accepted only if it equals the current type; channels cannot change
+type.</li>
+<li><code>category_id</code> may be a category UUID or <code>null</code>.</li>
+<li>Unknown fields return <code>400</code>.</li>
+<li>Returns <code>{ &quot;channel&quot;: { … } }</code>.</li>
+</ul>
+<p><code>DELETE</code> removes the channel and its messages, then returns <code>204</code>. This is
+audited.</p>
+<h3 id="channel-permission-overwrites"><a href="#channel-permission-overwrites" class="anchor" aria-hidden="true">#</a>Channel permission overwrites</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/channels/{channel_id}/permissions</code></td>
+<td>Any of <code>channels.read</code>, <code>channels.manage</code>, <code>roles.manage</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/v1/channels/{channel_id}/permissions/{role_id}</code></td>
+<td><code>channels.manage</code> or <code>roles.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/channels/{channel_id}/permissions/{role_id}</code></td>
+<td><code>channels.manage</code> or <code>roles.manage</code></td>
+<td><code>manage_channels</code></td>
+</tr>
+</tbody></table></div><p><code>GET</code> returns the raw overwrite rows, highest role first:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;permissions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;role_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_view&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_post&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_react&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_attach&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span> <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>PUT</code> body — every field is optional and defaults to <code>null</code>:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;can_view&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_post&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_react&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;can_attach&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span> <span class="hljs-punctuation">}</span>
+</code></pre><p><code>true</code> allows, <code>false</code> denies, and <code>null</code> clears the override. Returns
+<code>{ &quot;ok&quot;: true }</code>.</p>
+<p><code>DELETE</code> clears the role&#39;s row entirely, so it inherits again. Returns
+<code>{ &quot;ok&quot;: true }</code>.</p>
+<p><code>role_id</code> may be a role UUID or a numeric role <code>display_id</code> on these two routes.
+The role must be below the bot&#39;s highest role, except <code>@everyone</code>.</p>
+<h3 id="messages"><a href="#messages" class="anchor" aria-hidden="true">#</a>Messages</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/channels/{channel_id}/messages</code></td>
+<td><code>messages.read</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/channels/{channel_id}/messages</code></td>
+<td><code>messages.write</code></td>
+<td><code>send_messages</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/v1/channels/{channel_id}/messages/{message_id}</code></td>
+<td><code>messages.write</code> or <code>messages.delete</code></td>
+<td><code>manage_messages</code> to edit someone else&#39;s</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/channels/{channel_id}/messages/{message_id}</code></td>
+<td><code>messages.delete</code></td>
+<td><code>manage_messages</code> to delete someone else&#39;s</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/channels/{channel_id}/messages/bulk-delete</code></td>
+<td><code>messages.delete</code></td>
+<td><code>manage_messages</code> to delete someone else&#39;s</td>
+</tr>
+</tbody></table></div><p><code>GET</code> query: <code>limit</code> (1–100, default 50) and <code>before</code> (a message UUID for
+backwards paging). Returns <code>{ &quot;messages&quot;: [ … ] }</code>, newest first.</p>
+<p><code>POST</code> body:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploy finished&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;reply_to_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;embeds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;components&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>content</code> is required unless <code>embeds</code> is non-empty.</li>
+<li>Content is up to 4,000 characters.</li>
+<li>Up to 10 embeds; see <a href="/de/docs/developers/embeds/">Embeds</a>.</li>
+<li>Up to 5 action rows of 5 buttons; see the button schema below.</li>
+<li><code>@everyone</code> / <code>@here</code> needs the <code>mention_everyone</code> role permission.</li>
+<li>Returns <code>201</code> with <code>{ &quot;message&quot;: { … } }</code>.</li>
+</ul>
+<p><code>PATCH</code> accepts <code>content</code>, <code>embeds</code>, and <code>components</code>. Omitting a field leaves it
+unchanged; sending <code>null</code> for <code>embeds</code> or <code>components</code> clears it. A bot can edit
+its own messages; editing someone else&#39;s needs <code>manage_messages</code>. Returns
+<code>{ &quot;message&quot;: { … } }</code>.</p>
+<p><code>DELETE</code> returns <code>204</code>. A bot can always delete its own messages; deleting
+someone else&#39;s needs <code>manage_messages</code>.</p>
+<p><code>POST /messages/bulk-delete</code> body:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;message_ids&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;uuid&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;uuid&quot;</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li>1–100 <strong>UUIDs</strong>. Numeric <code>display_id</code> values are not accepted here.</li>
+<li>Duplicates, unknown IDs, and IDs from other channels are ignored; the
+response reports how many rows were actually deleted: <code>{ &quot;deleted&quot;: 12 }</code>.</li>
+<li>Deleting someone else&#39;s messages needs <code>manage_messages</code>.</li>
+</ul>
+<p><code>message_id</code> in the single-message routes may be a UUID or the numeric
+<code>display_id</code> shown in the app.</p>
+<h3 id="reactions"><a href="#reactions" class="anchor" aria-hidden="true">#</a>Reactions</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>PUT</code></td>
+<td><code>/api/v1/channels/{channel_id}/messages/{message_id}/reactions/{emoji}</code></td>
+<td><code>messages.react</code></td>
+<td><code>add_reactions</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/channels/{channel_id}/messages/{message_id}/reactions/{emoji}</code></td>
+<td><code>messages.react</code></td>
+<td><code>add_reactions</code></td>
+</tr>
+</tbody></table></div><p><code>{emoji}</code> is URL-encoded and 1–32 characters. Both routes manage only the bot&#39;s
+own reaction. <code>PUT</code> is idempotent and returns:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;reaction&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;message_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;emoji&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;✅&quot;</span> <span class="hljs-punctuation">}</span> <span class="hljs-punctuation">}</span>
+</code></pre><p><code>DELETE</code> is idempotent and returns <code>{ &quot;removed&quot;: true }</code> or
+<code>{ &quot;removed&quot;: false }</code> if the reaction was not there.</p>
+<h3 id="pins"><a href="#pins" class="anchor" aria-hidden="true">#</a>Pins</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/channels/{channel_id}/pins</code></td>
+<td>Any of <code>messages.read</code>, <code>channels.read</code>, <code>channels.manage</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/v1/channels/{channel_id}/pins/{message_id}</code></td>
+<td><code>messages.write</code> or <code>messages.delete</code></td>
+<td><code>pin_messages</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/channels/{channel_id}/pins/{message_id}</code></td>
+<td><code>messages.write</code> or <code>messages.delete</code></td>
+<td><code>pin_messages</code></td>
+</tr>
+</tbody></table></div><p><code>GET</code> returns pinned messages, newest pin first:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;pins&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;message_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;author_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;author&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;username&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;display_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;avatar_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;is_bot&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;pinned_by&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;…&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;the full message, or null if it was deleted&quot;</span> <span class="hljs-punctuation">}</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>PUT</code> is idempotent and returns
+<code>{ &quot;pin&quot;: { &quot;id&quot;: &quot;…&quot;, &quot;message_id&quot;: &quot;…&quot;, &quot;channel_id&quot;: &quot;…&quot; } }</code>.
+<code>DELETE</code> is idempotent and returns <code>{ &quot;removed&quot;: true }</code> or
+<code>{ &quot;removed&quot;: false }</code>.</p>
+<h3 id="members"><a href="#members" class="anchor" aria-hidden="true">#</a>Members</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/members</code></td>
+<td><code>members.read</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/members/{user_id}</code></td>
+<td><code>members.read</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/servers/{server_id}/members/{user_id}</code></td>
+<td><code>members.kick</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/v1/servers/{server_id}/members/{user_id}</code></td>
+<td><code>members.timeout</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/v1/servers/{server_id}/members/{user_id}/roles/{role_id}</code></td>
+<td><code>roles.manage</code></td>
+<td><code>manage_roles</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/servers/{server_id}/members/{user_id}/roles/{role_id}</code></td>
+<td><code>roles.manage</code></td>
+<td><code>manage_roles</code></td>
+</tr>
+</tbody></table></div><p><code>GET</code> list returns members sorted by display name:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;members&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;username&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;display_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;avatar_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;is_bot&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;online&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;role&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;member&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;roles&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;role-uuid&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;joined_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>GET</code> one returns profile details, roles, highest role position, and any active
+timeout:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;member&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;username&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;display_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;avatar_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;bio&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;online&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;is_bot&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;is_owner&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;joined_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;role&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;member&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;roles&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Staff&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;color&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;#5865f2&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;is_default&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;highest_role_position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;timed_out_until&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>DELETE</code> kicks the member and returns <code>{ &quot;ok&quot;: true }</code>.</p>
+<p><code>PATCH</code> times a member out:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;timeout_minutes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">10</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;reason&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Cooling off&quot;</span> <span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>timeout_minutes</code> is required and must be 1–40,320 (28 days).</li>
+<li>Returns <code>{ &quot;ok&quot;: true, &quot;timed_out_until&quot;: &quot;2026-11-11T12:00:00Z&quot; }</code>.</li>
+</ul>
+<p>Kicks and timeouts protect the space owner, moderators (anyone with <code>kick</code>,
+<code>ban</code>, or <code>manage_server</code>), bots, and the calling bot itself.</p>
+<p>Role assignment:</p>
+<ul>
+<li>The role must be below the bot&#39;s highest role.</li>
+<li>The target member must be below the bot&#39;s highest role.</li>
+<li>The target cannot be the space owner.</li>
+<li><code>@everyone</code> cannot be given or taken.</li>
+<li>Both routes return <code>{ &quot;ok&quot;: true }</code> and are idempotent.</li>
+</ul>
+<p><code>role_id</code> may be a UUID or numeric <code>display_id</code>.</p>
+<h3 id="bans"><a href="#bans" class="anchor" aria-hidden="true">#</a>Bans</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/bans</code></td>
+<td><code>members.ban</code>, or the <code>ban</code> role permission</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/v1/servers/{server_id}/bans/{user_id}</code></td>
+<td><code>members.ban</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/servers/{server_id}/bans/{user_id}</code></td>
+<td><code>members.ban</code></td>
+<td><code>ban</code></td>
+</tr>
+</tbody></table></div><p><code>GET</code> returns bans, newest first:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;bans&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;user_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;banned_by&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;reason&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span> <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>PUT</code> body is optional: <code>{ &quot;reason&quot;: &quot;…&quot; }</code> (up to 500 characters). Returns
+<code>{ &quot;ok&quot;: true }</code>. The same target protections as kick apply.</p>
+<p><code>DELETE</code> unbans and returns <code>{ &quot;removed&quot;: true }</code> or <code>{ &quot;removed&quot;: false }</code>.
+Unlike <code>PUT</code>, unban requires the <code>ban</code> role permission as well as the scope.</p>
+<h3 id="roles"><a href="#roles" class="anchor" aria-hidden="true">#</a>Roles</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/roles</code></td>
+<td><code>roles.manage</code> or <code>members.read</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/servers/{server_id}/roles</code></td>
+<td><code>roles.manage</code></td>
+<td><code>manage_roles</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/roles/{role_id}</code></td>
+<td><code>roles.manage</code> or <code>members.read</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/v1/servers/{server_id}/roles/{role_id}</code></td>
+<td><code>roles.manage</code></td>
+<td><code>manage_roles</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/servers/{server_id}/roles/{role_id}</code></td>
+<td><code>roles.manage</code></td>
+<td><code>manage_roles</code></td>
+</tr>
+</tbody></table></div><p>Roles are returned highest first and include a <code>manageable</code> flag:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;roles&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;display_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;383216538525554&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Staff&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;color&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;#5865f2&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;permissions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;send_messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;manage_messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;is_default&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;self_assignable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;manageable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>Create body:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Ticket Staff&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;color&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;#5865f2&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;permissions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;send_messages&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;add_reactions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;self_assignable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;position&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>name</code> is required (1–100 characters).</li>
+<li><code>color</code> is a hex colour like <code>#5865f2</code>. Omitted or <code>null</code> uses the default
+grey on create and leaves the current colour on edit.</li>
+<li><code>permissions</code> is an object of permission names to booleans. Omitted keys are
+<code>false</code> on create. On edit the map is merged, so omitted keys keep their
+current value.</li>
+<li><code>position</code> is 1 or greater and must be below the bot&#39;s highest role.</li>
+<li>A space can have at most 250 roles.</li>
+<li>Returns <code>201</code> with <code>{ &quot;role&quot;: { … } }</code>.</li>
+</ul>
+<p>Permission keys:</p>
+<p><code>add_reactions</code>, <code>attach_files</code>, <code>ban</code>, <code>create_invites</code>, <code>kick</code>,
+<code>manage_channels</code>, <code>manage_emojis</code>, <code>manage_messages</code>, <code>manage_roles</code>,
+<code>manage_server</code>, <code>manage_webhooks</code>, <code>mention_everyone</code>, <code>pin_messages</code>,
+<code>send_messages</code>, <code>timeout_members</code>, <code>view_audit_log</code>.</p>
+<p><code>PATCH</code> accepts <code>name</code>, <code>color</code>, <code>permissions</code>, <code>self_assignable</code>, and
+<code>position</code>; omitted fields stay unchanged. <code>permissions</code> is merged into the
+existing map, so omitted keys keep their current value. <code>@everyone</code> cannot be
+edited or deleted. Returns <code>{ &quot;role&quot;: { … } }</code>.</p>
+<p><code>DELETE</code> returns <code>{ &quot;ok&quot;: true }</code>. <code>role_id</code> may be a UUID or numeric
+<code>display_id</code>.</p>
+<h3 id="audit-log"><a href="#audit-log" class="anchor" aria-hidden="true">#</a>Audit log</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/audit</code></td>
+<td><code>audit.read</code>, or the <code>view_audit_log</code> role permission</td>
+<td>—</td>
+</tr>
+</tbody></table></div><p>Unlike most endpoints, this one accepts <strong>either</strong> the scope <strong>or</strong> the role
+permission. Query <code>limit</code> is 1–100 (default 100). Entries are newest first:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;audit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;actor_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;action&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;channel.create&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;target_type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;channel&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;target_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;details&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;staff-chat&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;bot&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p>Actions written by the extended API include:</p>
+<p><code>category.create</code>, <code>category.update</code>, <code>category.delete</code>, <code>channel.create</code>,
+<code>channel.update</code>, <code>channel.delete</code>, <code>channel.permissions</code>, <code>message.edit</code>,
+<code>message.delete</code>, <code>message.bulk_delete</code>, <code>message.pin</code>, <code>message.unpin</code>,
+<code>member.kick</code>, <code>member.ban</code>, <code>member.unban</code>, <code>member.timeout</code>,
+<code>member.role_add</code>, <code>member.role_remove</code>, <code>role.create</code>, <code>role.update</code>,
+<code>role.delete</code>, <code>server.update</code>, <code>webhook.create</code>, <code>webhook.update</code>,
+<code>webhook.token_reset</code>, <code>webhook.delete</code>, <code>bot.invite.approve</code>.</p>
+<h3 id="webhooks"><a href="#webhooks" class="anchor" aria-hidden="true">#</a>Webhooks</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+<th>Role permission</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/servers/{server_id}/webhooks</code></td>
+<td><code>webhooks.manage</code></td>
+<td><code>manage_webhooks</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/servers/{server_id}/webhooks</code></td>
+<td><code>webhooks.manage</code></td>
+<td><code>manage_webhooks</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/webhooks/{webhook_id}</code></td>
+<td><code>webhooks.manage</code></td>
+<td><code>manage_webhooks</code></td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/api/v1/webhooks/{webhook_id}</code></td>
+<td><code>webhooks.manage</code></td>
+<td><code>manage_webhooks</code></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/webhooks/{webhook_id}</code></td>
+<td><code>webhooks.manage</code></td>
+<td><code>manage_webhooks</code></td>
+</tr>
+</tbody></table></div><p><code>GET /servers/{id}/webhooks</code> returns webhooks newest first. Every object
+includes its posting <code>url</code>. Treat that URL as a secret. Webhooks that live in a
+channel the bot cannot view are omitted; reading, moving, rotating, or deleting
+one of them returns <code>404</code>.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;webhooks&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;channel_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploys&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;avatar_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://disband.dev/webhook/…/…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;created_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;last_used_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><p><code>POST</code> body:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;channel_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Deploys&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;avatar_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span> <span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>channel_id</code> is required and must be a text channel the bot can view.</li>
+<li><code>name</code> is optional (1–80 characters); a random name is used if omitted.</li>
+<li><code>avatar_url</code> must be an HTTPS image URL or <code>null</code>.</li>
+<li>Returns <code>201</code> with <code>{ &quot;webhook&quot;: { … } }</code>.</li>
+</ul>
+<p><code>GET /webhooks/{id}</code> returns <code>{ &quot;webhook&quot;: { … } }</code>.</p>
+<p><code>PATCH</code> body:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;New name&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;avatar_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;channel_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;reset_token&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>channel_id</code> must be a visible text channel in the same space.</li>
+<li><code>reset_token: true</code> rotates the URL; the old URL stops working immediately.</li>
+<li>Returns the updated <code>{ &quot;webhook&quot;: { … } }</code>.</li>
+</ul>
+<p><code>DELETE</code> soft-deletes the webhook and returns <code>204</code>. Messages it already posted
+remain.</p>
+<p>Limits: 50 webhooks per space, 15 per channel. Webhook sends are rate limited
+separately at the public webhook URL.</p>
+<h3 id="gateway"><a href="#gateway" class="anchor" aria-hidden="true">#</a>Gateway</h3><pre><code>GET /api/v1/gateway?timeout=20
+</code></pre><p>The gateway is a long-poll. <code>timeout</code> is clamped to 1–20 seconds; the request
+returns as soon as events are available.</p>
+<p>Event types:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Type</th>
+<th>Delivered when</th>
+</tr>
+</thead><tbody><tr>
+<td><code>messageCreate</code></td>
+<td>A message is posted in a channel the bot can view</td>
+</tr>
+<tr>
+<td><code>messageUpdate</code></td>
+<td>A message in a visible channel is edited</td>
+</tr>
+<tr>
+<td><code>messageDelete</code></td>
+<td>A message in a visible channel is deleted</td>
+</tr>
+<tr>
+<td><code>memberJoin</code></td>
+<td>Someone joins a space the bot is in (<code>members.read</code> in that space)</td>
+</tr>
+<tr>
+<td><code>memberLeave</code></td>
+<td>Someone leaves a space the bot is in (<code>members.read</code> in that space)</td>
+</tr>
+<tr>
+<td><code>memberUpdate</code></td>
+<td>A member&#39;s roles change (<code>members.read</code> in that space)</td>
+</tr>
+<tr>
+<td><code>interactionCreate</code></td>
+<td>Someone runs the bot&#39;s slash command or presses its button</td>
+</tr>
+</tbody></table></div><p>Message events require <code>messages.read</code> on both the bot and the space grant.
+Member events require <code>members.read</code> on the space grant. Interaction events
+require the bot to be in the space. Delivery is at-least-once: handle events
+idempotently by event ID.</p>
+<h3 id="slash-commands"><a href="#slash-commands" class="anchor" aria-hidden="true">#</a>Slash commands</h3><div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Path</th>
+<th>Scope</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/commands</code></td>
+<td>Any authenticated bot</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/v1/commands</code></td>
+<td>Any authenticated bot</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/commands</code></td>
+<td>Any authenticated bot</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/commands?name=weather</code></td>
+<td>Any authenticated bot</td>
+</tr>
+</tbody></table></div><p>Commands are global to the bot: every space the bot is in offers them.</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;weather&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Show the forecast&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;options&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;city&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;City name&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;string&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;required&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li>Command names are 1–32 lowercase letters, digits, <code>_</code>, or <code>-</code>.</li>
+<li>Descriptions are 1–100 characters.</li>
+<li>Up to 25 options per command; option types are <code>string</code>, <code>integer</code>, <code>number</code>,
+<code>boolean</code>, <code>user</code>, <code>channel</code>, and <code>role</code>.</li>
+<li>Required options must come before optional ones.</li>
+<li>Up to 100 commands per bot.</li>
+<li><code>PUT</code> replaces the whole list (bulk overwrite); <code>POST</code> creates or updates one
+by name; <code>DELETE</code> needs <code>?name=</code>.</li>
+</ul>
+<h3 id="interactions"><a href="#interactions" class="anchor" aria-hidden="true">#</a>Interactions</h3><pre><code>POST /api/v1/interactions/{interaction_id}/callback
+</code></pre><p>Answer a slash command or button press within 15 minutes:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;content&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Here is the forecast&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;embeds&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;components&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;update&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;ephemeral&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
+<span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li><code>update: true</code> edits the message the button is on instead of posting a reply.</li>
+<li><code>ephemeral: true</code> (or Discord&#39;s <code>flags: 64</code>) shows the reply only to the person
+who ran the command.</li>
+<li>Up to 5 answers per interaction.</li>
+<li>Answering does not require <code>messages.write</code>; the member invoked the bot
+directly.</li>
+</ul>
+<p>The <code>interactionCreate</code> payload contains the interaction <code>id</code>, <code>type</code>
+(<code>command</code> or <code>component</code>), <code>server_id</code>, <code>channel_id</code>, the invoking <code>user</code>, and
+either <code>command: { name, options }</code> or
+<code>component: { custom_id, message_id }</code>.</p>
+<h3 id="invites"><a href="#invites" class="anchor" aria-hidden="true">#</a>Invites</h3><pre><code>POST /api/v1/bots/{bot_id}/invites
+</code></pre><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;server_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;…&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;scopes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;messages.read&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;channels.manage&quot;</span><span class="hljs-punctuation">]</span> <span class="hljs-punctuation">}</span>
+</code></pre><ul>
+<li>The token must belong to that bot.</li>
+<li>The requested scopes must be a subset of the bot&#39;s account scopes and must be
+valid scope names.</li>
+<li>The caller must be a member of the target space.</li>
+<li>Returns <code>{ &quot;code&quot;: &quot;…&quot;, &quot;invite_url&quot;: &quot;…&quot; }</code>. Invites expire after 7 days.</li>
+<li>Rate limit: 10 per minute per bot.</li>
+</ul>
+<p>General install links are created by the bot owner from the developers portal or
+<code>POST /api/bot/install-link</code>; they are reusable and let the recipient pick a
+space they manage.</p>
+<h2 id="rate-limits"><a href="#rate-limits" class="anchor" aria-hidden="true">#</a>Rate limits</h2><p>Limits are per bot token and persist across server instances. The in-memory
+limiter is a burst pre-filter; the database enforces the full window.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Bucket</th>
+<th>Limit</th>
+</tr>
+</thead><tbody><tr>
+<td>Gateway long-poll</td>
+<td>15 requests per minute</td>
+</tr>
+<tr>
+<td>Reads</td>
+<td>120 per minute</td>
+</tr>
+<tr>
+<td>Writes</td>
+<td>60 per minute</td>
+</tr>
+<tr>
+<td>Invite creation</td>
+<td>10 per minute</td>
+</tr>
+<tr>
+<td>Bot registration</td>
+<td>10 per day per owner</td>
+</tr>
+</tbody></table></div><p>A limited request returns <code>429</code> with a <code>Retry-After</code> header and a JSON error.
+Honour the header rather than retrying immediately.</p>
+<p>The database also enforces:</p>
+<ul>
+<li>4,000 characters per message,</li>
+<li>100 permission overwrites per channel,</li>
+<li>250 roles per space,</li>
+<li>100 slash commands per bot,</li>
+<li>50 webhooks per space and 15 per channel,</li>
+<li>1–100 messages per bulk delete,</li>
+<li>1–28 days per timeout,</li>
+<li>500-character ban and timeout reasons.</li>
+</ul>
+<h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>All errors are JSON:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;error&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Human-readable message&quot;</span> <span class="hljs-punctuation">}</span>
+</code></pre><div class="table-wrap"><table><thead><tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><code>400</code></td>
+<td>Invalid input, unknown field, malformed ID, or limit exceeded</td>
+</tr>
+<tr>
+<td><code>401</code></td>
+<td>Missing, invalid, or revoked bot token</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td>Missing scope or grant, missing role permission, hierarchy violation, read-only channel, or restricted bot</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>Resource missing or not visible to the bot</td>
+</tr>
+<tr>
+<td><code>429</code></td>
+<td>Rate limited; honour <code>Retry-After</code></td>
+</tr>
+<tr>
+<td><code>500</code></td>
+<td>Internal error; retry with backoff</td>
+</tr>
+<tr>
+<td><code>503</code></td>
+<td>Event delivery temporarily unavailable (gateway only)</td>
+</tr>
+</tbody></table></div><p>Some hidden resources return <code>403</code> and some return <code>404</code>. This is intentional in
+places to avoid leaking whether a channel exists, but it is not perfectly
+uniform. Treat both as &quot;not available&quot;.</p>
+<h2 id="security-model"><a href="#security-model" class="anchor" aria-hidden="true">#</a>Security model</h2><ul>
+<li><strong>Deny by default.</strong> Every request starts with no access. Access is added only
+by the bot&#39;s scopes, the space grant, and the bot account&#39;s roles.</li>
+<li><strong>Two gates.</strong> Account scopes alone are not enough; the space owner must also
+grant the scope. Role permissions are a third gate for management actions.</li>
+<li><strong>Central checks.</strong> Every route authenticates with the same bot-token lookup
+and every database RPC re-checks the bot&#39;s membership, scopes, and role
+permissions. A route cannot bypass the RPC checks by passing a different ID.</li>
+<li><strong>No direct table access.</strong> Bot tokens are not Supabase keys. All reads and
+writes go through the service-role RPCs and route handlers.</li>
+<li><strong>Hierarchy.</strong> Bots can only manage roles below their own highest role, and
+cannot kick, ban, time out, or edit the roles of the owner, moderators, other
+bots, or themselves.</li>
+<li><strong>Secrets.</strong> Bot tokens are hashed at rest and shown once. Webhook URLs are
+secrets; anyone with the URL can post. <code>reset_token</code> rotates them.</li>
+<li><strong>Audit.</strong> Management and moderation mutations write an audit row with the
+actor, action, target, and a small details object. The actor is the bot&#39;s user
+account; the details include the bot ID where useful. Reactions are not
+audited; message edits, single and bulk deletes, pins, and all channel,
+category, role, member, server, and webhook management changes are.</li>
+<li><strong>Visibility.</strong> Channel lists, channel detail, messages, pins, reactions, and
+gateway events all check <code>can_view</code>. Private channel contents do not leak to
+bots or members who cannot see the channel.</li>
+</ul>
+<h2 id="migrating-from-the-pre-release-draft"><a href="#migrating-from-the-pre-release-draft" class="anchor" aria-hidden="true">#</a>Migrating from the pre-release draft</h2><p>If you built against the earlier &quot;planned&quot; version of this page:</p>
+<ul>
+<li>Scope names are dotted (<code>messages.write</code>, <code>channels.manage</code>, <code>audit.read</code>),
+not colon-separated.</li>
+<li>Private channels use <code>channel_permissions</code> overwrites; there is no
+<code>visibility: &quot;private&quot;</code> field and no <code>category_permissions</code> table.</li>
+<li><code>POST /channels</code> returns <code>{ &quot;channel_id&quot;, &quot;channel&quot; }</code>, not just a bare ID.</li>
+<li><code>PATCH</code> and <code>DELETE</code> return the updated resource or <code>204</code>, not
+<code>{ &quot;success&quot;: true }</code>.</li>
+<li>Webhook management lives under <code>/servers/{id}/webhooks</code> and <code>/webhooks/{id}</code>,
+not <code>/channels/{id}/webhooks</code>.</li>
+<li>Ticket endpoints do not exist. Use categories, private channels, roles, and
+interactions to build tickets.</li>
+</ul>
+
+  </main>
+</div>
+<footer class="site-footer">
+  © 2026 Disband · <a href="https://www.disband.dev">disband.dev</a> ·
+  <a href="https://www.disband.dev/privacy">Datenschutz</a> ·
+  <a href="https://www.disband.dev/terms">Nutzungsbedingungen</a>
+</footer>
+</body>
+</html>

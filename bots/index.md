@@ -19,16 +19,28 @@ messages to and from it. Disband never hosts or executes your bot's code.
 A bot's reach in a server is the **intersection** of the scopes you requested
 when creating it and the scopes the owner approved for that specific server:
 
-| Scope               | Description                                                          |
-| ------------------- | -------------------------------------------------------------------- |
-| `messages.read`     | Receive message events on the gateway and read messages/channels.     |
-| `messages.write`    | Send and reply to messages in channels the bot can see.              |
-| `messages.delete`   | Delete messages the bot can see.                                     |
-| `messages.react`    | Add and remove reactions on messages.                                |
-| `members.read`      | List the members of servers the bot has joined.                      |
-| `channels.read`     | List channels and categories.                                       |
-| `channels.manage`   | Create, rename, and delete channels — also needs the `manage_channels` role in the server. |
-| `webhooks.manage`   | Create, edit, and delete webhooks.                                   |
+| Scope              | Description                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| `messages.read`    | Receive message events and read messages, channels, categories, and pins. |
+| `messages.write`   | Send and edit messages, and pin messages.                            |
+| `messages.delete`  | Delete and bulk-delete messages, and unpin messages.                 |
+| `messages.react`   | Add and remove the bot's reactions.                                  |
+| `members.read`     | List members, read member detail, and list roles.                    |
+| `members.kick`     | Kick members.                                                        |
+| `members.ban`      | Ban, unban, and list bans.                                           |
+| `members.timeout`  | Time out members.                                                    |
+| `channels.read`    | List channels and categories, read channel detail and overwrites.    |
+| `channels.manage`  | Create, rename, reorder, and delete channels and categories — also needs the `manage_channels` role in the server. |
+| `webhooks.manage`  | Create, edit, and delete webhooks — also needs `manage_webhooks`.    |
+| `roles.manage`     | Create, edit, and delete roles; assign roles; set channel overwrites — also needs `manage_roles`. |
+| `servers.read`     | Read a space's name, description, icon, banner, and member count.    |
+| `audit.read`       | Read the audit log (or hold the `view_audit_log` role permission).   |
+
+Management scopes are a second gate, not a replacement for role permissions.
+Bots still need the matching role in the space — for example, `channels.manage`
+plus `manage_channels`. Private channels are implemented with channel
+permission overwrites; see
+[Extended API and private channels](../developers/extended-api.md).
 
 ## Token authentication
 

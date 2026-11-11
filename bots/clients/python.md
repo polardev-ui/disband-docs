@@ -108,6 +108,35 @@ invite = client.create_invite(server_id, ["messages.read", "messages.write"])
 # invite["invite_url"] -> send to the server owner
 ```
 
+## Extended endpoints
+
+`disband-bot` wraps the core message, channel, member, invite, and lifecycle
+calls above. The extended management API — categories, channel permission
+overwrites, pins, reactions, roles, bans, audit log, server settings, and
+webhooks — is not wrapped yet. Call those routes directly with the same token:
+
+```python
+import json
+import os
+import urllib.request
+
+request = urllib.request.Request(
+    f"https://www.disband.dev/api/v1/servers/{server_id}/roles",
+    data=json.dumps({"name": "Ticket Staff", "color": "#5865f2"}).encode(),
+    headers={
+        "Authorization": f"Bot {os.environ['DISBAND_BOT_TOKEN']}",
+        "Content-Type": "application/json",
+    },
+    method="POST",
+)
+with urllib.request.urlopen(request) as response:
+    role = json.load(response)["role"]
+```
+
+See the [Extended API](../../developers/extended-api.md) for every route, and the
+[API reference](../api-reference.md) for the shared status codes and rate
+limits.
+
 ## Errors
 
 The client raises subclasses of `DisbandError` with a `.status` and `.body`:

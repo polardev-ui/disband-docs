@@ -206,7 +206,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
   </div>
 </header>
 <div class="layout">
-  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="active">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="active">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="active">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/extended-api/" class="">Extended API</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="active">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
   <main class="content">
     
     <h1 id="bots"><a href="#bots" class="anchor" aria-hidden="true">#</a>Bots</h1><p>Disband bots are self-hosted integrations. You run the code, Disband relays
@@ -229,37 +229,66 @@ when creating it and the scopes the owner approved for that specific server:</p>
 </tr>
 </thead><tbody><tr>
 <td><code>messages.read</code></td>
-<td>Receive message events on the gateway and read messages/channels.</td>
+<td>Receive message events and read messages, channels, categories, and pins.</td>
 </tr>
 <tr>
 <td><code>messages.write</code></td>
-<td>Send and reply to messages in channels the bot can see.</td>
+<td>Send and edit messages, and pin messages.</td>
 </tr>
 <tr>
 <td><code>messages.delete</code></td>
-<td>Delete messages the bot can see.</td>
+<td>Delete and bulk-delete messages, and unpin messages.</td>
 </tr>
 <tr>
 <td><code>messages.react</code></td>
-<td>Add and remove reactions on messages.</td>
+<td>Add and remove the bot&#39;s reactions.</td>
 </tr>
 <tr>
 <td><code>members.read</code></td>
-<td>List the members of servers the bot has joined.</td>
+<td>List members, read member detail, and list roles.</td>
+</tr>
+<tr>
+<td><code>members.kick</code></td>
+<td>Kick members.</td>
+</tr>
+<tr>
+<td><code>members.ban</code></td>
+<td>Ban, unban, and list bans.</td>
+</tr>
+<tr>
+<td><code>members.timeout</code></td>
+<td>Time out members.</td>
 </tr>
 <tr>
 <td><code>channels.read</code></td>
-<td>List channels and categories.</td>
+<td>List channels and categories, read channel detail and overwrites.</td>
 </tr>
 <tr>
 <td><code>channels.manage</code></td>
-<td>Create, rename, and delete channels — also needs the <code>manage_channels</code> role in the server.</td>
+<td>Create, rename, reorder, and delete channels and categories — also needs the <code>manage_channels</code> role in the server.</td>
 </tr>
 <tr>
 <td><code>webhooks.manage</code></td>
-<td>Create, edit, and delete webhooks.</td>
+<td>Create, edit, and delete webhooks — also needs <code>manage_webhooks</code>.</td>
 </tr>
-</tbody></table></div><h2 id="token-authentication"><a href="#token-authentication" class="anchor" aria-hidden="true">#</a>Token authentication</h2><p>Every API call is authenticated with the bot token:</p>
+<tr>
+<td><code>roles.manage</code></td>
+<td>Create, edit, and delete roles; assign roles; set channel overwrites — also needs <code>manage_roles</code>.</td>
+</tr>
+<tr>
+<td><code>servers.read</code></td>
+<td>Read a space&#39;s name, description, icon, banner, and member count.</td>
+</tr>
+<tr>
+<td><code>audit.read</code></td>
+<td>Read the audit log (or hold the <code>view_audit_log</code> role permission).</td>
+</tr>
+</tbody></table></div><p>Management scopes are a second gate, not a replacement for role permissions.
+Bots still need the matching role in the space — for example, <code>channels.manage</code>
+plus <code>manage_channels</code>. Private channels are implemented with channel
+permission overwrites; see
+<a href="/docs/developers/extended-api/">Extended API and private channels</a>.</p>
+<h2 id="token-authentication"><a href="#token-authentication" class="anchor" aria-hidden="true">#</a>Token authentication</h2><p>Every API call is authenticated with the bot token:</p>
 <pre><code>Authorization: Bot &lt;token&gt;
 </code></pre><p>Bot tokens are <strong>hashed at rest</strong> — the raw token is never stored or retrievable.
 If it leaks (or you no longer need the bot), revoke it in <strong>Settings → Bots</strong>;

@@ -106,6 +106,31 @@ const invite = await client.createInvite(serverId, ["messages.read", "messages.w
 // invite.invite_url -> send to the server owner
 ```
 
+## Extended endpoints
+
+`@disband/bot` wraps the core message, channel, member, invite, and lifecycle
+calls above. The extended management API — categories, channel permission
+overwrites, pins, reactions, roles, bans, audit log, server settings, and
+webhooks — is not wrapped yet. Call those routes directly with the same token:
+
+```javascript
+const baseUrl = "https://www.disband.dev";
+
+const res = await fetch(`${baseUrl}/api/v1/servers/${serverId}/roles`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bot ${process.env.DISBAND_BOT_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ name: "Ticket Staff", color: "#5865f2" }),
+});
+const { role } = await res.json();
+```
+
+See the [Extended API](../../developers/extended-api.md) for every route, and the
+[API reference](../api-reference.md) for the shared status codes and rate
+limits.
+
 ## Errors
 
 Thrown errors carry the status and body:

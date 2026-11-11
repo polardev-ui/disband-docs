@@ -60,6 +60,7 @@ const PAGES = [
   { src: "themes/index.md",             out: "docs/themes/index.html",         label: "Themes" },
   { src: "developers/index.md",         out: "docs/developers/index.html",     label: "Developers" },
   { src: "developers/webhooks.md",      out: "docs/developers/webhooks/index.html",      label: "Webhooks" },
+  { src: "developers/extended-api.md",  out: "docs/developers/extended-api/index.html",  label: "Extended API" },
   { src: "developers/embeds.md",        out: "docs/developers/embeds/index.html",        label: "Embeds" },
   { src: "developers/status.md",        out: "docs/developers/status/index.html",        label: "Status system" },
 ];
@@ -83,6 +84,7 @@ const NAV = [
     items: [
       { href: "/docs/developers/", label: "Developers" },
       { href: "/docs/developers/webhooks/", label: "Webhooks" },
+      { href: "/docs/developers/extended-api/", label: "Extended API" },
       { href: "/docs/developers/embeds/", label: "Embeds" },
       { href: "/docs/developers/status/", label: "Status system" },
       { href: "/docs/bots/", label: "Bots" },
@@ -401,10 +403,12 @@ function pageHTML({ title, description, html, currentUrl, locale, alternates, en
   const banner =
     locale.code === "en"
       ? ""
-      : `<div class="translation-note"><strong>${ui(locale, "Automatic translation")}</strong><span>${ui(
-          locale,
-          "This page was translated automatically. The English original is the source of truth.",
-        )}</span><a href="${englishUrl}">${ui(locale, "Read this page in English")}</a></div>`;
+      : translated
+        ? `<div class="translation-note"><strong>${ui(locale, "Automatic translation")}</strong><span>${ui(
+            locale,
+            "This page was translated automatically. The English original is the source of truth.",
+          )}</span><a href="${englishUrl}">${ui(locale, "Read this page in English")}</a></div>`
+        : `<div class="translation-note"><strong>English only</strong><span>This page is not translated yet. The English original is the source of truth.</span><a href="${englishUrl}">Read this page in English</a></div>`;
   return `<!doctype html>
 <html lang="${locale.code}">
 <head>

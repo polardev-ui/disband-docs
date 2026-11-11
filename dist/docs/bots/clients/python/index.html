@@ -208,7 +208,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
   </div>
 </header>
 <div class="layout">
-  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="active">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="active">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/extended-api/" class="">Extended API</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
   <main class="content">
     
     <h1 id="python-client-disband-bot"><a href="#python-client-disband-bot" class="anchor" aria-hidden="true">#</a>Python client — `disband-bot`</h1><p>The official Python client. Uses only the standard library (<code>threading</code> +
@@ -379,7 +379,29 @@ client.leave_server(server_id)
 
 invite = client.create_invite(server_id, [<span class="hljs-string">&quot;messages.read&quot;</span>, <span class="hljs-string">&quot;messages.write&quot;</span>])
 <span class="hljs-comment"># invite[&quot;invite_url&quot;] -&gt; send to the server owner</span>
-</code></pre><h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>The client raises subclasses of <code>DisbandError</code> with a <code>.status</code> and <code>.body</code>:</p>
+</code></pre><h2 id="extended-endpoints"><a href="#extended-endpoints" class="anchor" aria-hidden="true">#</a>Extended endpoints</h2><p><code>disband-bot</code> wraps the core message, channel, member, invite, and lifecycle
+calls above. The extended management API — categories, channel permission
+overwrites, pins, reactions, roles, bans, audit log, server settings, and
+webhooks — is not wrapped yet. Call those routes directly with the same token:</p>
+<pre><code class="hljs language-python"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> urllib.request
+
+request = urllib.request.Request(
+    <span class="hljs-string">f&quot;https://www.disband.dev/api/v1/servers/<span class="hljs-subst">{server_id}</span>/roles&quot;</span>,
+    data=json.dumps({<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Ticket Staff&quot;</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#5865f2&quot;</span>}).encode(),
+    headers={
+        <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bot <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;DISBAND_BOT_TOKEN&#x27;</span>]}</span>&quot;</span>,
+        <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
+    },
+    method=<span class="hljs-string">&quot;POST&quot;</span>,
+)
+<span class="hljs-keyword">with</span> urllib.request.urlopen(request) <span class="hljs-keyword">as</span> response:
+    role = json.load(response)[<span class="hljs-string">&quot;role&quot;</span>]
+</code></pre><p>See the <a href="/docs/developers/extended-api/">Extended API</a> for every route, and the
+<a href="/docs/bots/api-reference/">API reference</a> for the shared status codes and rate
+limits.</p>
+<h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>The client raises subclasses of <code>DisbandError</code> with a <code>.status</code> and <code>.body</code>:</p>
 <div class="table-wrap"><table><thead><tr>
 <th>Error</th>
 <th>When</th>

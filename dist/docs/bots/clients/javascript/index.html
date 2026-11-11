@@ -206,7 +206,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
   </div>
 </header>
 <div class="layout">
-  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="active">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
+  <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="active">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/extended-api/" class="">Extended API</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
   <main class="content">
     
     <h1 id="javascript-client-disbandbot"><a href="#javascript-client-disbandbot" class="anchor" aria-hidden="true">#</a>JavaScript client — `@disband/bot`</h1><p>The official JavaScript client. Zero runtime dependencies — it uses only <code>fetch</code>
@@ -383,7 +383,25 @@ work the same way they do in Node&#39;s <code>EventEmitter</code>.</p>
 
 <span class="hljs-keyword">const</span> invite = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createInvite</span>(serverId, [<span class="hljs-string">&quot;messages.read&quot;</span>, <span class="hljs-string">&quot;messages.write&quot;</span>]);
 <span class="hljs-comment">// invite.invite_url -&gt; send to the server owner</span>
-</code></pre><h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>Thrown errors carry the status and body:</p>
+</code></pre><h2 id="extended-endpoints"><a href="#extended-endpoints" class="anchor" aria-hidden="true">#</a>Extended endpoints</h2><p><code>@disband/bot</code> wraps the core message, channel, member, invite, and lifecycle
+calls above. The extended management API — categories, channel permission
+overwrites, pins, reactions, roles, bans, audit log, server settings, and
+webhooks — is not wrapped yet. Call those routes directly with the same token:</p>
+<pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> baseUrl = <span class="hljs-string">&quot;https://www.disband.dev&quot;</span>;
+
+<span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${baseUrl}</span>/api/v1/servers/<span class="hljs-subst">${serverId}</span>/roles`</span>, {
+  <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
+  <span class="hljs-attr">headers</span>: {
+    <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bot <span class="hljs-subst">${process.env.DISBAND_BOT_TOKEN}</span>`</span>,
+    <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
+  },
+  <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Ticket Staff&quot;</span>, <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;#5865f2&quot;</span> }),
+});
+<span class="hljs-keyword">const</span> { role } = <span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>();
+</code></pre><p>See the <a href="/docs/developers/extended-api/">Extended API</a> for every route, and the
+<a href="/docs/bots/api-reference/">API reference</a> for the shared status codes and rate
+limits.</p>
+<h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>Thrown errors carry the status and body:</p>
 <div class="table-wrap"><table><thead><tr>
 <th>Error</th>
 <th>When</th>
