@@ -9,6 +9,9 @@ from the outside. Everything here is self-hosted — Disband never runs your cod
   and react to events over a long-polling gateway. See the [bots overview](../bots/index.md).
 - **Webhooks** — one-way notifications posted through a secret URL, with no bot
   code or token. See [Webhooks](webhooks.md).
+- **Extended API and private channels** — planned private text channels, server
+  management endpoints, ticket tooling, and the security model behind them. See
+  [Extended API](extended-api.md).
 - **Embedded cards** — structured release notes, alerts, and status updates.
   See [Embeds](embeds.md).
 - **Custom clients** — talk to the HTTP API directly if you need a language the
