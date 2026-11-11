@@ -253,6 +253,20 @@ Rules:
 - Claiming and closing are audited.
 - Closed tickets can be archived or deleted based on server settings.
 
+## Audit endpoints
+
+### Read audit log
+
+```
+GET /api/v1/servers/{server_id}/audit?limit=100
+```
+
+Rules:
+- Requires `audit:read` or a role with `view_audit_log`.
+- Returns the most recent 100 entries by default.
+- Entries are ordered newest first.
+- Inaccessible servers return `404`.
+
 ## Webhook endpoints
 
 ### Create webhook
