@@ -91,6 +91,31 @@ Bot tokens are scoped. A bot can only use endpoints covered by its scopes.
 
 Scopes are granted at bot creation and can be changed by server owners.
 
+## Server endpoints
+
+### Get server info
+
+```
+GET /api/v1/servers/{server_id}
+```
+
+Rules:
+- Requires `servers:read`, `messages.read`, or `channels.manage`.
+- Bot must be a member of the server.
+- Returns basic server metadata and member count.
+- Inaccessible servers return `404`.
+
+### List categories
+
+```
+GET /api/v1/servers/{server_id}/categories
+```
+
+Rules:
+- Requires `messages.read` or `channels.manage`.
+- Bot must be a member of the server.
+- Returns categories ordered by position.
+
 ## Channel endpoints
 
 ### Create channel
