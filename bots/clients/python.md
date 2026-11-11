@@ -10,22 +10,17 @@ Python 3.9+.
 pip install disband-bot
 ```
 
-or, from this monorepo:
-
-```bash
-pip install ./packages/disband-bot-python
-```
-
 ## Quick start
 
 ```python
+import os
 from disband_bot import Client
 
-client = Client(token=DISBAND_BOT_TOKEN)
+client = Client(token=os.environ["DISBAND_BOT_TOKEN"])
 
 @client.on("ready")
 def on_ready(me):
-    print(f"Logged in as {me['name']} ({', '.join(me['scopes'])})")
+    print("Logged in as", me["name"])
 
 @client.on("messageCreate")
 def on_message(message):
@@ -41,112 +36,172 @@ Handlers may be plain or `async def`; both are supported.
 
 ## Constructor
 
-### `Client(token, base_url="https://www.disband.dev", gateway_timeout=20)`
+### `Client(token, base_url="https://www.disband.dev", gateway_timeout=20, allow_insecure_localhost=False)`
 
-| Argument         | Default                      | Description                                  |
-| ---------------- | ---------------------------- | -------------------------------------------- |
-| `token`          | *(required)*                 | The bot token from **Settings → Bots**.      |
-| `base_url`       | `"https://www.disband.dev"`  | API root (change for a custom domain).       |
-| `gateway_timeout`| `20`                         | Seconds per gateway poll (1–20).             |
+| Argument | Default | Description |
+| --- | --- | --- |
+| `token` | *(required)* | The bot token from **Settings → Bots**. |
+| `base_url` | `"https://www.disband.dev"` | API root. |
+| `gateway_timeout` | `20` | Seconds per gateway poll (1–20). |
+| `allow_insecure_localhost` | `False` | Allow `http://localhost` for local development only. |
 
 ## Lifecycle
 
-| Method   | Description                                                        |
-| -------- | ------------------------------------------------------------------ |
-| `run()`  | Connects, emits `ready`, starts the gateway loop in a background thread, and blocks forever. |
-| `close()`| Stops the loop.                                                    |
+| Method | Description |
+| --- | --- |
+| `connect()` | Resolves identity, emits `ready`, and starts the gateway loop in a daemon thread. |
+| `run()` | Connects and blocks until stopped. |
+| `close()` | Stops the loop. |
+| `user` / `connected` | Identity and connection state. |
 
 ## Events
 
-Register with `client.on("name", handler)` — as a decorator or a plain call —
-plus `once` for single-shot handlers.
-
-| Event           | Args     | Notes                                                              |
-| --------------- | -------- | -------------------------------------------------------------------|
-| `ready`         | `user`   | `user["id"]`, `user["name"]`, `user["scopes"]`, etc.               |
-| `messageCreate` | `message`| A new message in a server the bot can see.                          |
-| `messageUpdate` | `message`| A message was edited (`content`, `edited_at` updated).             |
-| `messageDelete` | `message`| A message was deleted (`content` empty; `id`/`channel_id` valid).  |
-| `error`         | `error`  | Gateway errors. The loop retries automatically unless the token is invalid, in which case it stops. |
+| Event | Args | Notes |
+| --- | --- | --- |
+| `ready` | `user` dict | `id`, `user_id`, `name`, `username`, `avatar_url`, `scopes`. |
+| `messageCreate` | `Message` | New message in a channel the bot can view. |
+| `messageUpdate` | `Message` | Edited message. |
+| `messageDelete` | `Message` | Deleted message (partial fields). |
+| `memberJoin` | `dict` | Someone joined a space (`members.read`). |
+| `memberLeave` | `dict` | Someone left a space (`members.read`). |
+| `memberUpdate` | `dict` | A member's roles changed (`members.read`). |
+| `interactionCreate` | `dict` | Slash command or button press for this bot. |
+| `error` | `Exception` | Gateway/handler errors. The loop retries unless the token is invalid. |
 
 ### `Message`
 
-| Field         | Type             | Description                                        |
-| ------------- | ---------------- | -------------------------------------------------- |
-| `id`          | `str`            | Message id.                                        |
-| `channel_id`  | `str`            | Channel id.                                        |
-| `server_id`   | `str \| None`    | Server id.                                         |
-| `author`      | `dict \| None`   | `{ "id", "username", "display_name", "avatar_url", "is_bot" }`. |
-| `content`     | `str`            | Message text.                                      |
-| `reply_to_id` | `str \| None`    | The message this replies to, if any.               |
-| `mentions`    | `list`           | Mentioned users.                                   |
-| `attachment`  | `dict \| None`   | `{ "url", "type" }` when the message has a file.   |
-| `created_at`  | `str \| None`    | ISO timestamp.                                     |
-| `edited_at`   | `str \| None`    | ISO timestamp of the last edit.                    |
-| `display_id`  | `int \| None`    | The sequential display number.                     |
-| `author_is_bot` | `bool`          | True when the sender was a bot (property).         |
+Attributes: `id`, `channel_id`, `server_id`, `author`, `content`, `reply_to_id`,
+`mentions`, `embeds`, `components`, `interaction`, `webhook_id`, `attachment`
+(`{"url", "type"}` or `None`), `created_at`, `edited_at`, `display_id`, `raw`,
+`author_is_bot`.
 
-**Methods** — `message.reply(content)` replies in the same channel.
+Helpers: `reply(content=None, **options)`, `edit(content_or_patch=None, **patch)`,
+`delete()`, `react(emoji)`, `unreact(emoji)`, `pin()`, `unpin()`.
 
 ## Methods
 
+### Messages, reactions, and pins
+
 ```python
-client.send_message(channel_id, "Deploy finished")            # send
-message.reply("pong")                                          # reply to a received message
+msg = client.send_message(channel_id, "Deploy finished", embeds=[...], components=[...], reply_to_id=msg_id)
+client.edit_message(channel_id, message_id, content="Edited")
+messages = client.list_messages(channel_id, limit=50, before=message_id)
+client.delete_message(channel_id, message_id)  # UUID or numeric display_id
+deleted = client.bulk_delete_messages(channel_id, [uuid1, uuid2])  # UUIDs only, 1-100
 
-messages = client.list_messages(channel_id, limit=25, before="…")
-channels = client.list_channels(server_id)
-members  = client.list_members(server_id)
+client.add_reaction(channel_id, message_id, "👍")
+client.remove_reaction(channel_id, message_id, "👍")
+pins = client.list_pins(channel_id)
+client.pin_message(channel_id, message_id)
+client.unpin_message(channel_id, message_id)
+```
 
-channel_id = client.create_channel(server_id, "deploys")
-client.rename_channel(channel_id, "deploys-2")
+### Servers and audit
+
+```python
+server = client.get_server(server_id)
+updated = client.update_server(server_id, name="New name", discoverable=True)
+perms = client.get_server_permissions(server_id)
+audit = client.list_audit_log(server_id, limit=100)
+```
+
+### Categories and channels
+
+```python
+categories = client.list_categories(server_id)
+category = client.create_category(server_id, "Support")
+client.update_category(category_id, name="Support", position=1)
+client.delete_category(category_id)
+
+channels = client.list_channels(server_id)  # visible only
+channel = client.get_channel(channel_id)
+channel_id = client.create_channel(server_id, "staff-chat", type="text", category_id=cat_id,
+    topic="Staff", slow_mode_seconds=0, read_only=False,
+    permissions=[
+        {"role_id": everyone_role_id, "can_view": False},
+        {"role_id": staff_role_id, "can_view": True, "can_post": True},
+    ])
+client.update_channel(channel_id, name="new-name", topic=None, slow_mode_seconds=10)
+client.rename_channel(channel_id, "new-name")
 client.delete_channel(channel_id)
 
-client.leave_server(server_id)
-
-invite = client.create_invite(server_id, ["messages.read", "messages.write"])
-# invite["invite_url"] -> send to the server owner
+overwrites = client.list_channel_permissions(channel_id)
+client.set_channel_permission(channel_id, role_id, can_view=True, can_post=True)
+client.delete_channel_permission(channel_id, role_id)
 ```
 
-## Extended endpoints
+A private channel is a channel with role overwrites: deny `can_view` for
+`@everyone` and allow it for the roles that should see it. Hidden channels are
+omitted from lists and direct access returns 403/404.
 
-`disband-bot` wraps the core message, channel, member, invite, and lifecycle
-calls above. The extended management API — categories, channel permission
-overwrites, pins, reactions, roles, bans, audit log, server settings, and
-webhooks — is not wrapped yet. Call those routes directly with the same token:
+### Members, bans, and roles
 
 ```python
-import json
-import os
-import urllib.request
+members = client.list_members(server_id)
+member = client.get_member(server_id, user_id)
+client.kick_member(server_id, user_id)
+client.timeout_member(server_id, user_id, 10, reason="Cooling off")
+client.add_member_role(server_id, user_id, role_id)
+client.remove_member_role(server_id, user_id, role_id)
 
-request = urllib.request.Request(
-    f"https://www.disband.dev/api/v1/servers/{server_id}/roles",
-    data=json.dumps({"name": "Ticket Staff", "color": "#5865f2"}).encode(),
-    headers={
-        "Authorization": f"Bot {os.environ['DISBAND_BOT_TOKEN']}",
-        "Content-Type": "application/json",
-    },
-    method="POST",
-)
-with urllib.request.urlopen(request) as response:
-    role = json.load(response)["role"]
+bans = client.list_bans(server_id)
+client.ban_member(server_id, user_id, reason="Spam")
+client.unban_member(server_id, user_id)
+
+roles = client.list_roles(server_id)
+role = client.create_role(server_id, name="Ticket Staff", color="#5865f2",
+    permissions={"send_messages": True}, self_assignable=False, position=2)
+one = client.get_role(server_id, role_id)
+client.update_role(server_id, role_id, name="Staff")
+client.delete_role(server_id, role_id)
 ```
 
-See the [Extended API](../../developers/extended-api.md) for every route, and the
-[API reference](../api-reference.md) for the shared status codes and rate
-limits.
+Moderation and role changes enforce hierarchy (no acting on the owner,
+moderators, bots, yourself, or roles at/above the bot's highest role).
+
+### Webhooks
+
+```python
+webhooks = client.list_webhooks(server_id)
+webhook = client.create_webhook(server_id, channel_id=channel_id, name="Deploys")
+one = client.get_webhook(webhook_id)
+client.update_webhook(webhook_id, name="New name", reset_token=True)
+client.delete_webhook(webhook_id)
+```
+
+Webhook objects include a posting `url` — treat it as a secret. Webhooks in
+channels the bot cannot view are hidden.
+
+### Commands and interactions
+
+```python
+commands = client.list_commands()
+client.set_commands([{"name": "ping", "description": "Ping", "options": []}])  # bulk replace
+client.upsert_command(name="ping", description="Ping", options=[])
+client.delete_command("ping")
+
+@client.on("interactionCreate")
+def on_interaction(interaction):
+    client.respond_to_interaction(interaction["id"], content="Pong!", ephemeral=True)
+```
+
+### Invites and lifecycle
+
+```python
+client.leave_server(server_id)
+invite = client.create_invite(server_id, ["messages.read", "messages.write"])
+# invite["invite_url"] -> send to the space owner
+```
 
 ## Errors
 
-The client raises subclasses of `DisbandError` with a `.status` and `.body`:
+| Error | When |
+| --- | --- |
+| `AuthError` | `401` — invalid or revoked token. The gateway loop stops on this. |
+| `PermissionError` | `403` — missing scope, grant, or role permission. |
+| `RateLimitError` | `429` — includes `retry_after` seconds. |
+| `HttpError` | Any other non-2xx status. |
 
-| Error            | When                                          |
-| ---------------- | --------------------------------------------- |
-| `AuthError`      | `401` — invalid or revoked token. The gateway loop stops on this. |
-| `PermissionError`| `403` — missing scope or role permission.     |
-| `RateLimitError` | `429` — includes `retry_after` seconds.       |
-| `HttpError`      | Any other non-2xx status.                     |
-
-Internally the client is a thin wrapper over the [HTTP API](../api-reference.md):
-`REST.get/post/patch/delete` with `Authorization: Bot <token>`.
+All carry `.status`, a message, and `.body`. See the [API reference](../api-reference.md)
+and [Extended API](../../developers/extended-api.md) for endpoint-specific
+behavior and limits.

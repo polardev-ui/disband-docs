@@ -1,12 +1,12 @@
 # Bot API reference
 
-The HTTP API that bots talk to. The official client libraries wrap the core
-message, channel, member, invite, and lifecycle endpoints; the extended
-management endpoints are plain HTTP and are called directly with the same token.
-This page is the recipe for writing a client in any language.
+The HTTP API that bots talk to. The official client libraries (`@disband/bot`
+and `disband-bot`) wrap the core and extended endpoints, so you can usually call
+them directly instead of hand-rolling HTTP. This page is the full contract and
+the recipe for writing a client in any language.
 
 The extended management surface — private channels, categories, roles, audit,
-bans, server settings, and webhooks — is documented in
+bans, server settings, and webhooks — is also documented in depth in
 [Extended API and private channels](../developers/extended-api.md). This page
 covers the whole contract, with the extended endpoints summarised.
 
@@ -643,7 +643,6 @@ messages in a channel the bot cannot view). Treat both as "not available".
 
 The official clients are `@disband/bot` (JavaScript) and `disband-bot` (Python)
 — see the [JavaScript](clients/javascript.md) and [Python](clients/python.md)
-pages. They wrap the core endpoints listed above, not the extended management
-surface; call those with a plain HTTP request using the same `Authorization`
-header. For private channels, tickets, categories, audit, bans, and webhooks,
-see the [Extended API](../developers/extended-api.md).
+pages. They wrap the endpoints on this page, including the extended management
+surface. For private channels, tickets, categories, audit, bans, and webhooks,
+see the [Extended API](../developers/extended-api.md) for recipes and details.

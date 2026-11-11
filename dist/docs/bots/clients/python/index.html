@@ -215,15 +215,14 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <code>urllib</code>), so there is nothing to install except the client itself. Works on
 Python 3.9+.</p>
 <h2 id="install"><a href="#install" class="anchor" aria-hidden="true">#</a>Install</h2><pre><code class="hljs language-bash">pip install disband-bot
-</code></pre><p>or, from this monorepo:</p>
-<pre><code class="hljs language-bash">pip install ./packages/disband-bot-python
-</code></pre><h2 id="quick-start"><a href="#quick-start" class="anchor" aria-hidden="true">#</a>Quick start</h2><pre><code class="hljs language-python"><span class="hljs-keyword">from</span> disband_bot <span class="hljs-keyword">import</span> Client
+</code></pre><h2 id="quick-start"><a href="#quick-start" class="anchor" aria-hidden="true">#</a>Quick start</h2><pre><code class="hljs language-python"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">from</span> disband_bot <span class="hljs-keyword">import</span> Client
 
-client = Client(token=DISBAND_BOT_TOKEN)
+client = Client(token=os.environ[<span class="hljs-string">&quot;DISBAND_BOT_TOKEN&quot;</span>])
 
 <span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;ready&quot;</span></span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">on_ready</span>(<span class="hljs-params">me</span>):
-    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Logged in as <span class="hljs-subst">{me[<span class="hljs-string">&#x27;name&#x27;</span>]}</span> (<span class="hljs-subst">{<span class="hljs-string">&#x27;, &#x27;</span>.join(me[<span class="hljs-string">&#x27;scopes&#x27;</span>])}</span>)&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Logged in as&quot;</span>, me[<span class="hljs-string">&quot;name&quot;</span>])
 
 <span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;messageCreate&quot;</span></span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">on_message</span>(<span class="hljs-params">message</span>):
@@ -234,7 +233,7 @@ client = Client(token=DISBAND_BOT_TOKEN)
 
 client.run()  <span class="hljs-comment"># connects and blocks forever</span>
 </code></pre><p>Handlers may be plain or <code>async def</code>; both are supported.</p>
-<h2 id="constructor"><a href="#constructor" class="anchor" aria-hidden="true">#</a>Constructor</h2><h3 id="clienttoken-baseurlhttpswwwdisbanddev-gatewaytimeout20"><a href="#clienttoken-baseurlhttpswwwdisbanddev-gatewaytimeout20" class="anchor" aria-hidden="true">#</a>`Client(token, base_url="https://www.disband.dev", gateway_timeout=20)`</h3><div class="table-wrap"><table><thead><tr>
+<h2 id="constructor"><a href="#constructor" class="anchor" aria-hidden="true">#</a>Constructor</h2><h3 id="clienttoken-baseurlhttpswwwdisbanddev-gatewaytimeout20-allowinsecurelocalhostfalse"><a href="#clienttoken-baseurlhttpswwwdisbanddev-gatewaytimeout20-allowinsecurelocalhostfalse" class="anchor" aria-hidden="true">#</a>`Client(token, base_url="https://www.disband.dev", gateway_timeout=20, allow_insecure_localhost=False)`</h3><div class="table-wrap"><table><thead><tr>
 <th>Argument</th>
 <th>Default</th>
 <th>Description</th>
@@ -247,162 +246,170 @@ client.run()  <span class="hljs-comment"># connects and blocks forever</span>
 <tr>
 <td><code>base_url</code></td>
 <td><code>&quot;https://www.disband.dev&quot;</code></td>
-<td>API root (change for a custom domain).</td>
+<td>API root.</td>
 </tr>
 <tr>
 <td><code>gateway_timeout</code></td>
 <td><code>20</code></td>
 <td>Seconds per gateway poll (1–20).</td>
 </tr>
+<tr>
+<td><code>allow_insecure_localhost</code></td>
+<td><code>False</code></td>
+<td>Allow <code>http://localhost</code> for local development only.</td>
+</tr>
 </tbody></table></div><h2 id="lifecycle"><a href="#lifecycle" class="anchor" aria-hidden="true">#</a>Lifecycle</h2><div class="table-wrap"><table><thead><tr>
 <th>Method</th>
 <th>Description</th>
 </tr>
 </thead><tbody><tr>
+<td><code>connect()</code></td>
+<td>Resolves identity, emits <code>ready</code>, and starts the gateway loop in a daemon thread.</td>
+</tr>
+<tr>
 <td><code>run()</code></td>
-<td>Connects, emits <code>ready</code>, starts the gateway loop in a background thread, and blocks forever.</td>
+<td>Connects and blocks until stopped.</td>
 </tr>
 <tr>
 <td><code>close()</code></td>
 <td>Stops the loop.</td>
 </tr>
-</tbody></table></div><h2 id="events"><a href="#events" class="anchor" aria-hidden="true">#</a>Events</h2><p>Register with <code>client.on(&quot;name&quot;, handler)</code> — as a decorator or a plain call —
-plus <code>once</code> for single-shot handlers.</p>
-<div class="table-wrap"><table><thead><tr>
+<tr>
+<td><code>user</code> / <code>connected</code></td>
+<td>Identity and connection state.</td>
+</tr>
+</tbody></table></div><h2 id="events"><a href="#events" class="anchor" aria-hidden="true">#</a>Events</h2><div class="table-wrap"><table><thead><tr>
 <th>Event</th>
 <th>Args</th>
 <th>Notes</th>
 </tr>
 </thead><tbody><tr>
 <td><code>ready</code></td>
-<td><code>user</code></td>
-<td><code>user[&quot;id&quot;]</code>, <code>user[&quot;name&quot;]</code>, <code>user[&quot;scopes&quot;]</code>, etc.</td>
+<td><code>user</code> dict</td>
+<td><code>id</code>, <code>user_id</code>, <code>name</code>, <code>username</code>, <code>avatar_url</code>, <code>scopes</code>.</td>
 </tr>
 <tr>
 <td><code>messageCreate</code></td>
-<td><code>message</code></td>
-<td>A new message in a server the bot can see.</td>
+<td><code>Message</code></td>
+<td>New message in a channel the bot can view.</td>
 </tr>
 <tr>
 <td><code>messageUpdate</code></td>
-<td><code>message</code></td>
-<td>A message was edited (<code>content</code>, <code>edited_at</code> updated).</td>
+<td><code>Message</code></td>
+<td>Edited message.</td>
 </tr>
 <tr>
 <td><code>messageDelete</code></td>
-<td><code>message</code></td>
-<td>A message was deleted (<code>content</code> empty; <code>id</code>/<code>channel_id</code> valid).</td>
+<td><code>Message</code></td>
+<td>Deleted message (partial fields).</td>
+</tr>
+<tr>
+<td><code>memberJoin</code></td>
+<td><code>dict</code></td>
+<td>Someone joined a space (<code>members.read</code>).</td>
+</tr>
+<tr>
+<td><code>memberLeave</code></td>
+<td><code>dict</code></td>
+<td>Someone left a space (<code>members.read</code>).</td>
+</tr>
+<tr>
+<td><code>memberUpdate</code></td>
+<td><code>dict</code></td>
+<td>A member&#39;s roles changed (<code>members.read</code>).</td>
+</tr>
+<tr>
+<td><code>interactionCreate</code></td>
+<td><code>dict</code></td>
+<td>Slash command or button press for this bot.</td>
 </tr>
 <tr>
 <td><code>error</code></td>
-<td><code>error</code></td>
-<td>Gateway errors. The loop retries automatically unless the token is invalid, in which case it stops.</td>
+<td><code>Exception</code></td>
+<td>Gateway/handler errors. The loop retries unless the token is invalid.</td>
 </tr>
-</tbody></table></div><h3 id="message"><a href="#message" class="anchor" aria-hidden="true">#</a>`Message`</h3><div class="table-wrap"><table><thead><tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody><tr>
-<td><code>id</code></td>
-<td><code>str</code></td>
-<td>Message id.</td>
-</tr>
-<tr>
-<td><code>channel_id</code></td>
-<td><code>str</code></td>
-<td>Channel id.</td>
-</tr>
-<tr>
-<td><code>server_id</code></td>
-<td><code>str | None</code></td>
-<td>Server id.</td>
-</tr>
-<tr>
-<td><code>author</code></td>
-<td><code>dict | None</code></td>
-<td><code>{ &quot;id&quot;, &quot;username&quot;, &quot;display_name&quot;, &quot;avatar_url&quot;, &quot;is_bot&quot; }</code>.</td>
-</tr>
-<tr>
-<td><code>content</code></td>
-<td><code>str</code></td>
-<td>Message text.</td>
-</tr>
-<tr>
-<td><code>reply_to_id</code></td>
-<td><code>str | None</code></td>
-<td>The message this replies to, if any.</td>
-</tr>
-<tr>
-<td><code>mentions</code></td>
-<td><code>list</code></td>
-<td>Mentioned users.</td>
-</tr>
-<tr>
-<td><code>attachment</code></td>
-<td><code>dict | None</code></td>
-<td><code>{ &quot;url&quot;, &quot;type&quot; }</code> when the message has a file.</td>
-</tr>
-<tr>
-<td><code>created_at</code></td>
-<td><code>str | None</code></td>
-<td>ISO timestamp.</td>
-</tr>
-<tr>
-<td><code>edited_at</code></td>
-<td><code>str | None</code></td>
-<td>ISO timestamp of the last edit.</td>
-</tr>
-<tr>
-<td><code>display_id</code></td>
-<td><code>int | None</code></td>
-<td>The sequential display number.</td>
-</tr>
-<tr>
-<td><code>author_is_bot</code></td>
-<td><code>bool</code></td>
-<td>True when the sender was a bot (property).</td>
-</tr>
-</tbody></table></div><p><strong>Methods</strong> — <code>message.reply(content)</code> replies in the same channel.</p>
-<h2 id="methods"><a href="#methods" class="anchor" aria-hidden="true">#</a>Methods</h2><pre><code class="hljs language-python">client.send_message(channel_id, <span class="hljs-string">&quot;Deploy finished&quot;</span>)            <span class="hljs-comment"># send</span>
-message.reply(<span class="hljs-string">&quot;pong&quot;</span>)                                          <span class="hljs-comment"># reply to a received message</span>
+</tbody></table></div><h3 id="message"><a href="#message" class="anchor" aria-hidden="true">#</a>`Message`</h3><p>Attributes: <code>id</code>, <code>channel_id</code>, <code>server_id</code>, <code>author</code>, <code>content</code>, <code>reply_to_id</code>,
+<code>mentions</code>, <code>embeds</code>, <code>components</code>, <code>interaction</code>, <code>webhook_id</code>, <code>attachment</code>
+(<code>{&quot;url&quot;, &quot;type&quot;}</code> or <code>None</code>), <code>created_at</code>, <code>edited_at</code>, <code>display_id</code>, <code>raw</code>,
+<code>author_is_bot</code>.</p>
+<p>Helpers: <code>reply(content=None, **options)</code>, <code>edit(content_or_patch=None, **patch)</code>,
+<code>delete()</code>, <code>react(emoji)</code>, <code>unreact(emoji)</code>, <code>pin()</code>, <code>unpin()</code>.</p>
+<h2 id="methods"><a href="#methods" class="anchor" aria-hidden="true">#</a>Methods</h2><h3 id="messages-reactions-and-pins"><a href="#messages-reactions-and-pins" class="anchor" aria-hidden="true">#</a>Messages, reactions, and pins</h3><pre><code class="hljs language-python">msg = client.send_message(channel_id, <span class="hljs-string">&quot;Deploy finished&quot;</span>, embeds=[...], components=[...], reply_to_id=msg_id)
+client.edit_message(channel_id, message_id, content=<span class="hljs-string">&quot;Edited&quot;</span>)
+messages = client.list_messages(channel_id, limit=<span class="hljs-number">50</span>, before=message_id)
+client.delete_message(channel_id, message_id)  <span class="hljs-comment"># UUID or numeric display_id</span>
+deleted = client.bulk_delete_messages(channel_id, [uuid1, uuid2])  <span class="hljs-comment"># UUIDs only, 1-100</span>
 
-messages = client.list_messages(channel_id, limit=<span class="hljs-number">25</span>, before=<span class="hljs-string">&quot;…&quot;</span>)
-channels = client.list_channels(server_id)
-members  = client.list_members(server_id)
+client.add_reaction(channel_id, message_id, <span class="hljs-string">&quot;👍&quot;</span>)
+client.remove_reaction(channel_id, message_id, <span class="hljs-string">&quot;👍&quot;</span>)
+pins = client.list_pins(channel_id)
+client.pin_message(channel_id, message_id)
+client.unpin_message(channel_id, message_id)
+</code></pre><h3 id="servers-and-audit"><a href="#servers-and-audit" class="anchor" aria-hidden="true">#</a>Servers and audit</h3><pre><code class="hljs language-python">server = client.get_server(server_id)
+updated = client.update_server(server_id, name=<span class="hljs-string">&quot;New name&quot;</span>, discoverable=<span class="hljs-literal">True</span>)
+perms = client.get_server_permissions(server_id)
+audit = client.list_audit_log(server_id, limit=<span class="hljs-number">100</span>)
+</code></pre><h3 id="categories-and-channels"><a href="#categories-and-channels" class="anchor" aria-hidden="true">#</a>Categories and channels</h3><pre><code class="hljs language-python">categories = client.list_categories(server_id)
+category = client.create_category(server_id, <span class="hljs-string">&quot;Support&quot;</span>)
+client.update_category(category_id, name=<span class="hljs-string">&quot;Support&quot;</span>, position=<span class="hljs-number">1</span>)
+client.delete_category(category_id)
 
-channel_id = client.create_channel(server_id, <span class="hljs-string">&quot;deploys&quot;</span>)
-client.rename_channel(channel_id, <span class="hljs-string">&quot;deploys-2&quot;</span>)
+channels = client.list_channels(server_id)  <span class="hljs-comment"># visible only</span>
+channel = client.get_channel(channel_id)
+channel_id = client.create_channel(server_id, <span class="hljs-string">&quot;staff-chat&quot;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span>, category_id=cat_id,
+    topic=<span class="hljs-string">&quot;Staff&quot;</span>, slow_mode_seconds=<span class="hljs-number">0</span>, read_only=<span class="hljs-literal">False</span>,
+    permissions=[
+        {<span class="hljs-string">&quot;role_id&quot;</span>: everyone_role_id, <span class="hljs-string">&quot;can_view&quot;</span>: <span class="hljs-literal">False</span>},
+        {<span class="hljs-string">&quot;role_id&quot;</span>: staff_role_id, <span class="hljs-string">&quot;can_view&quot;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&quot;can_post&quot;</span>: <span class="hljs-literal">True</span>},
+    ])
+client.update_channel(channel_id, name=<span class="hljs-string">&quot;new-name&quot;</span>, topic=<span class="hljs-literal">None</span>, slow_mode_seconds=<span class="hljs-number">10</span>)
+client.rename_channel(channel_id, <span class="hljs-string">&quot;new-name&quot;</span>)
 client.delete_channel(channel_id)
 
-client.leave_server(server_id)
+overwrites = client.list_channel_permissions(channel_id)
+client.set_channel_permission(channel_id, role_id, can_view=<span class="hljs-literal">True</span>, can_post=<span class="hljs-literal">True</span>)
+client.delete_channel_permission(channel_id, role_id)
+</code></pre><p>A private channel is a channel with role overwrites: deny <code>can_view</code> for
+<code>@everyone</code> and allow it for the roles that should see it. Hidden channels are
+omitted from lists and direct access returns 403/404.</p>
+<h3 id="members-bans-and-roles"><a href="#members-bans-and-roles" class="anchor" aria-hidden="true">#</a>Members, bans, and roles</h3><pre><code class="hljs language-python">members = client.list_members(server_id)
+member = client.get_member(server_id, user_id)
+client.kick_member(server_id, user_id)
+client.timeout_member(server_id, user_id, <span class="hljs-number">10</span>, reason=<span class="hljs-string">&quot;Cooling off&quot;</span>)
+client.add_member_role(server_id, user_id, role_id)
+client.remove_member_role(server_id, user_id, role_id)
 
+bans = client.list_bans(server_id)
+client.ban_member(server_id, user_id, reason=<span class="hljs-string">&quot;Spam&quot;</span>)
+client.unban_member(server_id, user_id)
+
+roles = client.list_roles(server_id)
+role = client.create_role(server_id, name=<span class="hljs-string">&quot;Ticket Staff&quot;</span>, color=<span class="hljs-string">&quot;#5865f2&quot;</span>,
+    permissions={<span class="hljs-string">&quot;send_messages&quot;</span>: <span class="hljs-literal">True</span>}, self_assignable=<span class="hljs-literal">False</span>, position=<span class="hljs-number">2</span>)
+one = client.get_role(server_id, role_id)
+client.update_role(server_id, role_id, name=<span class="hljs-string">&quot;Staff&quot;</span>)
+client.delete_role(server_id, role_id)
+</code></pre><p>Moderation and role changes enforce hierarchy (no acting on the owner,
+moderators, bots, yourself, or roles at/above the bot&#39;s highest role).</p>
+<h3 id="webhooks"><a href="#webhooks" class="anchor" aria-hidden="true">#</a>Webhooks</h3><pre><code class="hljs language-python">webhooks = client.list_webhooks(server_id)
+webhook = client.create_webhook(server_id, channel_id=channel_id, name=<span class="hljs-string">&quot;Deploys&quot;</span>)
+one = client.get_webhook(webhook_id)
+client.update_webhook(webhook_id, name=<span class="hljs-string">&quot;New name&quot;</span>, reset_token=<span class="hljs-literal">True</span>)
+client.delete_webhook(webhook_id)
+</code></pre><p>Webhook objects include a posting <code>url</code> — treat it as a secret. Webhooks in
+channels the bot cannot view are hidden.</p>
+<h3 id="commands-and-interactions"><a href="#commands-and-interactions" class="anchor" aria-hidden="true">#</a>Commands and interactions</h3><pre><code class="hljs language-python">commands = client.list_commands()
+client.set_commands([{<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;ping&quot;</span>, <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;Ping&quot;</span>, <span class="hljs-string">&quot;options&quot;</span>: []}])  <span class="hljs-comment"># bulk replace</span>
+client.upsert_command(name=<span class="hljs-string">&quot;ping&quot;</span>, description=<span class="hljs-string">&quot;Ping&quot;</span>, options=[])
+client.delete_command(<span class="hljs-string">&quot;ping&quot;</span>)
+
+<span class="hljs-meta">@client.on(<span class="hljs-params"><span class="hljs-string">&quot;interactionCreate&quot;</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">on_interaction</span>(<span class="hljs-params">interaction</span>):
+    client.respond_to_interaction(interaction[<span class="hljs-string">&quot;id&quot;</span>], content=<span class="hljs-string">&quot;Pong!&quot;</span>, ephemeral=<span class="hljs-literal">True</span>)
+</code></pre><h3 id="invites-and-lifecycle"><a href="#invites-and-lifecycle" class="anchor" aria-hidden="true">#</a>Invites and lifecycle</h3><pre><code class="hljs language-python">client.leave_server(server_id)
 invite = client.create_invite(server_id, [<span class="hljs-string">&quot;messages.read&quot;</span>, <span class="hljs-string">&quot;messages.write&quot;</span>])
-<span class="hljs-comment"># invite[&quot;invite_url&quot;] -&gt; send to the server owner</span>
-</code></pre><h2 id="extended-endpoints"><a href="#extended-endpoints" class="anchor" aria-hidden="true">#</a>Extended endpoints</h2><p><code>disband-bot</code> wraps the core message, channel, member, invite, and lifecycle
-calls above. The extended management API — categories, channel permission
-overwrites, pins, reactions, roles, bans, audit log, server settings, and
-webhooks — is not wrapped yet. Call those routes directly with the same token:</p>
-<pre><code class="hljs language-python"><span class="hljs-keyword">import</span> json
-<span class="hljs-keyword">import</span> os
-<span class="hljs-keyword">import</span> urllib.request
-
-request = urllib.request.Request(
-    <span class="hljs-string">f&quot;https://www.disband.dev/api/v1/servers/<span class="hljs-subst">{server_id}</span>/roles&quot;</span>,
-    data=json.dumps({<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Ticket Staff&quot;</span>, <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;#5865f2&quot;</span>}).encode(),
-    headers={
-        <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bot <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;DISBAND_BOT_TOKEN&#x27;</span>]}</span>&quot;</span>,
-        <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
-    },
-    method=<span class="hljs-string">&quot;POST&quot;</span>,
-)
-<span class="hljs-keyword">with</span> urllib.request.urlopen(request) <span class="hljs-keyword">as</span> response:
-    role = json.load(response)[<span class="hljs-string">&quot;role&quot;</span>]
-</code></pre><p>See the <a href="/docs/developers/extended-api/">Extended API</a> for every route, and the
-<a href="/docs/bots/api-reference/">API reference</a> for the shared status codes and rate
-limits.</p>
-<h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>The client raises subclasses of <code>DisbandError</code> with a <code>.status</code> and <code>.body</code>:</p>
-<div class="table-wrap"><table><thead><tr>
+<span class="hljs-comment"># invite[&quot;invite_url&quot;] -&gt; send to the space owner</span>
+</code></pre><h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><div class="table-wrap"><table><thead><tr>
 <th>Error</th>
 <th>When</th>
 </tr>
@@ -412,7 +419,7 @@ limits.</p>
 </tr>
 <tr>
 <td><code>PermissionError</code></td>
-<td><code>403</code> — missing scope or role permission.</td>
+<td><code>403</code> — missing scope, grant, or role permission.</td>
 </tr>
 <tr>
 <td><code>RateLimitError</code></td>
@@ -422,8 +429,9 @@ limits.</p>
 <td><code>HttpError</code></td>
 <td>Any other non-2xx status.</td>
 </tr>
-</tbody></table></div><p>Internally the client is a thin wrapper over the <a href="/docs/bots/api-reference/">HTTP API</a>:
-<code>REST.get/post/patch/delete</code> with <code>Authorization: Bot &lt;token&gt;</code>.</p>
+</tbody></table></div><p>All carry <code>.status</code>, a message, and <code>.body</code>. See the <a href="/docs/bots/api-reference/">API reference</a>
+and <a href="/docs/developers/extended-api/">Extended API</a> for endpoint-specific
+behavior and limits.</p>
 
   </main>
 </div>

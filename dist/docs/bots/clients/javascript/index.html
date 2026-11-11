@@ -212,24 +212,21 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
     <h1 id="javascript-client-disbandbot"><a href="#javascript-client-disbandbot" class="anchor" aria-hidden="true">#</a>JavaScript client — `@disband/bot`</h1><p>The official JavaScript client. Zero runtime dependencies — it uses only <code>fetch</code>
 and standard globals — and works from Node.js 18+, Deno, Bun, and the browser.</p>
 <h2 id="install"><a href="#install" class="anchor" aria-hidden="true">#</a>Install</h2><pre><code class="hljs language-bash">npm install @disband/bot
-</code></pre><p>or, from this monorepo:</p>
-<pre><code class="hljs language-bash">npm install /path/to/packages/bot
 </code></pre><h2 id="quick-start"><a href="#quick-start" class="anchor" aria-hidden="true">#</a>Quick start</h2><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Client</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@disband/bot&quot;</span>;
 
 <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Client</span>({ <span class="hljs-attr">token</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">DISBAND_BOT_TOKEN</span> });
 
 client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;ready&quot;</span>, <span class="hljs-function">(<span class="hljs-params">me</span>) =&gt;</span> {
-  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Logged in as <span class="hljs-subst">${me.name}</span> (<span class="hljs-subst">${me.scopes.join(<span class="hljs-string">&quot;, &quot;</span>)}</span>)`</span>);
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Logged in as <span class="hljs-subst">${me.name}</span>`</span>);
 });
 
 client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;messageCreate&quot;</span>, <span class="hljs-title function_">async</span> (message) =&gt; {
-  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">author</span>?.<span class="hljs-property">is_bot</span>) <span class="hljs-keyword">return</span>;
-  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">content</span> !== <span class="hljs-string">&quot;!ping&quot;</span>) <span class="hljs-keyword">return</span>;
-  <span class="hljs-keyword">await</span> message.<span class="hljs-title function_">reply</span>(<span class="hljs-string">&quot;pong&quot;</span>);
+  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">authorIsBot</span>) <span class="hljs-keyword">return</span>;
+  <span class="hljs-keyword">if</span> (message.<span class="hljs-property">content</span> === <span class="hljs-string">&quot;!ping&quot;</span>) <span class="hljs-keyword">await</span> message.<span class="hljs-title function_">reply</span>(<span class="hljs-string">&quot;pong&quot;</span>);
 });
 
 <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">connect</span>();
-</code></pre><h2 id="constructor"><a href="#constructor" class="anchor" aria-hidden="true">#</a>Constructor</h2><h3 id="new-client-token-baseurl-gatewaytimeout"><a href="#new-client-token-baseurl-gatewaytimeout" class="anchor" aria-hidden="true">#</a>`new Client({ token, baseUrl?, gatewayTimeout? })`</h3><div class="table-wrap"><table><thead><tr>
+</code></pre><h2 id="constructor"><a href="#constructor" class="anchor" aria-hidden="true">#</a>Constructor</h2><h3 id="new-clientoptions"><a href="#new-clientoptions" class="anchor" aria-hidden="true">#</a>`new Client(options)`</h3><div class="table-wrap"><table><thead><tr>
 <th>Option</th>
 <th>Type</th>
 <th>Default</th>
@@ -245,7 +242,7 @@ client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&q
 <td><code>baseUrl</code></td>
 <td><code>string</code></td>
 <td><code>&quot;https://www.disband.dev&quot;</code></td>
-<td>API root (change for a custom domain).</td>
+<td>API root.</td>
 </tr>
 <tr>
 <td><code>gatewayTimeout</code></td>
@@ -253,13 +250,25 @@ client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&q
 <td><code>20</code></td>
 <td>Seconds per gateway poll (1–20).</td>
 </tr>
+<tr>
+<td><code>requestTimeout</code></td>
+<td><code>number</code></td>
+<td><code>max((gatewayTimeout+10)*1000, 30000)</code></td>
+<td>Per-request timeout in ms.</td>
+</tr>
+<tr>
+<td><code>allowInsecureLocalhost</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Allow <code>http://localhost</code> for local development only.</td>
+</tr>
 </tbody></table></div><h2 id="lifecycle"><a href="#lifecycle" class="anchor" aria-hidden="true">#</a>Lifecycle</h2><div class="table-wrap"><table><thead><tr>
 <th>Method</th>
 <th>Description</th>
 </tr>
 </thead><tbody><tr>
 <td><code>connect()</code></td>
-<td>Resolves the bot identity (<code>GET /api/bot/me</code>), emits <code>ready</code>, and starts the gateway loop. Resolves once connected.</td>
+<td>Resolves identity, emits <code>ready</code>, and starts the gateway loop. Resolves once connected.</td>
 </tr>
 <tr>
 <td><code>close()</code></td>
@@ -267,11 +276,13 @@ client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&q
 </tr>
 <tr>
 <td><code>connected</code></td>
-<td>Boolean: whether the loop is currently running.</td>
+<td>Boolean: whether the loop is running.</td>
 </tr>
-</tbody></table></div><h2 id="events"><a href="#events" class="anchor" aria-hidden="true">#</a>Events</h2><p>Register with <code>client.on(name, handler)</code>; some are <code>async</code>. <code>once</code> and <code>off</code>
-work the same way they do in Node&#39;s <code>EventEmitter</code>.</p>
-<div class="table-wrap"><table><thead><tr>
+<tr>
+<td><code>user</code></td>
+<td>The bot identity after <code>connect()</code>.</td>
+</tr>
+</tbody></table></div><h2 id="events"><a href="#events" class="anchor" aria-hidden="true">#</a>Events</h2><div class="table-wrap"><table><thead><tr>
 <th>Event</th>
 <th>Args</th>
 <th>Notes</th>
@@ -283,126 +294,135 @@ work the same way they do in Node&#39;s <code>EventEmitter</code>.</p>
 </tr>
 <tr>
 <td><code>messageCreate</code></td>
-<td><code>message</code></td>
-<td>A new message in a server the bot can see.</td>
+<td><code>Message</code></td>
+<td>New message in a channel the bot can view.</td>
 </tr>
 <tr>
 <td><code>messageUpdate</code></td>
-<td><code>message</code></td>
-<td>A message was edited (<code>content</code>, <code>editedAt</code> updated).</td>
+<td><code>Message</code></td>
+<td>Edited message.</td>
 </tr>
 <tr>
 <td><code>messageDelete</code></td>
-<td><code>message</code></td>
-<td>A message was deleted (<code>content</code> empty; <code>id</code>/<code>channelId</code> valid).</td>
+<td><code>Message</code></td>
+<td>Deleted message (partial fields; <code>id</code>/<code>channelId</code>/<code>serverId</code> present).</td>
+</tr>
+<tr>
+<td><code>memberJoin</code></td>
+<td>payload</td>
+<td>Someone joined a space (<code>members.read</code>).</td>
+</tr>
+<tr>
+<td><code>memberLeave</code></td>
+<td>payload</td>
+<td>Someone left a space (<code>members.read</code>).</td>
+</tr>
+<tr>
+<td><code>memberUpdate</code></td>
+<td>payload</td>
+<td>A member&#39;s roles changed (<code>members.read</code>).</td>
+</tr>
+<tr>
+<td><code>interactionCreate</code></td>
+<td>payload</td>
+<td>Slash command or button press for this bot.</td>
 </tr>
 <tr>
 <td><code>error</code></td>
-<td><code>error</code></td>
-<td>Gateway errors. The loop retries automatically unless the token is invalid, in which case it stops.</td>
+<td><code>Error</code></td>
+<td>Gateway/handler errors. The loop retries unless the token is invalid.</td>
 </tr>
 <tr>
 <td><code>debug</code></td>
-<td><code>*</code></td>
-<td>Low-level observability.</td>
-</tr>
-</tbody></table></div><h3 id="message"><a href="#message" class="anchor" aria-hidden="true">#</a>`Message`</h3><div class="table-wrap"><table><thead><tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead><tbody><tr>
-<td><code>id</code></td>
 <td><code>string</code></td>
-<td>Message id.</td>
+<td>Low-level diagnostics (e.g. unknown event types).</td>
 </tr>
-<tr>
-<td><code>channelId</code></td>
-<td><code>string</code></td>
-<td>Channel id.</td>
-</tr>
-<tr>
-<td><code>serverId</code></td>
-<td><code>string | null</code></td>
-<td>Server id.</td>
-</tr>
-<tr>
-<td><code>author</code></td>
-<td><code>object | null</code></td>
-<td><code>{ id, username, display_name, avatar_url, is_bot }</code>.</td>
-</tr>
-<tr>
-<td><code>content</code></td>
-<td><code>string</code></td>
-<td>Message text.</td>
-</tr>
-<tr>
-<td><code>replyToId</code></td>
-<td><code>string | null</code></td>
-<td>The message this replies to, if any.</td>
-</tr>
-<tr>
-<td><code>mentions</code></td>
-<td><code>array</code></td>
-<td>Mentioned users.</td>
-</tr>
-<tr>
-<td><code>attachment</code></td>
-<td><code>object | null</code></td>
-<td><code>{ url, type }</code> when the message has a file.</td>
-</tr>
-<tr>
-<td><code>createdAt</code></td>
-<td><code>string | null</code></td>
-<td>ISO timestamp.</td>
-</tr>
-<tr>
-<td><code>editedAt</code></td>
-<td><code>string | null</code></td>
-<td>ISO timestamp of the last edit.</td>
-</tr>
-<tr>
-<td><code>displayId</code></td>
-<td><code>number | null</code></td>
-<td>The sequential display number.</td>
-</tr>
-</tbody></table></div><p><strong>Methods</strong> — <code>message.reply(content)</code> (replies in the same channel) and the
-<code>message.authorIsBot</code> getter (true when the sender was a bot).</p>
-<h2 id="methods"><a href="#methods" class="anchor" aria-hidden="true">#</a>Methods</h2><pre><code class="hljs language-javascript"><span class="hljs-keyword">await</span> client.<span class="hljs-title function_">sendMessage</span>(channelId, <span class="hljs-string">&quot;Deploy finished&quot;</span>);          <span class="hljs-comment">// send</span>
-<span class="hljs-keyword">await</span> message.<span class="hljs-title function_">reply</span>(<span class="hljs-string">&quot;pong&quot;</span>);                                      <span class="hljs-comment">// reply to a received message</span>
+</tbody></table></div><h3 id="message"><a href="#message" class="anchor" aria-hidden="true">#</a>`Message`</h3><p>Fields: <code>id</code>, <code>channelId</code>, <code>serverId</code>, <code>author</code>, <code>content</code>, <code>replyToId</code>,
+<code>mentions</code>, <code>embeds</code>, <code>components</code>, <code>interaction</code>, <code>webhookId</code>, <code>attachment</code>
+(<code>{ url, type }</code> or <code>null</code>), <code>createdAt</code>, <code>editedAt</code>, <code>displayId</code>, <code>raw</code>.</p>
+<p>Helpers: <code>authorIsBot</code>, <code>reply(content, options?)</code>, <code>edit(patch)</code>, <code>delete()</code>,
+<code>react(emoji)</code>, <code>unreact(emoji)</code>, <code>pin()</code>, <code>unpin()</code>.</p>
+<h2 id="methods"><a href="#methods" class="anchor" aria-hidden="true">#</a>Methods</h2><h3 id="messages-reactions-and-pins"><a href="#messages-reactions-and-pins" class="anchor" aria-hidden="true">#</a>Messages, reactions, and pins</h3><pre><code class="hljs language-javascript"><span class="hljs-keyword">await</span> client.<span class="hljs-title function_">sendMessage</span>(channelId, <span class="hljs-string">&quot;Deploy finished&quot;</span>, { replyToId, embeds, components });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">editMessage</span>(channelId, messageId, { <span class="hljs-attr">content</span>: <span class="hljs-string">&quot;Edited&quot;</span>, embeds, components });
+<span class="hljs-keyword">const</span> messages = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listMessages</span>(channelId, { <span class="hljs-attr">limit</span>: <span class="hljs-number">50</span>, before });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteMessage</span>(channelId, messageId); <span class="hljs-comment">// UUID or numeric display_id</span>
+<span class="hljs-keyword">const</span> deleted = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">bulkDeleteMessages</span>(channelId, [uuid1, uuid2]); <span class="hljs-comment">// UUIDs only, 1-100</span>
 
-<span class="hljs-keyword">const</span> messages = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listMessages</span>(channelId, { <span class="hljs-attr">limit</span>: <span class="hljs-number">25</span>, <span class="hljs-attr">before</span>: <span class="hljs-string">&quot;…&quot;</span> });
-<span class="hljs-keyword">const</span> channels  = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listChannels</span>(serverId);
-<span class="hljs-keyword">const</span> members   = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listMembers</span>(serverId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">addReaction</span>(channelId, messageId, <span class="hljs-string">&quot;👍&quot;</span>);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">removeReaction</span>(channelId, messageId, <span class="hljs-string">&quot;👍&quot;</span>);
+<span class="hljs-keyword">const</span> pins = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listPins</span>(channelId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">pinMessage</span>(channelId, messageId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">unpinMessage</span>(channelId, messageId);
+</code></pre><h3 id="servers-and-audit"><a href="#servers-and-audit" class="anchor" aria-hidden="true">#</a>Servers and audit</h3><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> server = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">getServer</span>(serverId);
+<span class="hljs-keyword">const</span> updated = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">updateServer</span>(serverId, { name, description, discoverable });
+<span class="hljs-keyword">const</span> perms = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">getServerPermissions</span>(serverId);
+<span class="hljs-keyword">const</span> entries = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listAuditLog</span>(serverId, { <span class="hljs-attr">limit</span>: <span class="hljs-number">100</span> });
+</code></pre><h3 id="categories-and-channels"><a href="#categories-and-channels" class="anchor" aria-hidden="true">#</a>Categories and channels</h3><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> categories = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listCategories</span>(serverId);
+<span class="hljs-keyword">const</span> category = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createCategory</span>(serverId, <span class="hljs-string">&quot;Support&quot;</span>);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">updateCategory</span>(categoryId, { name, position });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteCategory</span>(categoryId);
 
-<span class="hljs-keyword">const</span> channelId = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createChannel</span>(serverId, <span class="hljs-string">&quot;deploys&quot;</span>, { <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-attr">categoryId</span>: <span class="hljs-literal">null</span> });
-<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">renameChannel</span>(channelId, <span class="hljs-string">&quot;deploys-2&quot;</span>);
+<span class="hljs-keyword">const</span> channels = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listChannels</span>(serverId); <span class="hljs-comment">// visible only</span>
+<span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">getChannel</span>(channelId);
+<span class="hljs-keyword">const</span> channelId = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createChannel</span>(serverId, <span class="hljs-string">&quot;staff-chat&quot;</span>, {
+  <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>,
+  categoryId,
+  topic,
+  <span class="hljs-attr">slowModeSeconds</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">readOnly</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">userLimit</span>: <span class="hljs-literal">null</span>,
+  <span class="hljs-attr">permissions</span>: [
+    { <span class="hljs-attr">role_id</span>: everyoneRoleId, <span class="hljs-attr">can_view</span>: <span class="hljs-literal">false</span> },
+    { <span class="hljs-attr">role_id</span>: staffRoleId, <span class="hljs-attr">can_view</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">can_post</span>: <span class="hljs-literal">true</span> },
+  ],
+});
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">updateChannel</span>(channelId, { name, topic, slow_mode_seconds, category_id, position, read_only, locked, user_limit });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">renameChannel</span>(channelId, <span class="hljs-string">&quot;new-name&quot;</span>);
 <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteChannel</span>(channelId);
 
-<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">leaveServer</span>(serverId);
+<span class="hljs-keyword">const</span> overwrites = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listChannelPermissions</span>(channelId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">setChannelPermission</span>(channelId, roleId, { <span class="hljs-attr">can_view</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">can_post</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">can_react</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">can_attach</span>: <span class="hljs-literal">null</span> });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteChannelPermission</span>(channelId, roleId);
+</code></pre><p>A private channel is a channel with role overwrites: deny <code>can_view</code> for
+<code>@everyone</code> and allow it for the roles that should see it. Hidden channels are
+omitted from lists and direct access returns 403/404.</p>
+<h3 id="members-bans-and-roles"><a href="#members-bans-and-roles" class="anchor" aria-hidden="true">#</a>Members, bans, and roles</h3><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> members = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listMembers</span>(serverId);
+<span class="hljs-keyword">const</span> member = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">getMember</span>(serverId, userId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">kickMember</span>(serverId, userId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">timeoutMember</span>(serverId, userId, <span class="hljs-number">10</span>, <span class="hljs-string">&quot;Cooling off&quot;</span>);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">addMemberRole</span>(serverId, userId, roleId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">removeMemberRole</span>(serverId, userId, roleId);
 
+<span class="hljs-keyword">const</span> bans = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listBans</span>(serverId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">banMember</span>(serverId, userId, { <span class="hljs-attr">reason</span>: <span class="hljs-string">&quot;Spam&quot;</span> });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">unbanMember</span>(serverId, userId);
+
+<span class="hljs-keyword">const</span> roles = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listRoles</span>(serverId);
+<span class="hljs-keyword">const</span> role = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createRole</span>(serverId, { name, <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;#5865f2&quot;</span>, <span class="hljs-attr">permissions</span>: { <span class="hljs-attr">send_messages</span>: <span class="hljs-literal">true</span> }, <span class="hljs-attr">self_assignable</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">position</span>: <span class="hljs-number">2</span> });
+<span class="hljs-keyword">const</span> one = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">getRole</span>(serverId, roleId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">updateRole</span>(serverId, roleId, { name, color, permissions, self_assignable, position });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteRole</span>(serverId, roleId);
+</code></pre><p>Moderation and role changes enforce hierarchy (no acting on the owner,
+moderators, bots, yourself, or roles at/above the bot&#39;s highest role).</p>
+<h3 id="webhooks"><a href="#webhooks" class="anchor" aria-hidden="true">#</a>Webhooks</h3><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> webhooks = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listWebhooks</span>(serverId);
+<span class="hljs-keyword">const</span> webhook = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createWebhook</span>(serverId, { channel_id, name, avatar_url });
+<span class="hljs-keyword">const</span> one = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">getWebhook</span>(webhookId);
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">updateWebhook</span>(webhookId, { name, avatar_url, channel_id, <span class="hljs-attr">reset_token</span>: <span class="hljs-literal">true</span> });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteWebhook</span>(webhookId);
+</code></pre><p>Webhook objects include a posting <code>url</code> — treat it as a secret. Webhooks in
+channels the bot cannot view are hidden.</p>
+<h3 id="commands-and-interactions"><a href="#commands-and-interactions" class="anchor" aria-hidden="true">#</a>Commands and interactions</h3><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> commands = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listCommands</span>();
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">setCommands</span>([{ <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;ping&quot;</span>, <span class="hljs-attr">description</span>: <span class="hljs-string">&quot;Ping&quot;</span>, <span class="hljs-attr">options</span>: [] }]); <span class="hljs-comment">// bulk replace</span>
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">upsertCommand</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;ping&quot;</span>, <span class="hljs-attr">description</span>: <span class="hljs-string">&quot;Ping&quot;</span>, <span class="hljs-attr">options</span>: [] });
+<span class="hljs-keyword">await</span> client.<span class="hljs-title function_">deleteCommand</span>(<span class="hljs-string">&quot;ping&quot;</span>);
+
+client.<span class="hljs-title function_">on</span>(<span class="hljs-string">&quot;interactionCreate&quot;</span>, <span class="hljs-title function_">async</span> (interaction) =&gt; {
+  <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">respondToInteraction</span>(interaction.<span class="hljs-property">id</span>, { <span class="hljs-attr">content</span>: <span class="hljs-string">&quot;Pong!&quot;</span>, <span class="hljs-attr">ephemeral</span>: <span class="hljs-literal">true</span> });
+});
+</code></pre><h3 id="invites-and-lifecycle"><a href="#invites-and-lifecycle" class="anchor" aria-hidden="true">#</a>Invites and lifecycle</h3><pre><code class="hljs language-javascript"><span class="hljs-keyword">await</span> client.<span class="hljs-title function_">leaveServer</span>(serverId);
 <span class="hljs-keyword">const</span> invite = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createInvite</span>(serverId, [<span class="hljs-string">&quot;messages.read&quot;</span>, <span class="hljs-string">&quot;messages.write&quot;</span>]);
 <span class="hljs-comment">// invite.invite_url -&gt; send to the server owner</span>
-</code></pre><h2 id="extended-endpoints"><a href="#extended-endpoints" class="anchor" aria-hidden="true">#</a>Extended endpoints</h2><p><code>@disband/bot</code> wraps the core message, channel, member, invite, and lifecycle
-calls above. The extended management API — categories, channel permission
-overwrites, pins, reactions, roles, bans, audit log, server settings, and
-webhooks — is not wrapped yet. Call those routes directly with the same token:</p>
-<pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> baseUrl = <span class="hljs-string">&quot;https://www.disband.dev&quot;</span>;
-
-<span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${baseUrl}</span>/api/v1/servers/<span class="hljs-subst">${serverId}</span>/roles`</span>, {
-  <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
-  <span class="hljs-attr">headers</span>: {
-    <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bot <span class="hljs-subst">${process.env.DISBAND_BOT_TOKEN}</span>`</span>,
-    <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
-  },
-  <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Ticket Staff&quot;</span>, <span class="hljs-attr">color</span>: <span class="hljs-string">&quot;#5865f2&quot;</span> }),
-});
-<span class="hljs-keyword">const</span> { role } = <span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>();
-</code></pre><p>See the <a href="/docs/developers/extended-api/">Extended API</a> for every route, and the
-<a href="/docs/bots/api-reference/">API reference</a> for the shared status codes and rate
-limits.</p>
-<h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><p>Thrown errors carry the status and body:</p>
-<div class="table-wrap"><table><thead><tr>
+</code></pre><h2 id="errors"><a href="#errors" class="anchor" aria-hidden="true">#</a>Errors</h2><div class="table-wrap"><table><thead><tr>
 <th>Error</th>
 <th>When</th>
 </tr>
@@ -412,7 +432,7 @@ limits.</p>
 </tr>
 <tr>
 <td><code>PermissionError</code></td>
-<td><code>403</code> — missing scope or role permission.</td>
+<td><code>403</code> — missing scope, grant, or role permission.</td>
 </tr>
 <tr>
 <td><code>RateLimitError</code></td>
@@ -422,8 +442,9 @@ limits.</p>
 <td><code>HttpError</code></td>
 <td>Any other non-2xx status.</td>
 </tr>
-</tbody></table></div><p>Internally the client is a thin wrapper over the <a href="/docs/bots/api-reference/">HTTP API</a>:
-<code>REST.get/post/patch/delete</code> with <code>Authorization: Bot &lt;token&gt;</code>.</p>
+</tbody></table></div><p>All carry <code>status</code>, <code>message</code>, and <code>body</code>. See the <a href="/docs/bots/api-reference/">API reference</a>
+and <a href="/docs/developers/extended-api/">Extended API</a> for endpoint-specific
+behavior and limits.</p>
 
   </main>
 </div>

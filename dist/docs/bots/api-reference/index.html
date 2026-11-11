@@ -4,9 +4,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Bot API reference — Disband Docs</title>
-<meta name="description" content="The HTTP API that bots talk to. The official client libraries wrap the core
-message, channel, member, invite, and lifecycle endpoints; the extended
-management e" />
+<meta name="description" content="The HTTP API that bots talk to. The official client libraries @disband/bot
+and disband-bot wrap the core and extended endpoints, so you can usually call
+them di" />
 <link rel="canonical" href="https://docs.disband.dev/docs/bots/api-reference/" />
 <link rel="alternate" hreflang="en" href="https://docs.disband.dev/docs/bots/api-reference/" />
 <link rel="alternate" hreflang="es" href="https://docs.disband.dev/es/docs/bots/api-reference/" />
@@ -18,9 +18,9 @@ management e" />
 <link rel="alternate" hreflang="zh-CN" href="https://docs.disband.dev/zh-cn/docs/bots/api-reference/" />
 <link rel="alternate" hreflang="x-default" href="https://docs.disband.dev/docs/bots/api-reference/" />
 <meta property="og:title" content="Bot API reference — Disband Docs" />
-<meta property="og:description" content="The HTTP API that bots talk to. The official client libraries wrap the core
-message, channel, member, invite, and lifecycle endpoints; the extended
-management e" />
+<meta property="og:description" content="The HTTP API that bots talk to. The official client libraries @disband/bot
+and disband-bot wrap the core and extended endpoints, so you can usually call
+them di" />
 <meta property="og:url" content="https://docs.disband.dev/docs/bots/api-reference/" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en" />
@@ -211,12 +211,12 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
   <aside class="sidebar"><nav class="sidebar-nav"><a href="/" class="nav-home-link">Docs home</a><div class="nav-group"><p class="nav-label">Bots</p><a href="/docs/bots/" class="">Overview</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/hosting-your-own-bot/" class="">Hosting your own bot</a><a href="/docs/bots/clients/javascript/" class="">JavaScript</a><a href="/docs/bots/clients/python/" class="">Python</a><a href="/docs/bots/api-reference/" class="active">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div><div class="nav-group"><p class="nav-label">Themes</p><a href="/docs/themes/" class="">Themes</a></div><div class="nav-group"><p class="nav-label">Developers</p><a href="/docs/developers/" class="">Developers</a><a href="/docs/developers/webhooks/" class="">Webhooks</a><a href="/docs/developers/extended-api/" class="">Extended API</a><a href="/docs/developers/embeds/" class="">Embeds</a><a href="/docs/developers/status/" class="">Status system</a><a href="/docs/bots/" class="">Bots</a><a href="/docs/bots/getting-started/" class="">Getting started</a><a href="/docs/bots/api-reference/" class="active">API reference</a><a href="/docs/bots/templates/" class="">Templates</a></div></nav></aside>
   <main class="content">
     
-    <h1 id="bot-api-reference"><a href="#bot-api-reference" class="anchor" aria-hidden="true">#</a>Bot API reference</h1><p>The HTTP API that bots talk to. The official client libraries wrap the core
-message, channel, member, invite, and lifecycle endpoints; the extended
-management endpoints are plain HTTP and are called directly with the same token.
-This page is the recipe for writing a client in any language.</p>
+    <h1 id="bot-api-reference"><a href="#bot-api-reference" class="anchor" aria-hidden="true">#</a>Bot API reference</h1><p>The HTTP API that bots talk to. The official client libraries (<code>@disband/bot</code>
+and <code>disband-bot</code>) wrap the core and extended endpoints, so you can usually call
+them directly instead of hand-rolling HTTP. This page is the full contract and
+the recipe for writing a client in any language.</p>
 <p>The extended management surface — private channels, categories, roles, audit,
-bans, server settings, and webhooks — is documented in
+bans, server settings, and webhooks — is also documented in depth in
 <a href="/docs/developers/extended-api/">Extended API and private channels</a>. This page
 covers the whole contract, with the extended endpoints summarised.</p>
 <h2 id="base-url-and-authentication"><a href="#base-url-and-authentication" class="anchor" aria-hidden="true">#</a>Base URL and authentication</h2><pre><code>https://www.disband.dev
@@ -725,10 +725,9 @@ instead of guessing.</li>
 </ol>
 <p>The official clients are <code>@disband/bot</code> (JavaScript) and <code>disband-bot</code> (Python)
 — see the <a href="/docs/bots/clients/javascript/">JavaScript</a> and <a href="/docs/bots/clients/python/">Python</a>
-pages. They wrap the core endpoints listed above, not the extended management
-surface; call those with a plain HTTP request using the same <code>Authorization</code>
-header. For private channels, tickets, categories, audit, bans, and webhooks,
-see the <a href="/docs/developers/extended-api/">Extended API</a>.</p>
+pages. They wrap the endpoints on this page, including the extended management
+surface. For private channels, tickets, categories, audit, bans, and webhooks,
+see the <a href="/docs/developers/extended-api/">Extended API</a> for recipes and details.</p>
 
   </main>
 </div>
