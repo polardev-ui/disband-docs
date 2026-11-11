@@ -292,6 +292,19 @@ Rules:
 - Entries are ordered newest first.
 - Inaccessible servers return `404`.
 
+## Ban endpoints
+
+### List bans
+
+```
+GET /api/v1/servers/{server_id}/bans
+```
+
+Rules:
+- Requires `members:moderate` or a role with `ban`.
+- Returns bans ordered newest first.
+- Inaccessible servers return `404`.
+
 ## Webhook endpoints
 
 ### Create webhook
