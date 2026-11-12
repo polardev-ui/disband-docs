@@ -833,9 +833,15 @@ Event types:
 | `memberJoin` | Someone joins a space the bot is in (`members.read` in that space) |
 | `memberLeave` | Someone leaves a space the bot is in (`members.read` in that space) |
 | `memberUpdate` | A member's roles change (`members.read` in that space) |
+| `reactionAdd` / `reactionRemove` | A reaction is added or removed in a visible channel (`messages.read`) |
+| `channelCreate` / `channelUpdate` / `channelDelete` | A visible channel or forum post changes (`channels.read`, `channels.manage`, or `messages.read`) |
+| `roleCreate` / `roleUpdate` / `roleDelete` | A role changes (`members.read` or `roles.manage`) |
+| `serverUpdate` | The space's name, icon, banner, or owner changes |
+| `serverJoin` / `serverLeave` / `scopesUpdate` | The bot is added to or removed from a space, or its scopes there change |
 | `interactionCreate` | Someone runs the bot's slash command or presses its button |
 
-Message events require `messages.read` on both the bot and the space grant.
+See the [API reference](../bots/api-reference.md#event-types) for every
+payload. Message events require `messages.read` on both the bot and the space grant.
 Member events require `members.read` on the space grant. Interaction events
 require the bot to be in the space. Delivery is at-least-once: handle events
 idempotently by event ID.

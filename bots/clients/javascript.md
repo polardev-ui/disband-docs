@@ -39,6 +39,8 @@ await client.connect();
 | `gatewayTimeout` | `number` | `20` | Seconds per gateway poll (1–20). |
 | `requestTimeout` | `number` | `max((gatewayTimeout+10)*1000, 30000)` | Per-request timeout in ms. |
 | `allowInsecureLocalhost` | `boolean` | `false` | Allow `http://localhost` for local development only. |
+| `retryRateLimits` | `boolean` | `true` | Wait out a `429`'s `Retry-After` and send the request again. |
+| `maxRetries` | `number` | `3` | How many `429`s to retry before throwing `RateLimitError`. |
 
 ## Lifecycle
 
@@ -57,18 +59,37 @@ await client.connect();
 | `messageCreate` | `Message` | New message in a channel the bot can view. |
 | `messageUpdate` | `Message` | Edited message. |
 | `messageDelete` | `Message` | Deleted message (partial fields; `id`/`channelId`/`serverId` present). |
+| `reactionAdd` | payload | `message_id`, `channel_id`, `server_id`, `emoji`, `user_id`, `user`. |
+| `reactionRemove` | payload | The same, without `user`. |
 | `memberJoin` | payload | Someone joined a space (`members.read`). |
 | `memberLeave` | payload | Someone left a space (`members.read`). |
 | `memberUpdate` | payload | A member's roles changed (`members.read`). |
+| `channelCreate` / `channelUpdate` / `channelDelete` | payload | `channel_id`, `server_id`, `channel`. Forum posts included. |
+| `roleCreate` / `roleUpdate` / `roleDelete` | payload | `server_id`, `role_id`, `role` (`members.read` or `roles.manage`). |
+| `serverUpdate` | payload | `server_id`, `server`: the space's name, icon, banner or owner changed. |
+| `serverJoin` | payload | The bot was added: `server_id`, `server`, `scopes`. |
+| `serverLeave` | payload | The bot was removed: `server_id`. |
+| `scopesUpdate` | payload | The space changed the bot's scopes: `server_id`, `scopes`. |
 | `interactionCreate` | payload | Slash command or button press for this bot. |
 | `error` | `Error` | Gateway/handler errors. The loop retries unless the token is invalid. |
-| `debug` | `string` | Low-level diagnostics (e.g. unknown event types). |
+| `debug` | `string` | Low-level diagnostics (unknown event types, rate-limit retries). |
+
+```javascript
+client.on("reactionAdd", async ({ channel_id, message_id, emoji, user }) => {
+  if (emoji === "📌" && !user?.is_bot) await client.pinMessage(channel_id, message_id);
+});
+
+client.on("serverJoin", async ({ server }) => {
+  console.log(`Added to ${server.name}`);
+});
+```
 
 ### `Message`
 
 Fields: `id`, `channelId`, `serverId`, `author`, `content`, `replyToId`,
 `mentions`, `embeds`, `components`, `interaction`, `webhookId`, `attachment`
-(`{ url, type }` or `null`), `createdAt`, `editedAt`, `displayId`, `raw`.
+(`{ url, type }` or `null`), `createdAt`, `editedAt`, `displayId`,
+`reactions` (from `getMessage`), `raw`.
 
 Helpers: `authorIsBot`, `reply(content, options?)`, `edit(patch)`, `delete()`,
 `react(emoji)`, `unreact(emoji)`, `pin()`, `unpin()`.
@@ -80,15 +101,42 @@ Helpers: `authorIsBot`, `reply(content, options?)`, `edit(patch)`, `delete()`,
 ```javascript
 await client.sendMessage(channelId, "Deploy finished", { replyToId, embeds, components });
 await client.editMessage(channelId, messageId, { content: "Edited", embeds, components });
-const messages = await client.listMessages(channelId, { limit: 50, before });
+const messages = await client.listMessages(channelId, { limit: 50, before }); // or after / around
+const message = await client.getMessage(channelId, messageId); // message.reactions
 await client.deleteMessage(channelId, messageId); // UUID or numeric display_id
 const deleted = await client.bulkDeleteMessages(channelId, [uuid1, uuid2]); // UUIDs only, 1-100
+await client.sendTyping(channelId); // "is typing…" for a few seconds
 
 await client.addReaction(channelId, messageId, "👍");
 await client.removeReaction(channelId, messageId, "👍");
+const reactions = await client.listReactions(channelId, messageId); // [{ emoji, count, me }]
+const users = await client.listReactionUsers(channelId, messageId, "👍", { limit: 100 });
+await client.removeUserReaction(channelId, messageId, "👍", userId); // manage_messages
+const removed = await client.clearReactions(channelId, messageId, { emoji: "👍" }); // omit emoji for all
 const pins = await client.listPins(channelId);
 await client.pinMessage(channelId, messageId);
 await client.unpinMessage(channelId, messageId);
+```
+
+### Forum posts
+
+```javascript
+const posts = await client.listForumPosts(forumId, { limit: 50 });
+const { post, message } = await client.createForumPost(forumId, {
+  title: "Release notes",
+  content: "v2 is out",
+  tags: ["announcement"], // the forum's own tags
+});
+await client.sendMessage(post.id, "Questions welcome here."); // a post is a channel
+```
+
+### The bot itself and users
+
+```javascript
+const { user, bot } = await client.fetchMe();
+await client.setStatus("Watching 12 servers"); // null clears it; up to 64 characters
+const servers = await client.listServers(); // [{ id, name, icon_url, owner_id, scopes, joined_at }]
+const profile = await client.getUser(userId); // shares a space, members.read
 ```
 
 ### Servers and audit
@@ -138,7 +186,7 @@ omitted from lists and direct access returns 403/404.
 ### Members, bans, and roles
 
 ```javascript
-const members = await client.listMembers(serverId);
+const members = await client.listMembers(serverId); // or { query: "ali", role: roleId, limit: 25 }
 const member = await client.getMember(serverId, userId);
 await client.kickMember(serverId, userId);
 await client.timeoutMember(serverId, userId, 10, "Cooling off");

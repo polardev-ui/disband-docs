@@ -36,7 +36,7 @@ Handlers may be plain or `async def`; both are supported.
 
 ## Constructor
 
-### `Client(token, base_url="https://www.disband.dev", gateway_timeout=20, allow_insecure_localhost=False)`
+### `Client(token, base_url="https://www.disband.dev", gateway_timeout=20, allow_insecure_localhost=False, retry_rate_limits=True, max_retries=3)`
 
 | Argument | Default | Description |
 | --- | --- | --- |
@@ -44,6 +44,8 @@ Handlers may be plain or `async def`; both are supported.
 | `base_url` | `"https://www.disband.dev"` | API root. |
 | `gateway_timeout` | `20` | Seconds per gateway poll (1–20). |
 | `allow_insecure_localhost` | `False` | Allow `http://localhost` for local development only. |
+| `retry_rate_limits` | `True` | Wait out a `429`'s `Retry-After` and send the request again. |
+| `max_retries` | `3` | How many `429`s to retry before raising `RateLimitError`. |
 
 ## Lifecycle
 
@@ -62,18 +64,33 @@ Handlers may be plain or `async def`; both are supported.
 | `messageCreate` | `Message` | New message in a channel the bot can view. |
 | `messageUpdate` | `Message` | Edited message. |
 | `messageDelete` | `Message` | Deleted message (partial fields). |
+| `reactionAdd` | `dict` | `message_id`, `channel_id`, `server_id`, `emoji`, `user_id`, `user`. |
+| `reactionRemove` | `dict` | The same, without `user`. |
 | `memberJoin` | `dict` | Someone joined a space (`members.read`). |
 | `memberLeave` | `dict` | Someone left a space (`members.read`). |
 | `memberUpdate` | `dict` | A member's roles changed (`members.read`). |
+| `channelCreate` / `channelUpdate` / `channelDelete` | `dict` | `channel_id`, `server_id`, `channel`. Forum posts included. |
+| `roleCreate` / `roleUpdate` / `roleDelete` | `dict` | `server_id`, `role_id`, `role` (`members.read` or `roles.manage`). |
+| `serverUpdate` | `dict` | `server_id`, `server`: the space's name, icon, banner or owner changed. |
+| `serverJoin` | `dict` | The bot was added: `server_id`, `server`, `scopes`. |
+| `serverLeave` | `dict` | The bot was removed: `server_id`. |
+| `scopesUpdate` | `dict` | The space changed the bot's scopes: `server_id`, `scopes`. |
 | `interactionCreate` | `dict` | Slash command or button press for this bot. |
 | `error` | `Exception` | Gateway/handler errors. The loop retries unless the token is invalid. |
+
+```python
+@client.on("reactionAdd")
+def pin_on_pushpin(event):
+    if event["emoji"] == "📌" and not (event.get("user") or {}).get("is_bot"):
+        client.pin_message(event["channel_id"], event["message_id"])
+```
 
 ### `Message`
 
 Attributes: `id`, `channel_id`, `server_id`, `author`, `content`, `reply_to_id`,
 `mentions`, `embeds`, `components`, `interaction`, `webhook_id`, `attachment`
-(`{"url", "type"}` or `None`), `created_at`, `edited_at`, `display_id`, `raw`,
-`author_is_bot`.
+(`{"url", "type"}` or `None`), `created_at`, `edited_at`, `display_id`,
+`reactions` (from `get_message`), `raw`, `author_is_bot`.
 
 Helpers: `reply(content=None, **options)`, `edit(content_or_patch=None, **patch)`,
 `delete()`, `react(emoji)`, `unreact(emoji)`, `pin()`, `unpin()`.
@@ -85,15 +102,38 @@ Helpers: `reply(content=None, **options)`, `edit(content_or_patch=None, **patch)
 ```python
 msg = client.send_message(channel_id, "Deploy finished", embeds=[...], components=[...], reply_to_id=msg_id)
 client.edit_message(channel_id, message_id, content="Edited")
-messages = client.list_messages(channel_id, limit=50, before=message_id)
+messages = client.list_messages(channel_id, limit=50, before=message_id)  # or after= / around=
+message = client.get_message(channel_id, message_id)  # message.reactions
 client.delete_message(channel_id, message_id)  # UUID or numeric display_id
 deleted = client.bulk_delete_messages(channel_id, [uuid1, uuid2])  # UUIDs only, 1-100
+client.send_typing(channel_id)  # "is typing..." for a few seconds
 
 client.add_reaction(channel_id, message_id, "👍")
 client.remove_reaction(channel_id, message_id, "👍")
+reactions = client.list_reactions(channel_id, message_id)  # [{"emoji", "count", "me"}]
+users = client.list_reaction_users(channel_id, message_id, "👍", limit=100)
+client.remove_user_reaction(channel_id, message_id, "👍", user_id)  # manage_messages
+removed = client.clear_reactions(channel_id, message_id, emoji="👍")  # omit emoji for all
 pins = client.list_pins(channel_id)
 client.pin_message(channel_id, message_id)
 client.unpin_message(channel_id, message_id)
+```
+
+### Forum posts
+
+```python
+posts = client.list_forum_posts(forum_id, limit=50)
+post, message = client.create_forum_post(forum_id, "Release notes", content="v2 is out", tags=["announcement"])
+client.send_message(post["id"], "Questions welcome here.")  # a post is a channel
+```
+
+### The bot itself and users
+
+```python
+me = client.fetch_me()  # {"user": {...}, "bot": {...}}
+client.set_status("Watching 12 servers")  # None clears it; up to 64 characters
+servers = client.list_servers()
+profile = client.get_user(user_id)  # shares a space, members.read
 ```
 
 ### Servers and audit
@@ -137,7 +177,7 @@ omitted from lists and direct access returns 403/404.
 ### Members, bans, and roles
 
 ```python
-members = client.list_members(server_id)
+members = client.list_members(server_id)  # or query="ali", role=role_id, limit=25
 member = client.get_member(server_id, user_id)
 client.kick_member(server_id, user_id)
 client.timeout_member(server_id, user_id, 10, reason="Cooling off")

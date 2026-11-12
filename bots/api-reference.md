@@ -10,6 +10,10 @@ bans, server settings, and webhooks — is also documented in depth in
 [Extended API and private channels](../developers/extended-api.md). This page
 covers the whole contract, with the extended endpoints summarised.
 
+> **New in November 2026:** forum posts, reaction lookups and clearing, a typing
+> indicator, history after or around a message, member search, custom status,
+> and channel, role, and server events. See the [changelog](changelog.md).
+
 ## Base URL and authentication
 
 ```
@@ -106,14 +110,45 @@ Response:
 | `messageCreate` | Full message object | `messages.read` on the bot and the space grant |
 | `messageUpdate` | `id`, `channel_id`, `server_id`, `content`, `edited_at` | `messages.read` |
 | `messageDelete` | `id`, `channel_id`, `server_id` | `messages.read` |
+| `reactionAdd` | `message_id`, `channel_id`, `server_id`, `emoji`, `user_id`, `user` | `messages.read` |
+| `reactionRemove` | `message_id`, `channel_id`, `server_id`, `emoji`, `user_id` | `messages.read` |
 | `memberJoin` | `server_id`, `joined_at`, `user` | `members.read` on the space grant |
 | `memberLeave` | `server_id`, `user_id` | `members.read` |
 | `memberUpdate` | `server_id`, `user_id`, `roles` | `members.read` |
+| `channelCreate` | `channel_id`, `server_id`, `channel` | `channels.read`, `channels.manage`, or `messages.read` |
+| `channelUpdate` | `channel_id`, `server_id`, `channel` | same as `channelCreate` |
+| `channelDelete` | `channel_id`, `server_id`, `channel` | same as `channelCreate` |
+| `roleCreate` | `server_id`, `role_id`, `role` | `members.read` or `roles.manage` |
+| `roleUpdate` | `server_id`, `role_id`, `role` | `members.read` or `roles.manage` |
+| `roleDelete` | `server_id`, `role_id`, `role` | `members.read` or `roles.manage` |
+| `serverUpdate` | `server_id`, `server` | Any grant in the space |
+| `serverJoin` | `server_id`, `server`, `scopes` | — (the bot was added) |
+| `serverLeave` | `server_id` | — (the bot was removed, or the space deleted) |
+| `scopesUpdate` | `server_id`, `scopes` | — (the space changed the bot's scopes) |
 | `interactionCreate` | Interaction object (below) | Bot must be in the space |
 
 Delivery is **at-least-once** — a bot that crashes between fetch and handling
-may see the same event again. Handle them idempotently (by event or payload
-`id`). Only channels the bot can view produce message events.
+may see the same event again. Handle them idempotently (by event `id`). Only
+channels the bot can view produce message, reaction, and channel events, and
+the check is made again on delivery, so a channel made private before your bot
+polls stays hidden.
+
+A few details:
+
+- `channelUpdate` fires when a channel's name, topic, category, position, type,
+  or settings change, not on every new message.
+- Forum posts are channels, so they produce `channelCreate` too; their
+  `channel` has a `parent_id` (the forum), `post_author_id`, `post_tags`, and
+  `post_pinned`.
+- A `channelCreate` or `channelUpdate` for a channel that was deleted before
+  your bot polled is dropped; the `channelDelete` still arrives.
+- `role` in role events has `id`, `display_id`, `name`, `color`, `position`,
+  `permissions`, `is_default`, `self_assignable`, and `icon`. Fetch the role
+  for `manageable`.
+- Ignore event types you don't know. New ones are added without notice.
+
+Events wait for your bot for up to **7 days**; delivered events are removed
+after a day.
 
 ### Message object
 
@@ -165,10 +200,23 @@ All paths below are relative to `https://www.disband.dev`.
 
 **GET `/api/v1/channels/:id/messages`** — reads messages (`messages.read`).
 
-Query: `limit` (1–100, default 50), `before` (message UUID, for paging
-backwards).
+Query: `limit` (1–100, default 50) and at most one of:
 
-Returns `200` with `{ "messages": [ … ] }`, newest first.
+| Parameter | Returns |
+| --- | --- |
+| `before` | Messages older than this one. |
+| `after` | Messages newer than this one. |
+| `around` | This message, with the older half of `limit` before it and the newer half after. |
+
+Each takes a message UUID or `display_id`. An unknown message returns an empty
+list. Returns `200` with `{ "messages": [ … ] }`, always newest first.
+
+**GET `/api/v1/channels/:id/messages/:messageId`** — one message
+(`messages.read`).
+
+Returns `{ "message": { … } }`: the message object plus `reactions`, a list
+of `{ "emoji": "✅", "count": 3, "me": true }` (`me` is whether the bot
+reacted).
 
 **POST `/api/v1/channels/:id/messages`** — sends a message (`messages.write`).
 
@@ -213,6 +261,13 @@ UUIDs only. Returns `{ "deleted": 12 }`.
 `messageId` may be a UUID or the numeric `display_id` in the single-message
 routes. Bulk delete accepts UUIDs only.
 
+**POST `/api/v1/channels/:id/typing`** — shows "_bot_ is typing…" in the
+channel for a few seconds (`messages.write` and permission to post there).
+
+Returns `204`. Send it again every few seconds to keep it showing while a long
+answer is on its way; it clears when the bot's message arrives. Calls less than
+two seconds apart for the same channel are accepted and coalesced.
+
 ### Reactions
 
 **PUT `/api/v1/channels/:id/messages/:messageId/reactions/:emoji`** — adds the
@@ -226,6 +281,27 @@ bot's reaction (`messages.react`).
 
 When a channel uses overwrites, `react` follows `can_react` and the role's
 `add_reactions` permission.
+
+**GET `/api/v1/channels/:id/messages/:messageId/reactions`** — every emoji on
+a message (`messages.read`). Returns
+`{ "reactions": [ { "emoji": "✅", "count": 3, "me": true } ] }`, in the order
+they were first used.
+
+**GET `/api/v1/channels/:id/messages/:messageId/reactions/:emoji`** — who
+reacted with one emoji, earliest first (`messages.read`). Query: `limit`
+(1–100, default 100). Returns
+`{ "users": [ { "id": "…", "username": "…", "display_name": "…", "avatar_url": "…", "is_bot": false } ] }`.
+
+**DELETE `/api/v1/channels/:id/messages/:messageId/reactions/:emoji/:userId`**
+— removes one person's reaction. Use `@me` for the bot's own
+(`messages.react`); anyone else's needs `messages.delete` and the
+`manage_messages` role permission. Returns `{ "removed": true }` or
+`{ "removed": false }`.
+
+**DELETE `/api/v1/channels/:id/messages/:messageId/reactions`** — clears every
+reaction on a message, or one emoji's with `?emoji=` (`messages.delete` and
+`manage_messages`). Returns `{ "removed": 4 }`, the number removed. Clearing
+reactions is written to the audit log as `reaction.remove`.
 
 ### Pins
 
@@ -242,6 +318,55 @@ Idempotent.
 
 **DELETE** the same path — unpins. Returns `{ "removed": true }` or
 `{ "removed": false }`. Idempotent.
+
+### Forum posts
+
+A forum is a channel of type `forum`; each post in it is a text channel whose
+`parent_id` is the forum. Read and reply to a post with the message endpoints
+above, using the post's id as the channel id.
+
+**GET `/api/v1/channels/:forumId/posts`** — the forum's posts, pinned first,
+then by latest activity (`messages.read`). Query: `limit` (1–100, default 50).
+
+Returns `{ "posts": [ … ] }`:
+
+```json
+{
+  "id": "…",
+  "forum_id": "…",
+  "server_id": "…",
+  "title": "Release notes",
+  "author_id": "…",
+  "tags": ["announcement"],
+  "pinned": false,
+  "message_count": 12,
+  "last_message_at": "2026-11-12T10:00:00Z",
+  "created_at": "2026-11-12T09:00:00Z",
+  "opening": "v2 is out…"
+}
+```
+
+`opening` is the first 300 characters of the opening message. Posts the bot
+can't see are left out.
+
+**POST `/api/v1/channels/:forumId/posts`** — starts a post (`messages.write`
+and permission to post in the forum).
+
+```json
+{
+  "title": "Release notes",
+  "content": "v2 is out",
+  "tags": ["announcement"],
+  "embeds": [],
+  "components": []
+}
+```
+
+`title` is 1–100 characters. `content` is the opening message, up to 4,000
+characters, and may be empty when `embeds` isn't. `tags` must be the forum's
+own tags; others are ignored, and a post has at most five. A bot can start five
+posts per forum every ten minutes. Returns `201` with `{ "post": { … },
+"message": { … } }`.
 
 ### Channels
 
@@ -392,7 +517,17 @@ detection before attempting a management action.
 
 **GET `/api/v1/servers/:id/members`** — lists members (`members.read`).
 
-Returns `{ "members": [ … ] }`, sorted by display name.
+Returns `{ "members": [ … ] }`, sorted by display name. Each has `id`,
+`username`, `display_name`, `avatar_url`, `is_bot`, `status`, `role`, `roles`
+(role ids), and `joined_at`.
+
+Optional query parameters narrow the list:
+
+| Parameter | Keeps |
+| --- | --- |
+| `query` | Members whose username or display name contains this (any case). |
+| `role` | Members with this role id. |
+| `limit` | At most this many (1–1,000). |
 
 **GET `/api/v1/servers/:id/members/:userId`** — member detail
 (`members.read`). Returns `{ "member": { … } }` with roles and any active
@@ -565,6 +700,43 @@ General install links are created by the bot owner from the developers portal
 (or `POST /api/bot/install-link`) and let the recipient pick a space they
 manage.
 
+### Users and the bot itself
+
+**GET `/api/v1/users/@me`** — the bot's own profile, custom status, and
+account scopes.
+
+```json
+{
+  "user": { "id": "…", "username": "helper", "display_name": "Helper", "avatar_url": "…", "is_bot": true, "status_text": "Watching 12 servers" },
+  "bot": { "id": "…", "name": "Helper", "scopes": ["messages.read", "messages.write"] }
+}
+```
+
+`user.id` is the bot's user id (the `author.id` on its messages); `bot.id` is
+the application id.
+
+**PATCH `/api/v1/users/@me`** — sets the bot's custom status, shown on its
+profile and in member lists.
+
+```json
+{ "status_text": "Watching 12 servers" }
+```
+
+Up to 64 characters; `null` clears it. Returns
+`{ "user": { "id": "…", "status_text": "…" } }`.
+
+**GET `/api/v1/users/@me/servers`** — every space the bot is in.
+
+Returns `{ "servers": [ { "id": "…", "name": "…", "icon_url": "…", "owner_id": "…", "scopes": ["…"], "joined_at": "…" } ] }`,
+oldest first. `scopes` are the ones granted in that space.
+
+**GET `/api/v1/users/:userId`** — someone's public profile: `id`, `username`,
+`display_name`, `avatar_url`, `banner_url`, `accent_color`, `bio`, `pronouns`,
+`is_bot`, `verified_bot`, and `created_at`.
+
+The bot can look up people who share a space with it where it holds
+`members.read`. Anyone else returns `404`.
+
 ### Bot management (owner only)
 
 **POST `/api/bot/update`** — update a bot's name, avatar, banner, bio, or scopes.
@@ -628,12 +800,18 @@ messages in a channel the bot cannot view). Treat both as "not available".
   - writes: 60/min
   - invites: 10/min
   - registration: 10/day per owner
-- If you hit `429`, honor `Retry-After`.
+- If you hit `429`, honour `Retry-After`. The official clients do this for you:
+  they wait and retry up to three times before raising a rate limit error.
+- Gateway events wait up to 7 days for your bot; delivered events are removed
+  after a day.
+- Forum posts: five per forum every ten minutes, per bot. Typing: one broadcast
+  every two seconds per channel.
 
 ## Writing your own client
 
 1. `GET /api/bot/me` with `Authorization: Bot <token>` to resolve identity.
-2. Loop on `GET /api/v1/gateway?timeout=20`, handle events by `type`.
+2. Loop on `GET /api/v1/gateway?timeout=20`, handle events by `type`, and
+   skip types you don't recognise.
 3. Use the endpoints above with the same auth header; map `401` → "bad token",
    `403` → "missing permission", `404` → "gone or invisible", `429` → "slow down
    and retry after `Retry-After`".
